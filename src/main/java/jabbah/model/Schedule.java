@@ -1,3 +1,5 @@
+package jabbah.model;
+
 import java.sql.Date;
 import java.util.Random;
 import java.util.random;
