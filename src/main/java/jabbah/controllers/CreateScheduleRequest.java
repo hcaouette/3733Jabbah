@@ -1,3 +1,5 @@
+package jabbah.controller;
+
 import java.sql.*;
 
 public class CreateScheduleRequest {

@@ -1,3 +1,5 @@
+package jabbah.model;
+
 public class TimeSlot {
     boolean isOpen;
     int duration;

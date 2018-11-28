@@ -1,4 +1,4 @@
-
+package jabbah.controller;
 
 public class CreateScheduleResponse {
     String response;
