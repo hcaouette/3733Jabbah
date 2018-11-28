@@ -1,9 +1,11 @@
+package jabbah.controllers;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.sql.Date;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -14,8 +16,8 @@ import com.amazonaws.services.lambda.runtime.LambdaLogger;
 import com.amazonaws.services.lambda.runtime.RequestStreamHandler;
 import com.google.gson.Gson;
 
-import SchedulerDAO;
-import model.Schedule;
+import jabbah.db.SchedulesDAO;
+import jabbah.model.Schedule;
 
 /**
  * Found gson JAR file from
@@ -29,18 +31,19 @@ public class CreateScheduleHandler implements RequestStreamHandler {
      * 
      * @throws Exception 
      */
-    boolean createSchedule(String accessCode) throws Exception {
+    boolean createSchedule(String accessCode,String startTime,String endTime,int timeSlotLength,Date startDate,Date endDate) throws Exception {
         if (logger != null) { logger.log("in createSchedule"); }
-        SchedulerDAO dao = new SchedulerDAO();
+        SchedulesDAO dao = new SchedulesDAO();
         
         // check if present
         Schedule exist = dao.getSchedule(accessCode);
-        Schedule createdSchedule = new Schedule ();
+        Schedule createdSchedule = new Schedule (accessCode, startTime, endTime, timeSlotLength, startDate, endDate);
         if (exist == null) {
             return dao.addSchedule(createdSchedule);
         } else {
             //wont update schedule if one exists with the same info,
-            return dao.updateSchedule(createdSchedule);
+           // return dao.updateSchedule(createdSchedule);
+        	return createSchedule(accessCode, startTime, endTime, timeSlotLength, startDate, endDate);
         }
     }
     
@@ -81,7 +84,8 @@ public class CreateScheduleHandler implements RequestStreamHandler {
                     body = event.toJSONString();  // this is only here to make testing easier
                 }
             }
-        } catch (ParseException pe) {
+        }
+        catch (ParseException pe) {
             logger.log(pe.toString());
             response = new CreateScheduleResponse("Bad Request:" + pe.getMessage(), 422);  // unable to process input
             responseJson.put("body", new Gson().toJson(response));
@@ -95,13 +99,13 @@ public class CreateScheduleHandler implements RequestStreamHandler {
 
             CreateScheduleResponse resp;
             try {
-                if (createSchedule(req.accessCode)) {
-                    resp = new CreateScheduleResponse("Successfully defined Schedule:" + req.accessCode);
+                if (createSchedule(req.getAccessCode(),req.getStartTime(), body, 0, null, null)) {
+                    resp = new CreateScheduleResponse("Successfully defined Schedule:" + req.getAccessCode());
                 } else {
-                    resp = new CreateScheduleResponse("Unable to create Schedule: " + req.accessCode, 422);
+                    resp = new CreateScheduleResponse("Unable to create Schedule: " + req.getAccessCode(), 422);
                 }
             } catch (Exception e) {
-                resp = new CreateScheduleResponse("Unable to create Schedule: " + req.accessCode + "(" + e.getMessage() + ")", 403);
+                resp = new CreateScheduleResponse("Unable to create Schedule: " + req.getAccessCode() + "(" + e.getMessage() + ")", 403);
             }
 
             // compute proper response

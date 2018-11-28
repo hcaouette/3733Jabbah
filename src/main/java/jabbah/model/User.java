@@ -1,3 +1,5 @@
+package jabbah.model;
+
 import java.util.Random;
 
 public class User {
@@ -29,7 +31,7 @@ public class User {
     public String generateAccessCode() { //generates a random 10 letter access code
         //can adjust this later
         String code = "";
-        for (int i = 0, i < 10, i++) {
+        for (int i = 0; i < 10; i++) {
             Random letterChooser = new Random();
             int asciiValue = 65 + letterChooser.nextInt(26);
             char randomChar = (char)asciiValue;
