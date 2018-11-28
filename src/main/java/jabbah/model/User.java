@@ -29,7 +29,7 @@ public class User {
         this.permissions = "SysAdmin";
     }
     
-    public String generateAccessCode(String permission) { //generates a random 10 letter access code
+    public String generateAccessCode() { //generates a random 10 letter access code
         //with a last letter indicating permissions
         //can adjust this later
         String code = "";
@@ -40,14 +40,14 @@ public class User {
             code += randomChar;
         }
         //adding an 11th letter indicating permissions
-        if (permission.equals("SysAdmin") {
-            code += "s"
+        if (permissions.equals("SysAdmin")) {
+            code += "s";
         }
-        else if (permission.equals("Organizer") {
-            code += "o"
+        else if (permissions.equals("Organizer")) {
+            code += "o";
         }
-        else if (permission.equals("Participant") {
-            code += "p"
+        else if (permissions.equals("Participant")) {
+            code += "p";
         }
         //now make sure that there are no collisions with any other 
         //accesscode in the database

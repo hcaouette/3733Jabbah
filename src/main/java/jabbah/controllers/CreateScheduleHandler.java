@@ -1,4 +1,4 @@
-package jabbah.controller;
+package jabbah.controllers;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -18,6 +18,7 @@ import com.google.gson.Gson;
 
 import jabbah.db.SchedulesDAO;
 import jabbah.model.Schedule;
+import java.sql.Date;
 
 /**
  * Found gson JAR file from

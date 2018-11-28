@@ -1,3 +1,5 @@
+package jabbah.controllers;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,8 +16,10 @@ import com.amazonaws.services.lambda.runtime.LambdaLogger;
 import com.amazonaws.services.lambda.runtime.RequestStreamHandler;
 import com.google.gson.Gson;
 
-import SchedulerDAO;
-import model.Schedule;
+import jabbah.db.*;
+import jabbah.model.*;
+
+import java.util.List;
 
 /**
  * Found gson JAR file from
@@ -29,7 +33,7 @@ public class ShowWeekScheduleHandler implements RequestStreamHandler {
      * 
      * @throws Exception 
      */
-    List<DayInSchedule> retrieveWeek(String date) throws Exception {
+    List<DaysInSchedule> retrieveWeek(String date) throws Exception {
     	if(logger != null) { logger.log("in retrieveWeek"); }
     	
     	//Initiate DAO object
@@ -87,9 +91,11 @@ public class ShowWeekScheduleHandler implements RequestStreamHandler {
             logger.log(req.toString());
 
             ShowWeekScheduleResponse resp;
+            String day = "";
             try {
-            	List<DayInSchedule> week = retrieveWeek(String date);
-            	resp = new ShowWeekSchedule(week, 200);
+            	// retrieve day
+            	List<DaysInSchedule> week = retrieveWeek(day);
+            	resp = new ShowWeekScheduleResponse(week, 200);
             } catch (Exception e) {
                 resp = new ShowWeekScheduleResponse(403);
             }

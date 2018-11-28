@@ -1,15 +1,20 @@
+package jabbah.controllers;
+
+import jabbah.model.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ShowWeekScheduleResponse {
-	List<DayInSchedule> week;
+	List<DaysInSchedule> week;
 	int httpCode;
 	
-	public ShowWeekSchedule(List<DayInSchedule> week, int code) {
+	public ShowWeekScheduleResponse(List<DaysInSchedule> week, int code) {
 		this.week = week;
 		this.httpCode = code;
 	}
 	
-	public ShowWeekSchedule(int code) {
-		this.week = new ArrayList<DayInSchedule>();
+	public ShowWeekScheduleResponse(int code) {
+		this.week = new ArrayList<DaysInSchedule>();
 		this.httpCode = code;
 	}
 	
