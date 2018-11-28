@@ -1,4 +1,4 @@
-package jabbah.controller;
+package jabbah.controllers;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
