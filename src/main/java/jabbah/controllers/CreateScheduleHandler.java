@@ -1,11 +1,11 @@
-package jabbah.controllers;
+package jabbah.controller;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.sql.Date;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
