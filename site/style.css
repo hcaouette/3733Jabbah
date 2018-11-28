@@ -1,15 +1,18 @@
 body{
-    background-color: purple;
+    background-color: #e7f1ff;
 }
 div.layout{
     height:500px;
     width:100%;
 }
 div.Header{
-    width:100%;
-    background-color: pink;
-    padding: 20px;
+    background-color: #b7dcff;
     text-align: left;
+    padding-top: 10px;
+    padding-bottom: 30px;
+    width: 100%;
+    border: 2px solid navajowhite;
+    border-bottom: none;
 }
 div.layout:after{
     content: "";
@@ -17,19 +20,23 @@ div.layout:after{
     clear: both;
 }
 div.Panel {
-    background-color: red;
+    background-color: #b7dcff;
     float: left;
-    width: 30%;
-    padding: 15px;
+    width: 31%;
+    padding: 1%;
     height:100%;
+    border: 2px solid navajowhite;
 }
 div.Cal{
-    background-color: blue;
+    background-color: #b7dcff;
     float: left;
-    width: 60%;
-    padding: 15px;
+    width: 64%;
+    padding: 1%;
     height:100%;
     overflow-y: scroll;
+    border: 2px solid navajowhite;
+    border-left: none;
+
 }
 td{
     width: 150px;
@@ -37,5 +44,5 @@ td{
     text-align: center;
     padding-top: 5px;
     padding-bottom: 5px;
-    border: 12px purple;
+    border: 2px solid black;
 }

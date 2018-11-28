@@ -6,24 +6,11 @@
   <link rel="stylesheet" type="text/css" href="style.css">
   <script src="script.js"></script>
 </head>
-<body onload="loadFunc()">
+<body onload="firstLoad()">
   <div class="layout">
-  <div class="Header">Welcome to the Jabbah-cal</div>
+  <!--<div class="Header">Welcome to the Jabbah-cal</div>-->
     <div class="Panel">
-        <label for="loginText">Enter your access code here, if you've logged in before, or have an access code for your organizer's schedule</label>
-        <br><textarea id="loginText" rows="2" cols="20"></textarea>
-        <button type="button" onclick="pullSchedule()">Login</button>
-        <br><br>
-
-        <label for="newOrganizer">Enter a Username to get started as a new Organizer</label>
-        <br><textarea id="newOrganizer" rows="2" cols="20"></textarea>
-        <button type="button" onclick="openCreateMenu()">Create Schedule</button>
-        <br><br>
-
-        <label for="userText">Enter a username and the access code from your organizer to get started as a participant</label>
-        <br><textarea id="userText" rows="2" cols="20"></textarea>
-        <textarea id="accessCode" rows="2" cols="20"></textarea>
-        <button type="button" onclick="newParticipant()">Participant</button>
+        <div id="panelPrint"></div>
     </div>
     <div class="Cal">
         <div id="tablePrint"></div>
