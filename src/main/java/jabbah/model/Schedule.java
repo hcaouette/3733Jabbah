@@ -1,8 +1,6 @@
 package jabbah.model;
 
 import java.sql.Date;
-import java.util.ArrayList;
-import java.util.Random;
 
 public class Schedule {
     String name;
@@ -16,25 +14,25 @@ public class Schedule {
   //  ArrayList<User> participantList;
     User scheduleOrganizer;
     //ArrayList<DaysInSchedule> dayList;
-    
+
     public Schedule (String n, String sT, String eT, int t, Date sD, Date eD) {
-        this.name = n;
+        //this.name = n;
         this.startTime = sT;
         this.endTime = eT;
         this.timeSlotLength = t;
         this.startDate = sD;
         this.endDate = eD;
-        //this.orgAccessCode = generateAccessCode(); decide upon random generation to fill these in
+        this.orgAccessCode = n;
         //this.initialParticipantAccessCode = generateAccessCode();
-        
+
         //create new objects for organizer and participants:
      //   this.scheduleOrganizer = new User();
   //      this.participantList = new ArrayList<User>();
-        
+
         //generate a new list of days in the schedule
         //and timeslots for each day
         //this.dayList = new ArrayList<DaysInSchedule>();
-        
+
     }
 
 	public String getOrgAccessCode() {
@@ -102,5 +100,5 @@ public class Schedule {
 	}
 
 
-    
+
 }

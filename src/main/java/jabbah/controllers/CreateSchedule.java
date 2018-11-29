@@ -100,7 +100,7 @@ public class CreateSchedule implements RequestStreamHandler {
 
             CreateScheduleResponse resp;
             try {
-                if (createSchedule(req.getAccessCode(),req.getStartTime(), body, 0, null, null)) {
+                if (createSchedule(req.getAccessCode(), req.getStartTime(), req.getEndTime(), req.getTimeSlotLength(), req.getStartDate(), req.getEndDate())) {
                     resp = new CreateScheduleResponse("Successfully defined Schedule:" + req.getAccessCode());
                 } else {
                     resp = new CreateScheduleResponse("Unable to create Schedule: " + req.getAccessCode(), 422);
