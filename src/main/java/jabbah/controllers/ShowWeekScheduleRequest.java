@@ -1,3 +1,4 @@
+package jabbah.controllers;
 
 public class ShowWeekScheduleRequest {
 	String date;

@@ -1,0 +1,1 @@
+{"lastDeploymentHandler":"jabbah.controllers.CreateSchedule","lastInvokeHandler":null,"handlerMetadata":{"jabbah.controllers.CreateSchedule":{"deployment":{"regionId":"us-east-2","awsLambdaFunctionName":"CreateSchedule","awsIamRoleName":"Owner","awsS3BucketName":"jabbahcal3733","memory":0,"timeout":0},"invoke":null}},"lastInvokedHandlerDeployed":false}

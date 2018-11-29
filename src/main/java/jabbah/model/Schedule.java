@@ -1,6 +1,8 @@
+package jabbah.model;
+
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.Random;
-import java.util.random;
 
 public class Schedule {
     String name;
@@ -10,9 +12,9 @@ public class Schedule {
     Date startDate;
     Date endDate;
     String orgAccessCode;
-    String initialParticipantAccessCode;
-    //ArrayList<User> participantList;
-    //User scheduleOrganizer;
+  //  String initialParticipantAccessCode;
+  //  ArrayList<User> participantList;
+    User scheduleOrganizer;
     //ArrayList<DaysInSchedule> dayList;
     
     public Schedule (String n, String sT, String eT, int t, Date sD, Date eD) {
@@ -26,13 +28,79 @@ public class Schedule {
         //this.initialParticipantAccessCode = generateAccessCode();
         
         //create new objects for organizer and participants:
-        this.scheduleOrganizer = new User();
-        this.participantList = new ArrayList<User>();
+     //   this.scheduleOrganizer = new User();
+  //      this.participantList = new ArrayList<User>();
         
         //generate a new list of days in the schedule
         //and timeslots for each day
         //this.dayList = new ArrayList<DaysInSchedule>();
         
     }
+
+	public String getOrgAccessCode() {
+		return orgAccessCode;
+	}
+
+	public void setOrgAccessCode(String orgAccessCode) {
+		this.orgAccessCode = orgAccessCode;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getStartTime() {
+		return startTime;
+	}
+
+	public void setStartTime(String startTime) {
+		this.startTime = startTime;
+	}
+
+	public String getEndTime() {
+		return endTime;
+	}
+
+	public void setEndTime(String endTime) {
+		this.endTime = endTime;
+	}
+
+	public int getTimeSlotLength() {
+		return timeSlotLength;
+	}
+
+	public void setTimeSlotLength(int timeSlotLength) {
+		this.timeSlotLength = timeSlotLength;
+	}
+
+	public Date getStartDate() {
+		return startDate;
+	}
+
+	public void setStartDate(Date startDate) {
+		this.startDate = startDate;
+	}
+
+	public Date getEndDate() {
+		return endDate;
+	}
+
+	public void setEndDate(Date endDate) {
+		this.endDate = endDate;
+	}
+
+	public User getScheduleOrganizer() {
+		return scheduleOrganizer;
+	}
+
+	public void setScheduleOrganizer(User scheduleOrganizer) {
+		this.scheduleOrganizer = scheduleOrganizer;
+	}
+
+
     
 }

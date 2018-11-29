@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.sql.Date;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -18,24 +19,23 @@ import com.google.gson.Gson;
 
 import jabbah.db.SchedulesDAO;
 import jabbah.model.Schedule;
-import java.sql.Date;
 
 /**
  * Found gson JAR file from
  * https://repo1.maven.org/maven2/com/google/code/gson/gson/2.6.2/gson-2.6.2.jar
  */
-public class CreateScheduleHandler implements RequestStreamHandler {
+public class CreateSchedule implements RequestStreamHandler {
 
     public LambdaLogger logger = null;
 
     /** Load from RDS, if it exists
-     * 
-     * @throws Exception 
+     *
+     * @throws Exception
      */
     boolean createSchedule(String accessCode,String startTime,String endTime,int timeSlotLength,Date startDate,Date endDate) throws Exception {
         if (logger != null) { logger.log("in createSchedule"); }
         SchedulesDAO dao = new SchedulesDAO();
-        
+
         // check if present
         Schedule exist = dao.getSchedule(accessCode);
         Schedule createdSchedule = new Schedule (accessCode, startTime, endTime, timeSlotLength, startDate, endDate);
@@ -47,7 +47,7 @@ public class CreateScheduleHandler implements RequestStreamHandler {
         	return createSchedule(accessCode, startTime, endTime, timeSlotLength, startDate, endDate);
         }
     }
-    
+
     @Override
     public void handleRequest(InputStream input, OutputStream output, Context context) throws IOException {
         logger = context.getLogger();
@@ -57,12 +57,12 @@ public class CreateScheduleHandler implements RequestStreamHandler {
         headerJson.put("Content-Type",  "application/json");  // not sure if needed anymore?
         headerJson.put("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
         headerJson.put("Access-Control-Allow-Origin",  "*");
-            
+
         JSONObject responseJson = new JSONObject();
         responseJson.put("headers", headerJson);
 
         CreateScheduleResponse response = null;
-        
+
         // extract body from incoming HTTP POST request. If any error, then return 422 error
         String body;
         boolean processed = false;
@@ -71,7 +71,7 @@ public class CreateScheduleHandler implements RequestStreamHandler {
             JSONParser parser = new JSONParser();
             JSONObject event = (JSONObject) parser.parse(reader);
             logger.log("event:" + event.toJSONString());
-            
+
             String method = (String) event.get("httpMethod");
             if (method != null && method.equalsIgnoreCase("OPTIONS")) {
                 logger.log("Options request");
@@ -110,13 +110,13 @@ public class CreateScheduleHandler implements RequestStreamHandler {
             }
 
             // compute proper response
-            responseJson.put("body", new Gson().toJson(resp));  
+            responseJson.put("body", new Gson().toJson(resp));
         }
-        
+
         logger.log("end result:" + responseJson.toJSONString());
         logger.log(responseJson.toJSONString());
         OutputStreamWriter writer = new OutputStreamWriter(output, "UTF-8");
-        writer.write(responseJson.toJSONString());  
+        writer.write(responseJson.toJSONString());
         writer.close();
     }
 }

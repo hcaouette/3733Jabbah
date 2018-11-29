@@ -1,8 +1,10 @@
+package jabbah.model;
+
 public class TimeSlot {
     boolean isOpen;
     int duration;
     User participant;
-    String startTime
+    String startTime;
     
     public TimeSlot(String startTime, int duration) {//with no parameters,
         // constructor will be used for organizers
