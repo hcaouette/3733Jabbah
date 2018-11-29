@@ -47,18 +47,16 @@ function bookFunc(){
 
 function openViewPanel(){
     let str = document.getElementById('loginText').value;
-    let userType = str.slice(10);
+    let userType = str//.slice(10);
     console.log(userType);
     let output = "";
     if(userType === "O"){
-        output = "<p>Organizer</p>";
+		Organizer();
     }else if(userType === "P"){
-        output = "<p>Participant</p>";
+		newParticipant();
     }else if(userType === "S"){
-        output = "<p>Sysadmin</p>";
+        SystemAdmin();
     }
-    document.getElementById("panelPrint").innerHTML = output;
-
 }
 
 function openCreateMenu(){
@@ -95,4 +93,74 @@ function createSchedule(){
     loadCal();
 }
 
-function newParticipant(){}
+function newParticipant(){
+    let output = "<p> User: Participant </p>" 
+    output+="<label for='viewDayText'>Enter the day of the month here</label>";
+    output+="<br><textarea id='viewDayText' rows='2' cols='20'></textarea>";
+    output+="<br><br>";
+    output+= "<label for='viewYearText'>Enter the year here</label>";
+    output+="<br><textarea id='viewYearText' rows='2' cols='20'></textarea>";
+    output+="<br><br>";
+    output+= "<label for='viewMonthText'>Enter the month here</label>";
+    output+="<br><textarea id='viewMonthText' rows='2' cols='20'></textarea>";
+    output+="<br><br>";
+    output+="<button type='button' onclick='pullSchedule()'>View Week</button>";
+    
+    output+="<br><br>";
+    output+= "<label for='viewWeekdayText'>Enter the weekday here</label>";
+    output+="<br><textarea id='viewWeekdayText' rows='2' cols='20'></textarea>";
+    output+="<br><br>";
+    output+= "<label for='viewStartTimeText'>Enter the starting time here</label>";
+    output+="<br><textarea id='viewStartTimeText' rows='2' cols='20'></textarea>";
+    output+="<br><br>";
+    output+="<button type='button' onclick='pullSchedule()'>View Timeslots</button>"
+
+    document.getElementById("panelPrint").innerHTML = output;
+}
+
+function SystemAdmin(){
+	let output = "<p> User: System Administrator </p>";
+	
+	output+="<p>View Schedules created within the past X hours. </p>";
+	output+="<label for = 'numHours'>Enter the number of hours here:</label>";
+	output+="<br><textarea id='numHours' rows='2' cols='20'></textarea>";
+    output+="<br><br>";
+    output+="<button type = 'button' onclick = 'listSchedules()'>View</button>";
+    
+    output+="<p>View/Delete Schedules that are more than X days old. </p>";
+	output+="<label for = 'numDays'>Enter the number of days here:</label>";
+	output+="<br><textarea id='numDays' rows='2' cols='20'></textarea>";
+    output+="<br><br>";
+    output+="<button type = 'button' onclick = 'listSchedules()'>View</button>";
+    output+="<button type = 'button' onclick = 'deleteAllSchedules()'>Delete</button>";
+    
+	document.getElementById("panelPrint").innerHTML = output;
+}
+
+function Organizer(){
+	let output = "<p> User: Organizer </p>";
+	
+	output+="<label for = 'month'>Enter month here:</label>";
+	output+="<br><textarea id='month' rows='2' cols='20'></textarea>";
+	output+="<br><label for = 'dayOfMonth'>Enter day of month here:</label>";
+	output+="<br><textarea id='dayOfMonth' rows='2' cols='20'></textarea>";
+	output+="<br><label for = 'year'>Enter year here:</label>";
+	output+="<br><textarea id='year' rows='2' cols='20'></textarea>";
+    output+="<br><br>";
+    output+="<button type = 'button' onclick = 'pullSchedule()'>View Schedule</button>";
+    output+="<button type = 'button' onclick = 'extendSchedule()'>Extend Schedule</button>";
+    
+    output+="<p>Close or Open time slots on a given day or all time slots at a given time </p>";
+	output+="<label for = 'date'>Enter date here:</label>";
+	output+="<br><textarea id='numDays' rows='2' cols='20'></textarea>";
+    output+="<br><label for 'time'>Or enter time here:</label>";
+    output+="<br><textarea id = 'time' rows='2' cols='20' placeholder='hh:mm'></textarea>";
+    output+="<br><br>";
+    output+="<button type = 'button' onclick = 'closeTimeSlot()'>Close Time Slots</button>";
+    output+="<button type = 'button' onclick = 'openTimeSlot()'>Open Time Slots</button>";
+    
+    output+="<br><br>";
+    output+="<button type = 'button' onclick = 'deleteSchedule()'>Delete Schedule</button>";
+	
+	document.getElementById("panelPrint").innerHTML = output;
+}
