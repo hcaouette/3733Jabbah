@@ -32,7 +32,7 @@ public class CreateSchedule implements RequestStreamHandler {
      *
      * @throws Exception
      */
-    boolean createSchedule(String accessCode,String startTime,String endTime,int timeSlotLength,Date startDate,Date endDate) throws Exception {
+    boolean createSchedule(String accessCode, String startTime, String endTime, int timeSlotLength, Date startDate, Date endDate) throws Exception {
         if (logger != null) { logger.log("in createSchedule"); }
         SchedulesDAO dao = new SchedulesDAO();
 
@@ -44,7 +44,7 @@ public class CreateSchedule implements RequestStreamHandler {
         } else {
             //wont update schedule if one exists with the same info,
            // return dao.updateSchedule(createdSchedule);
-        	return createSchedule(accessCode, startTime, endTime, timeSlotLength, startDate, endDate);
+            return createSchedule(accessCode, startTime, endTime, timeSlotLength, startDate, endDate);
         }
     }
 

@@ -10,22 +10,22 @@ public class DatabaseUtil {
 	public final static String rdsMySqlDatabaseUrl = "calendardb.cakzqx9tyagh.us-east-2.rds.amazonaws.com";
 	public final static String dbUsername = "JabbahAdmin";
 	public final static String dbPassword = "Zefald62";
-		
+
 	public final static String jdbcTag = "jdbc:mysql://";
 	public final static String rdsMySqlDatabasePort = "3306";
 	public final static String multiQueries = "?allowMultiQueries=true";
-	   
+
 	public final static String dbName = "innodb";    // default created from MySQL WorkBench
 
 	// pooled across all usages.
 	static Connection conn;
- 
+
 	/**
 	 * Singleton access to DB connection to share resources effectively across multiple accesses.
 	 */
 	protected static Connection connect() throws Exception {
 		if (conn != null) { return conn; }
-		
+
 		try {
 			//System.out.println("start connecting......");
 			Class.forName("com.mysql.jdbc.Driver");
