@@ -42,23 +42,15 @@ function handleClick(e) {
     }
   };
 }
-</script>
+</script></head><body>
 
-  <title>Jabbah-Cal</title>
-  <meta charset="utf-8">
-  <link rel="stylesheet" type="text/css" href="style.css">
-  <script src="script.js"></script>
-</head>
-<body onload="firstLoad()">
-  <div class="layout">
-  <!--<div class="Header">Welcome to the Jabbah-cal</div>-->
-    <div class="Panel">
-        <div id="panelPrint"></div>
-    </div>
-    <div class="Cal">
-        <div id="tablePrint"></div>
-    </div>
-  </div>
+<h1>Request to add values </h1>
+
+<form name="addForm" method="post" name="addValues">
+  <input name="arg1" value="" /><input name="arg2" value="" /><input name="result" readonly/>
+  <input type="button" value="Submit"  onClick="JavaScript:handleClick(this)">
+</form>
+
 
 </body>
 </html>
