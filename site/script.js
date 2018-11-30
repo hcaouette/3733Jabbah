@@ -62,8 +62,8 @@ function openViewPanel(){
 function openCreateMenu(){
     let output = "";
     output+="<p>Enter a starting and ending date:</p>";
-    output+="<textarea id='createDate' rows='2' cols='20' placeholder='mm/dd/yy'></textarea>";
-    output+="<textarea id='endDate' rows='2' cols='20' placeholder='mm/dd/yy'></textarea><br>";
+    output+="<textarea id='createDate' rows='2' cols='20' placeholder='mm/dd/yyyy'></textarea>";
+    output+="<textarea id='endDate' rows='2' cols='20' placeholder='mm/dd/yyyy'></textarea><br>";
     output+="<br><p>Enter a starting and ending time of day:</p>";
     output+="<textarea id='startTime' rows='2' cols='20' placeholder='hh:mm'></textarea>";
     output+="<textarea id='endTime' rows='2' cols='20' placeholder='hh:mm'></textarea>";
