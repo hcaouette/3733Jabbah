@@ -72,7 +72,7 @@ function openCreateMenu(){
     output+="";
     output+="<br><button type='button' onclick='createSchedule()'>Create Schedule</button>";
     document.getElementById("panelPrint").innerHTML = output;
-    console.log("we gottem, boys");
+//    console.log("we gottem, boys");
 }
 function createSchedule(){
     //name creation is handled on the backend so it can be checked against the server
@@ -83,8 +83,47 @@ function createSchedule(){
     let meetingInterval = document.getElementById("meetingInterval").value;
     //console.log(startDay, endDay, startTime, endTime, meetingInterval);
     /*JSON stuff*/
-    let subObj = {firstDay:startDay, lastDay:endDay, startTime:startTime, endTime:endTime, Interval:meetingInterval};
-    let subJSON = JSON.stringify(subObj);
+      var form = document.addForm;
+    var arg1 = "qwertyuiopO";
+    var arg2 = startDay;
+    var arg3 = endDay;
+    var arg4 = startTime;
+    var arg5 = endTime;
+    var arg6 = meetingInterval;
+
+    var data = {};
+    data["arg1"] = "qwertyuiopO";
+    data["arg2"] = arg2;
+    data["arg3"] = arg3;
+    data["arg4"] = arg4;
+    data["arg5"] = arg5;
+    data["arg6"] = arg6;
+
+    var js = JSON.stringify(data);
+    console.log("JS:" + js);
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", add_url, true);
+
+  // send the collected data as JSON
+  xhr.send(js);
+
+    // This will process results and update HTML as appropriate. 
+    xhr.onloadend = function () {
+      console.log(xhr);
+      console.log(xhr.request);
+      if (xhr.readyState == XMLHttpRequest.DONE) {
+        console.log ("XHR:" + xhr.responseText);
+        processResponse("qwertyuiopO", arg2, arg3, arg4, arg5, arg6);
+      } else {
+        processResponse("N/A", arg2, arg3, arg4, arg5, arg6);
+      }
+    };
+    /*Lambda stuff*/
+    /**
+     * */
+
+//    console.log("creating");
+    loadCal();
     /*Lambda stuff*/
     /**
      * */

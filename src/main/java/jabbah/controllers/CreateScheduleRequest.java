@@ -1,6 +1,6 @@
 package jabbah.controllers;
 
-import java.sql.*;
+import java.sql.Date;
 
 public class CreateScheduleRequest {
     String name;
@@ -10,19 +10,20 @@ public class CreateScheduleRequest {
     Date startDate;
     Date endDate;
     String accessCode;
-    
-    public CreateScheduleRequest (String n, String sT, String eT, int t, Date sD, Date eD, String code) {
-        this.name = n;
+
+    public CreateScheduleRequest (String n, String sT, String eT, int t, Date sD, Date eD) {
+        //this.name = n;
         this.startTime = sT;
         this.endTime = eT;
         this.timeSlotLength = t;
         this.startDate = sD;
         this.endDate = eD;
-        this.accessCode = code;
+        this.accessCode = n;
     }
-    
+
+    @Override
     public String toString() {
-        return "Create(" + name + "," + startTime + "," +
+        return "Create(" + accessCode + "," + startTime + "," +
     endTime + "," + timeSlotLength + "," + startDate + "," + endDate + ")";
     }
 

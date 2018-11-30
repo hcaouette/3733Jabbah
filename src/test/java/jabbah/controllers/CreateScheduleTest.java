@@ -28,7 +28,7 @@ public class CreateScheduleTest {
         CreateScheduleHandler handler = new CreateScheduleHandler();
 
         int rnd = (int) (Math.random() * 1000000);
-        CreateScheduleRequest ar = new CreateScheduleRequest(null, null, null, rnd, null, null, null);
+        CreateScheduleRequest ar = new CreateScheduleRequest(null, null, null, rnd, null, null);
 
         String ccRequest = new Gson().toJson(ar);
         String jsonRequest = new Gson().toJson(new PostRequest(ccRequest));
@@ -46,7 +46,7 @@ public class CreateScheduleTest {
 
         // now change
 
-        ar = new CreateScheduleRequest(jsonRequest, jsonRequest, jsonRequest, rnd, null, null, jsonRequest);
+        ar = new CreateScheduleRequest(jsonRequest, jsonRequest, jsonRequest, rnd, null, null);
 
         ccRequest = new Gson().toJson(ar);
         jsonRequest = new Gson().toJson(new PostRequest(ccRequest));
