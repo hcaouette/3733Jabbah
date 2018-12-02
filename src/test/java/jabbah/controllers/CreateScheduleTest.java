@@ -25,10 +25,10 @@ public class CreateScheduleTest {
 
     @Test
     public void testCreateAndChangeSchedule() throws IOException {
-        CreateScheduleHandler handler = new CreateScheduleHandler();
+        CreateSchedule handler = new CreateSchedule();
 
         int rnd = (int) (Math.random() * 1000000);
-        CreateScheduleRequest ar = new CreateScheduleRequest(null, null, null, rnd, null, null);
+        CreateScheduleRequest ar = new CreateScheduleRequest(null, null, null, rnd, null, null, null, rnd, null);
 
         String ccRequest = new Gson().toJson(ar);
         String jsonRequest = new Gson().toJson(new PostRequest(ccRequest));
@@ -46,7 +46,7 @@ public class CreateScheduleTest {
 
         // now change
 
-        ar = new CreateScheduleRequest(jsonRequest, jsonRequest, jsonRequest, rnd, null, null);
+        ar = new CreateScheduleRequest(jsonRequest, jsonRequest, jsonRequest, rnd, null, null, jsonRequest, rnd, jsonRequest);
 
         ccRequest = new Gson().toJson(ar);
         jsonRequest = new Gson().toJson(new PostRequest(ccRequest));

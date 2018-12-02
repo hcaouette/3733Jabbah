@@ -2,11 +2,65 @@
 var add_url = "https://8pzpcdfj7l.execute-api.us-east-2.amazonaws.com/First/calendar";
 
 function processResponse(arg1, arg2, arg3, arg4, arg5, arg6) {
-  // Can grab any DIV or SPAN HTML element and can then manipulate its
-  // contents dynamically via javascript
-//  console.log("result:");
-//  console.log(arg1);
+    //need the following parameters:
+    //timeslotlength must be equal to 10, 15, 20, 30, or 60
+    //startTime and endTime must be in format HH:MM, and start time must be before endtime
+    //startDate and endDate must be in format, and startDate must be before endDate
+    //since accessCode will be generated, it should handle itself
+    /*&& (
+            req.getTimeSlotLength() == 10 || req.getTimeSlotLength() == 15 || req.getTimeSlotLength() == 20 || req.getTimeSlotLength() == 30 || req.getTimeSlotLength() == 60) &&
+            bothTimesValid && datesValid
+            
+            //test to see start and end time are valid:
+            boolean bothTimesValid = false;
+            boolean startTimeLengthValid = (req.getStartTime().length() == 5);
+            boolean startTimeContentsValid = true;
+            if (startTimeLengthValid) { //if proper length, check if contents
+                //are valid
+                for (int i=0; i<5; i++) {
+                    char cvalid = req.getStartTime().charAt(i);
+                    if (i == 2 && cvalid != ':') {
+                        startTimeContentsValid = false;
+                    }
+                    else if (i != 2 && !Character.isDigit(cvalid)) {
+                        startTimeContentsValid = false;
+                    }
+                }
+            }
+            boolean endTimeLengthValid = (req.getEndTime().length() == 5);
+            boolean endTimeContentsValid = true;
+            if (endTimeLengthValid) { //if proper length, check if contents
+                //are valid
+                for (int i=0; i<5; i++) {
+                    char cvalid = req.getEndTime().charAt(i);
+                    if (i == 2 && cvalid != ':') {
+                        endTimeContentsValid = false;
+                    }
+                    else if (i != 2 && !Character.isDigit(cvalid)) {
+                        endTimeContentsValid = false;
+                    }
+                }
+            }
+            //if both start and end time have valid formatting and contents, make sure
+            //that the start time is after the end time and the timeslots are evenly divisible between them
+            if (startTimeContentsValid && startTimeLengthValid && endTimeContentsValid && endTimeLengthValid) {
+                int startTimeHour = (Character.getNumericValue(req.getStartTime().charAt(0)) * 10) + Character.getNumericValue(req.getStartTime().charAt(0));
+                int endTimeHour = (Character.getNumericValue(req.getEndTime().charAt(0)) * 10) + Character.getNumericValue(req.getEndTime().charAt(0));
+                int startTimeMin = (Character.getNumericValue(req.getStartTime().charAt(3)) * 10) + Character.getNumericValue(req.getStartTime().charAt(3));
+                int endTimeMin = (Character.getNumericValue(req.getEndTime().charAt(3)) * 10) + Character.getNumericValue(req.getEndTime().charAt(3));
+                int minDifference = endTimeMin - startTimeMin;
+                if (startTimeHour > endTimeHour && (minDifference % req.getTimeSlotLength() == 0)) {
+                    bothTimesValid = true;
+                }
+                else if (startTimeHour == endTimeHour && (minDifference % req.getTimeSlotLength() == 0) && minDifference > 0) {
+                    bothTimesValid = true;
+                }
+            }
 
+            //now test to make sure start date and end date are valid dates,
+            //and ensure that startDate is before endDate
+
+            boolean datesValid = (req.getStartDate().getTime() < req.getEndDate().getTime());*/
   //var computation = js["value"];
 
   // Update computation result
@@ -114,13 +168,15 @@ function openViewPanel(){
 function openCreateMenu(){
     let output = "";
     output+="<p>Enter a starting and ending date:</p>";
-    output+="<textarea id='createDate' rows='2' cols='20' placeholder='mm/dd/yyyy'></textarea>";
-    output+="<textarea id='endDate' rows='2' cols='20' placeholder='mm/dd/yyyy'></textarea><br>";
+    output+="<textarea id='createDate' rows='2' cols='20' placeholder='yyyy-mm-dd'></textarea>";
+    output+="<textarea id='endDate' rows='2' cols='20' placeholder='yyyy-mm-dd'></textarea><br>";
     output+="<br><p>Enter a starting and ending time of day:</p>";
     output+="<textarea id='startTime' rows='2' cols='20' placeholder='hh:mm'></textarea>";
     output+="<textarea id='endTime' rows='2' cols='20' placeholder='hh:mm'></textarea>";
     output+="<br><p>Enter a time interval in minutes for meetings:</p>";
     output+="<textarea id='meetingInterval' rows='2' cols='20' placeholder='30'></textarea><br>";
+    output+="<br><p>Enter a name for your schedule: (20 characters or less)</p>";
+    output+="<textarea id='scheduleName' rows='2' cols='20' placeholder='My Schedule'></textarea><br>";
     output+="";
     output+="<br><button type='button' onclick='createSchedule()'>Create Schedule</button>";
     document.getElementById("panelPrint").innerHTML = output;
@@ -133,6 +189,7 @@ function createSchedule(){
     let startTime = document.getElementById("startTime").value;
     let endTime = document.getElementById("endTime").value;
     let meetingInterval = document.getElementById("meetingInterval").value;
+    let name = document.getElementById("scheduleName").value;
     //console.log(startDay, endDay, startTime, endTime, meetingInterval);
     /*JSON stuff*/
       var form = document.addForm;
@@ -142,14 +199,19 @@ function createSchedule(){
     var arg4 = startTime;
     var arg5 = endTime;
     var arg6 = meetingInterval;
+    var arg7 = name;
 
     var data = {};
-    data["arg1"] = "qwertyuiopO";
-    data["arg2"] = arg2;
-    data["arg3"] = arg3;
-    data["arg4"] = arg4;
-    data["arg5"] = arg5;
-    data["arg6"] = arg6;
+    data["orgAccessCode"] = arg1; //have to be able to find organizer, (user),
+    //and take their fields for the random access codes
+    data["startTime"] = arg4;
+    data["endTime"] = arg5;
+    data["startDate"] = arg2;
+    data["endDate"] = arg3;
+    data["timeslotDuration"] = arg6;
+    data["name"] = arg7;
+    data["timeCreated"] = Math.floor(Date.now()); //get milliseconds since 1970
+    data["initialParticipantAccessCode"] = "qwertyuiopP"
 
     var js = JSON.stringify(data);
     console.log("JS:" + js);
