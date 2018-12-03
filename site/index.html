@@ -1,5 +1,6 @@
 <html><head><script type="text/javascript">
-var add_url = "https://8pzpcdfj7l.execute-api.us-east-2.amazonaws.com/First/calendar";
+var add_url = "https://8pzpcdfj7l.execute-api.us-east-2.amazonaws.com/First/calendar"; //createSchedule
+var delete_url = "https://8pzpcdfj7l.execute-api.us-east-2.amazonaws.com/First/calendar"; //deleteSchedule
 
 function processResponse(arg1, arg2, arg3, arg4, arg5, arg6) {
     //need the following parameters:
@@ -65,44 +66,6 @@ function processResponse(arg1, arg2, arg3, arg4, arg5, arg6) {
 
   // Update computation result
   //document.addForm.result.value = computation
-}
-
-function handleClick(e) {
-  var form = document.addForm;
-  var arg1 = "qwertyuiopO";
-  var arg2 = form.arg2.value;
-  var arg3 = form.arg3.value;
-  var arg4 = form.arg4.value;
-  var arg5 = form.arg5.value;
-  var arg6 = form.arg6.value;
-
-  var data = {};
-  data["arg1"] = "qwertyuiopO";
-  data["arg2"] = arg2;
-  data["arg3"] = arg3;
-  data["arg4"] = arg4;
-  data["arg5"] = arg5;
-  data["arg6"] = arg6;
-
-  var js = JSON.stringify(data);
-  console.log("JS:" + js);
-  var xhr = new XMLHttpRequest();
-  xhr.open("POST", add_url, true);
-
-  // send the collected data as JSON
-  xhr.send(js);
-
-  // This will process results and update HTML as appropriate. 
-  xhr.onloadend = function () {
-    console.log(xhr);
-    console.log(xhr.request);
-    if (xhr.readyState == XMLHttpRequest.DONE) {
-      console.log ("XHR:" + xhr.responseText);
-      processResponse("qwertyuiopO", arg2, arg3, arg4, arg5, arg6);
-    } else {
-      processResponse("N/A", arg2, arg3, arg4, arg5, arg6);
-    }
-  };
 }
 function firstLoad(){
     let output = "<label for='loginText'>Enter your access code here, if you've logged in before, or have an access code for your organizer's schedule</label>";
@@ -239,6 +202,45 @@ function createSchedule(){
 //    console.log("creating");
     loadCal();
 }
+
+function processDeleteResponse(result) {
+    // Can grab any DIV or SPAN HTML element and can then manipulate its
+    // contents dynamically via javascript
+    console.log("deleted :" + result);
+    
+    refreshSchedulesList();
+  }
+
+  function requestDelete(orgAccessCode) {
+     if (confirm("Request to delete " + orgAccessCode)) {
+       processDelete(orgAccessCode);
+     }
+  }
+
+  function processDelete(orgAccessCode) {
+    var data = {};
+    data["orgAccessCode"] = orgAccessCode;
+
+    var js = JSON.stringify(data);
+    console.log("JS:" + js);
+    var xhr = new XMLHttpRequest();
+    xhr.open("DELETE", delete_url, true);
+
+    // send the collected data as JSON
+    xhr.send(js);
+
+    // This will process results and update HTML as appropriate. 
+    xhr.onloadend = function () {
+      console.log(xhr);
+      console.log(xhr.request);
+      if (xhr.readyState == XMLHttpRequest.DONE) {
+        console.log ("XHR:" + xhr.responseText);
+        processDeleteResponse(xhr.responseText);
+      } else {
+        processDeleteResponse("N/A");
+      }
+    };
+  }
 
 function newParticipant(){
     let output = "<p> User: Participant </p>" 
