@@ -18,11 +18,13 @@ public class TimeSlotDAO {
     	}
 	}
 	
-	public TimeSlot getTimeSlot(String time) throws Exception{
+	public TimeSlot getTimeSlot(String time, Date day, String id) throws Exception{
 		try {
 			TimeSlot slot = null;
-	        PreparedStatement ps = conn.prepareStatement("SELECT * FROM TimeSlot WHERE startTime=?;");
+	        PreparedStatement ps = conn.prepareStatement("SELECT * FROM TimeSlot WHERE startTime=? AND idDays = ? AND orgAccessCode =?;");
 	        ps.setString(1,  time);
+	        ps.setDate(2, day);
+	        ps.setString(3, id);
 	        ResultSet resultSet = ps.executeQuery();
 	           
 	        while (resultSet.next()) {
@@ -40,8 +42,10 @@ public class TimeSlotDAO {
 	
 	public boolean deleteTimeSlot(TimeSlot slot) throws Exception {
 		try {
-			PreparedStatement ps = conn.prepareStatement("DELETE FROM TimeSlot WHERE startTime=?;");
+			PreparedStatement ps = conn.prepareStatement("DELETE FROM TimeSlot WHERE startTime=? AND idDays=? AND orgAccessCode=?;");
 			ps.setString(1, slot.getTime());
+			ps.setDate(2, slot.getDate());
+			ps.setString(3, slot.getScheduleID());
 			int numAffected = ps.executeUpdate();
 			
 			return (numAffected == 1);
@@ -53,17 +57,21 @@ public class TimeSlotDAO {
 	
 	public boolean updateTimeSlot(TimeSlot slot) throws Exception {
         try {
-        	String query = "UPDATE TimeSlot SET isOpen=? WHERE startTime=?;";
+        	String query = "UPDATE TimeSlot SET isOpen=? WHERE startTime=? AND idDays=? AND orgAccessCode=?;";
         	PreparedStatement ps = conn.prepareStatement(query);
             ps.setBoolean(1, slot.open());
             ps.setString(2, slot.getTime());
+            ps.setDate(3, slot.getDate());
+            ps.setString(4, slot.getScheduleID());
             int numAffected = ps.executeUpdate();
             ps.close();
             
-        	query = "UPDATE TimeSlot SET participantID=? WHERE startTime=?;";
+        	query = "UPDATE TimeSlot SET participantID=? WHERE startTime=? AND idDays=? AND orgAccessCode=?;";
         	ps = conn.prepareStatement(query);
             ps.setString(1, slot.getParticipant().getCode());
             ps.setString(2, slot.getTime());
+            ps.setDate(3, slot.getDate());
+            ps.setString(4, slot.getScheduleID());
             int numAffected2 = ps.executeUpdate();
             ps.close();
             
@@ -73,9 +81,9 @@ public class TimeSlotDAO {
         }
     }
     
-    public boolean addTimeSlot(TimeSlot slot, Date day, String ScheduleID) throws Exception {
+    public boolean addTimeSlot(TimeSlot slot) throws Exception {
         try {
-            PreparedStatement ps = conn.prepareStatement("SELECT * FROM TimeSlot WHERE startTime = ?;");
+            PreparedStatement ps = conn.prepareStatement("SELECT * FROM TimeSlot WHERE startTime = ? AND idDays=? AND orgAccessCode=?;");
             ps.setString(1, slot.getTime());
             ResultSet resultSet = ps.executeQuery();
             
@@ -87,13 +95,13 @@ public class TimeSlotDAO {
                 return false;
             }
 
-            ps = conn.prepareStatement("INSERT INTO TimeSlot (startTime, duration, participantID, isOpen, idDays, ScheduleID) values(?,?,?,?,?,?);");
+            ps = conn.prepareStatement("INSERT INTO TimeSlot (startTime, duration, participantID, isOpen, idDays, orgAccessCode) values(?,?,?,?,?,?);");
             ps.setString(1,  slot.getTime());
             ps.setInt(2,  slot.getDuration());
             ps.setString(3, slot.getParticipant().getCode());
             ps.setBoolean(4,  slot.open());
-            ps.setDate(5, day);
-            ps.setString(6,  ScheduleID);
+            ps.setDate(5, slot.getDate());
+            ps.setString(6,  slot.getScheduleID());
             ps.execute();
             return true;
 
@@ -126,8 +134,10 @@ public class TimeSlotDAO {
 	private TimeSlot generateTimeSlot(ResultSet resultSet) throws Exception{
 		int duration = resultSet.getInt("duration");
 		String startTime = resultSet.getString("startTime");
+		Date day = resultSet.getDate("idDays");
+		String id = resultSet.getString("orgAccessCode");
 		
-		return new TimeSlot(startTime, duration);
+		return new TimeSlot(startTime, duration, day, id);
 	}
 
 }

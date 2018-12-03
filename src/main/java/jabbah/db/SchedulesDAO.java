@@ -42,7 +42,7 @@ public class SchedulesDAO {
     
     public boolean deleteSchedule(Schedule schedule) throws Exception {
         try {
-            PreparedStatement ps = conn.prepareStatement("DELETE FROM Schedules WHERE orgAccessCode = ?;");
+            PreparedStatement ps = conn.prepareStatement("DELETE FROM Schedules WHERE orgAccessCode=?;");
             ps.setString(1, schedule.getOrgAccessCode());
             int numAffected = ps.executeUpdate();
             ps.close();
@@ -72,7 +72,7 @@ public class SchedulesDAO {
     
     public boolean addSchedule(Schedule schedule) throws Exception {
         try {
-            PreparedStatement ps = conn.prepareStatement("SELECT * FROM Schedules WHERE orgAccessCode = ?;");
+            PreparedStatement ps = conn.prepareStatement("SELECT * FROM Schedules WHERE orgAccessCode=?;");
             ps.setString(1, schedule.getOrgAccessCode());
             ResultSet resultSet = ps.executeQuery();
             
@@ -83,13 +83,16 @@ public class SchedulesDAO {
                 return false;
             }
 
-            ps = conn.prepareStatement("INSERT INTO Schedules (name,startTime,endTime,timeSlotLength,startDate,endDate) values(?,?,?,?,?,?);");
+            ps = conn.prepareStatement("INSERT INTO Schedules (orgAccessCode,startTime,endTime,timeSlotLength,startDate,endDate,name,timeCreated,initialParticipantAccessCode) values(?,?,?,?,?,?,?,?,?);");
             ps.setString(1,  schedule.getOrgAccessCode());
             ps.setString(2,  schedule.getStartTime());
             ps.setString(3,	 schedule.getEndTime());
             ps.setInt(4, schedule.getTimeSlotLength());
             ps.setDate(5, schedule.getStartDate());
             ps.setDate(6, schedule.getEndDate());
+            ps.setString(7, schedule.getName());
+            ps.setLong(7, schedule.getTimeCreated());
+            ps.setString(8, schedule.getInitialCode());
             return true;
 
         } catch (Exception e) {
@@ -114,7 +117,7 @@ public class SchedulesDAO {
             return allSchedules;
 
         } catch (Exception e) {
-            throw new Exception("Failed in getting books: " + e.getMessage());
+            throw new Exception("Failed in getting schedules: " + e.getMessage());
         }
     }
     
@@ -122,9 +125,12 @@ public class SchedulesDAO {
         String name  = resultSet.getString("name");
         String startTime = resultSet.getString("startTime");
         String endTime = resultSet.getString("startTime");
-        int timeSlotLength = resultSet.getInt("TimeSlotLength");
+        int timeSlotLength = resultSet.getInt("timeSlotLength");
         Date startDate = resultSet.getDate("startDate");
         Date endDate = resultSet.getDate("endDate");
-        return new Schedule (name,startTime,endTime,timeSlotLength,startDate,endDate);
+        String accessCode = resultSet.getString("orgAccessCode");
+        long created = resultSet.getLong("timeCreated");
+        String initialCode = resultSet.getString("inititalParticipantAccessCode");
+        return new Schedule (name,startTime,endTime,timeSlotLength,startDate,endDate, accessCode, created, initialCode);
     }
 }

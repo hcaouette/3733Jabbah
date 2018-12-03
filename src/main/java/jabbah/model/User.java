@@ -7,10 +7,14 @@ public class User {
     String accessCode;
     String permissions;
     
-    public User(String name, String accessCode) {
+    // to know which schedule is associated with this user
+    String orgAccessCode; 
+    
+    public User(String name, String accessCode, String id) {
     	this.name = name;
     	this.accessCode = accessCode;
     	setPermission(accessCode);
+    	this.orgAccessCode = id;
     }
     /*
     public User(String name, String orgPermission) {//organizers
@@ -84,13 +88,14 @@ public class User {
     public String getName() {
     	return this.name;
     }
-    
     public String getCode() {
     	return this.accessCode;
     }
-    
     public String getPermission() {
     	return this.permissions;
+    }
+    public String getScheduleID() {
+    	return this.orgAccessCode;
     }
     
     //setter function

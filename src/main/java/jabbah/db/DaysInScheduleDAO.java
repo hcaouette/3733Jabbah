@@ -18,12 +18,13 @@ public class DaysInScheduleDAO {
     	}
 	}
 	
-    public DaysInSchedule getDay(Date day) throws Exception {
+    public DaysInSchedule getDay(Date day, String id) throws Exception {
         
         try {
             DaysInSchedule date = null;
-            PreparedStatement ps = conn.prepareStatement("SELECT * FROM DaysInSchedule WHERE idDays=?;");
+            PreparedStatement ps = conn.prepareStatement("SELECT * FROM DaysInSchedule WHERE idDays=? AND orgAccessCode =?;");
             ps.setDate(1,  day);
+            ps.setString(2, id);
             ResultSet resultSet = ps.executeQuery();
             
             while (resultSet.next()) {
@@ -42,8 +43,9 @@ public class DaysInScheduleDAO {
     
     public boolean deleteDay(DaysInSchedule day) throws Exception {
         try {
-            PreparedStatement ps = conn.prepareStatement("DELETE FROM DaysInSchedule WHERE idDays = ?;");
+            PreparedStatement ps = conn.prepareStatement("DELETE FROM DaysInSchedule WHERE idDays=? AND orgAccessCode=?;");
             ps.setDate(1, day.getDate());
+            ps.setString(2, day.getScheduleID());
             int numAffected = ps.executeUpdate();
             ps.close();
             
@@ -54,10 +56,11 @@ public class DaysInScheduleDAO {
         }
     }
     
-    public boolean addDay(DaysInSchedule day, String ScheduleID) throws Exception {
+    public boolean addDay(DaysInSchedule day) throws Exception {
         try {
-            PreparedStatement ps = conn.prepareStatement("SELECT * FROM DaysInSchedule WHERE idDays = ?;");
+            PreparedStatement ps = conn.prepareStatement("SELECT * FROM DaysInSchedule WHERE idDays=? AND orgAccessCode=?;");
             ps.setDate(1, day.getDate());
+            ps.setString(2, day.getScheduleID());
             ResultSet resultSet = ps.executeQuery();
             
             // already present?
@@ -67,9 +70,9 @@ public class DaysInScheduleDAO {
                 return false;
             }
 
-            ps = conn.prepareStatement("INSERT INTO DaysInSchedule (idDays,ScheduleID) values(?,?);");
+            ps = conn.prepareStatement("INSERT INTO DaysInSchedule (idDays,orgAccessCode) values(?,?);");
             ps.setDate(1,  day.getDate());
-            ps.setString(2,  ScheduleID);
+            ps.setString(2,  day.getScheduleID());
             ps.execute();
             return true;
 
@@ -101,6 +104,7 @@ public class DaysInScheduleDAO {
     
     private DaysInSchedule generateDate(ResultSet resultSet) throws Exception {
         Date day  = resultSet.getDate("idDays");
-        return new DaysInSchedule(day);
+        String id = resultSet.getString("orgAccessCode");
+        return new DaysInSchedule(day, id);
     }
 }
