@@ -10,29 +10,30 @@ public class Schedule {
     Date startDate;
     Date endDate;
     String orgAccessCode;
+  
     String initialParticipantAccessCode;
     long timeCreated;
   //  ArrayList<User> participantList;
     //User scheduleOrganizer;
     //ArrayList<DaysInSchedule> dayList;
 
-    public Schedule (String n, String sT, String eT, int t, Date sD, Date eD, String name, long tc, String p) {
+    public Schedule (String code, String sT, String eT, int t, Date sD, Date eD, String name, long tc, String p) {
         this.name = name;
         this.startTime = sT;
         this.endTime = eT;
         this.timeSlotLength = t;
         this.startDate = sD;
         this.endDate = eD;
-        this.orgAccessCode = n;
+        this.orgAccessCode = code;
         this.timeCreated = tc;
         this.initialParticipantAccessCode = p;
 
         //create new objects for organizer and participants:
-     //   this.scheduleOrganizer = new User();
-  //      this.participantList = new ArrayList<User>();
+        //this.scheduleOrganizer = new User();
+        //this.participantList = new ArrayList<User>();
 
         //generate a new list of days in the schedule
-        //and timeslots for each day
+        //and time slots for each day
         //this.dayList = new ArrayList<DaysInSchedule>();
 
     }
@@ -91,8 +92,9 @@ public class Schedule {
 
 	public void setEndDate(Date endDate) {
 		this.endDate = endDate;
-	}
-/*
+  }
+  
+  /*
 	public User getScheduleOrganizer() {
 		return scheduleOrganizer;
 	}
@@ -100,7 +102,7 @@ public class Schedule {
 	public void setScheduleOrganizer(User scheduleOrganizer) {
 		this.scheduleOrganizer = scheduleOrganizer;
 	}
-*/
+  */
     public long getTimeCreated() {
         return timeCreated;
     }

@@ -41,7 +41,7 @@ public class UserDAO {
 	
     public boolean deleteUser(User u) throws Exception {
         try {
-            PreparedStatement ps = conn.prepareStatement("DELETE FROM User WHERE accessCode = ?;");
+            PreparedStatement ps = conn.prepareStatement("DELETE FROM User WHERE accessCode=?;");
             ps.setString(1, u.getCode());
             int numAffected = ps.executeUpdate();
             ps.close();
@@ -68,7 +68,7 @@ public class UserDAO {
         }
     }
 	
-	public boolean addUser(User u, String scheduleID) throws Exception{
+	public boolean addUser(User u) throws Exception{
 		try {
 			PreparedStatement ps = conn.prepareStatement("SELECT * FROM User WHERE accessCode=?;");
 			ps.setString(1, u.getCode());
@@ -81,11 +81,11 @@ public class UserDAO {
 				return false;
 			}
 			
-			ps = conn.prepareStatement("INSERT INTO User (name, accessCode, permissions, ScheduleID) values(?,?,?,?);");
+			ps = conn.prepareStatement("INSERT INTO User (name, accessCode, permissions, orgAccessCode) values(?,?,?,?);");
 			ps.setString(1, u.getName());
 			ps.setString(2, u.getCode());
 			ps.setString(3,  u.getPermission());
-			ps.setString(4, scheduleID);
+			ps.setString(4, u.getScheduleID());
 			ps.execute();
 			return true;
 			
@@ -119,7 +119,8 @@ public class UserDAO {
 	private User generateUser(ResultSet resultSet) throws Exception{
 		String name = resultSet.getString("name");
 		String code = resultSet.getString("accessCode");
+		String id = resultSet.getString("orgAccessCode");
 		
-		return new User(name, code);		
+		return new User(name, code, id);		
 	}
 }

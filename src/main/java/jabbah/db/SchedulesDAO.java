@@ -46,7 +46,7 @@ public class SchedulesDAO {
 
     public boolean deleteSchedule(Schedule schedule) throws Exception {
         try {
-            PreparedStatement ps = conn.prepareStatement("DELETE FROM Schedules WHERE orgAccessCode = ?;");
+            PreparedStatement ps = conn.prepareStatement("DELETE FROM Schedules WHERE orgAccessCode=?;");
             ps.setString(1, schedule.getOrgAccessCode());
             int numAffected = ps.executeUpdate();
             ps.close();
@@ -82,7 +82,7 @@ public class SchedulesDAO {
 
     public boolean addSchedule(Schedule schedule) throws Exception {
         try {
-            PreparedStatement ps = conn.prepareStatement("SELECT * FROM Schedules WHERE orgAccessCode = ?;");
+            PreparedStatement ps = conn.prepareStatement("SELECT * FROM Schedules WHERE orgAccessCode=?;");
             ps.setString(1, schedule.getOrgAccessCode());
             ResultSet resultSet = ps.executeQuery();
 
@@ -94,6 +94,7 @@ public class SchedulesDAO {
             }
 
             ps = conn.prepareStatement("INSERT INTO Schedules (orgAccessCode,startTime,endTime,timeSlotLength,startDate,endDate,name,timeCreated,initialParticipantAccessCode) values(?,?,?,?,?,?,?,?,?);");
+
             ps.setString(1, schedule.getOrgAccessCode());
             ps.setString(2, schedule.getStartTime());
             ps.setString(3, schedule.getEndTime());
@@ -128,7 +129,7 @@ public class SchedulesDAO {
             return allSchedules;
 
         } catch (Exception e) {
-            throw new Exception("Failed in getting books: " + e.getMessage());
+            throw new Exception("Failed in getting schedules: " + e.getMessage());
         }
     }
 
@@ -136,7 +137,7 @@ public class SchedulesDAO {
         String accessCode  = resultSet.getString("orgAccessCode");
         String startTime = resultSet.getString("startTime");
         String endTime = resultSet.getString("startTime");
-        int timeSlotLength = resultSet.getInt("TimeSlotLength");
+        int timeSlotLength = resultSet.getInt("timeSlotLength");
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         String startDateString = resultSet.getString("startDate");
         String endDateString = resultSet.getString("endDate");
