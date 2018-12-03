@@ -10,23 +10,23 @@ public class Schedule {
     Date startDate;
     Date endDate;
     String orgAccessCode;
-    long timeCreated;
+  
     String initialParticipantAccessCode;
-    //ArrayList<User> participantList;
+    long timeCreated;
+  //  ArrayList<User> participantList;
     //User scheduleOrganizer;
     //ArrayList<DaysInSchedule> dayList;
 
-    public Schedule (String n, String sT, String eT, int t, Date sD, Date eD, String code, long time, String initialCode) {
-        this.name = n;
+    public Schedule (String code, String sT, String eT, int t, Date sD, Date eD, String name, long tc, String p) {
+        this.name = name;
         this.startTime = sT;
         this.endTime = eT;
         this.timeSlotLength = t;
         this.startDate = sD;
         this.endDate = eD;
         this.orgAccessCode = code;
-        this.timeCreated = time;
-        this.initialParticipantAccessCode = initialCode;
-        //this.initialParticipantAccessCode = generateAccessCode();
+        this.timeCreated = tc;
+        this.initialParticipantAccessCode = p;
 
         //create new objects for organizer and participants:
         //this.scheduleOrganizer = new User();
@@ -92,25 +92,31 @@ public class Schedule {
 
 	public void setEndDate(Date endDate) {
 		this.endDate = endDate;
-	}
-	
-	public long getTimeCreated() {
-		return this.timeCreated;
-	}
-	
-	public String getInitialCode() {
-		return this.initialParticipantAccessCode;
-	}
-	
-	/*
+  }
+  
+  /*
 	public User getScheduleOrganizer() {
 		return scheduleOrganizer;
 	}
 
 	public void setScheduleOrganizer(User scheduleOrganizer) {
 		this.scheduleOrganizer = scheduleOrganizer;
-	}*/
+	}
+  */
+    public long getTimeCreated() {
+        return timeCreated;
+    }
 
+    public void setTimeCreated(long timeCreated) {
+        this.timeCreated = timeCreated;
+    }
 
+    public String getInitialParticipantAccessCode() {
+        return initialParticipantAccessCode;
+    }
+
+    public void setInitialParticipantAccessCode(String partAccessCode) {
+        this.initialParticipantAccessCode = partAccessCode;
+    }
 
 }
