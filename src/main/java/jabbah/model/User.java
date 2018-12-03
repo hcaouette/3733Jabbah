@@ -55,4 +55,27 @@ public class User {
 
         return code;
     }
+    
+    //check accessCode and set the appropriate permission
+    public boolean setPermission(String code) {
+    	return false; //false case would be the accessCode 11th char does not = O, S, nor P
+    }
+    
+    //getter functions
+    public String getName() {
+    	return this.name;
+    }
+    
+    public String getCode() {
+    	return this.accessCode;
+    }
+    
+    public String getPermission() {
+    	return this.permissions;
+    }
+    
+    //setter function
+    public void editName(String newName) {
+    	this.name = newName;
+    }
 }
