@@ -10,20 +10,22 @@ public class Schedule {
     Date startDate;
     Date endDate;
     String orgAccessCode;
-  //  String initialParticipantAccessCode;
+    String initialParticipantAccessCode;
+    long timeCreated;
   //  ArrayList<User> participantList;
-    User scheduleOrganizer;
+    //User scheduleOrganizer;
     //ArrayList<DaysInSchedule> dayList;
 
-    public Schedule (String n, String sT, String eT, int t, Date sD, Date eD) {
-        //this.name = n;
+    public Schedule (String n, String sT, String eT, int t, Date sD, Date eD, String name, long tc, String p) {
+        this.name = name;
         this.startTime = sT;
         this.endTime = eT;
         this.timeSlotLength = t;
         this.startDate = sD;
         this.endDate = eD;
         this.orgAccessCode = n;
-        //this.initialParticipantAccessCode = generateAccessCode();
+        this.timeCreated = tc;
+        this.initialParticipantAccessCode = p;
 
         //create new objects for organizer and participants:
      //   this.scheduleOrganizer = new User();
@@ -90,7 +92,7 @@ public class Schedule {
 	public void setEndDate(Date endDate) {
 		this.endDate = endDate;
 	}
-
+/*
 	public User getScheduleOrganizer() {
 		return scheduleOrganizer;
 	}
@@ -98,7 +100,21 @@ public class Schedule {
 	public void setScheduleOrganizer(User scheduleOrganizer) {
 		this.scheduleOrganizer = scheduleOrganizer;
 	}
+*/
+    public long getTimeCreated() {
+        return timeCreated;
+    }
 
+    public void setTimeCreated(long timeCreated) {
+        this.timeCreated = timeCreated;
+    }
 
+    public String getInitialParticipantAccessCode() {
+        return initialParticipantAccessCode;
+    }
+
+    public void setInitialParticipantAccessCode(String partAccessCode) {
+        this.initialParticipantAccessCode = partAccessCode;
+    }
 
 }

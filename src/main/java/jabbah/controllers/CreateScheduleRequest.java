@@ -1,38 +1,41 @@
 package jabbah.controllers;
 
-import java.sql.Date;
-
 public class CreateScheduleRequest {
     String name;
     String startTime;
     String endTime;
     int timeSlotLength;
-    Date startDate;
-    Date endDate;
-    String accessCode;
+    String startDate; //need to use strings here, as gson Date format is not the same
+    String endDate; //as java.sql.date format!
+    String orgAccessCode;
+    long timeCreated;
+    String initialParticipantAccessCode;
 
-    public CreateScheduleRequest (String n, String sT, String eT, int t, Date sD, Date eD) {
-        //this.name = n;
+    public CreateScheduleRequest (String n, String sT, String eT, int t, String sD, String eD, String name, long timeCreated, String initialParticipantAccessCode) {
+        this.name = name;
         this.startTime = sT;
         this.endTime = eT;
         this.timeSlotLength = t;
         this.startDate = sD;
         this.endDate = eD;
-        this.accessCode = n;
+        this.orgAccessCode = n;
+        this.timeCreated = timeCreated;
+        this.initialParticipantAccessCode = initialParticipantAccessCode;
     }
 
     @Override
     public String toString() {
-        return "Create(" + accessCode + "," + startTime + "," +
-    endTime + "," + timeSlotLength + "," + startDate + "," + endDate + ")";
+        return "Create(" + orgAccessCode + "," + startTime + "," +
+    endTime + "," + timeSlotLength + "," + startDate + "," + endDate + "," +
+                name + "," + timeCreated + "," + initialParticipantAccessCode + ")";
     }
 
 	public String getAccessCode() {
-		return accessCode;
+		return orgAccessCode;
 	}
 
 	public void setAccessCode(String accessCode) {
-		this.accessCode = accessCode;
+		this.orgAccessCode = accessCode;
 	}
 
 	public String getName() {
@@ -67,19 +70,19 @@ public class CreateScheduleRequest {
 		this.timeSlotLength = timeSlotLength;
 	}
 
-	public Date getStartDate() {
+	public String getStartDate() {
 		return startDate;
 	}
 
-	public void setStartDate(Date startDate) {
+	public void setStartDate(String startDate) {
 		this.startDate = startDate;
 	}
 
-	public Date getEndDate() {
+	public String getEndDate() {
 		return endDate;
 	}
 
-	public void setEndDate(Date endDate) {
+	public void setEndDate(String endDate) {
 		this.endDate = endDate;
 	}
 }
