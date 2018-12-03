@@ -6,7 +6,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.sql.Date;
+import java.text.SimpleDateFormat;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -32,19 +32,30 @@ public class CreateSchedule implements RequestStreamHandler {
      *
      * @throws Exception
      */
-    boolean createSchedule(String accessCode, String startTime, String endTime, int timeSlotLength, Date startDate, Date endDate) throws Exception {
+    boolean createSchedule(String accessCode, String startTime, String endTime, int timeSlotLength, String startDate, String endDate, String name, long timeCreated, String intialParticipantAccessCode) throws Exception {
         if (logger != null) { logger.log("in createSchedule"); }
         SchedulesDAO dao = new SchedulesDAO();
 
         // check if present
         Schedule exist = dao.getSchedule(accessCode);
-        Schedule createdSchedule = new Schedule (accessCode, startTime, endTime, timeSlotLength, startDate, endDate);
+        //have to parse strings to dates
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        java.util.Date startDateUtil = null;
+        java.util.Date endDateUtil = null;
+        startDateUtil = sdf.parse(startDate);
+        endDateUtil = sdf.parse(endDate);
+        java.sql.Date startDateParsed = new java.sql.Date(startDateUtil.getTime());
+        java.sql.Date endDateParsed = new java.sql.Date(endDateUtil.getTime());
+        Schedule createdSchedule = new Schedule (accessCode, startTime, endTime, timeSlotLength, startDateParsed, endDateParsed, name, timeCreated, intialParticipantAccessCode);
         if (exist == null) {
             return dao.addSchedule(createdSchedule);
         } else {
             //wont update schedule if one exists with the same info,
-           // return dao.updateSchedule(createdSchedule);
-            return createSchedule(accessCode, startTime, endTime, timeSlotLength, startDate, endDate);
+            //instead try again with a new random access code
+            //return createSchedule(generateAccessCode(), endTime, timeSlotLength, startDate, endDate);
+           //return dao.updateSchedule(createdSchedule);
+            return false;
+            //return createSchedule(accessCode, startTime, endTime, timeSlotLength, startDate, endDate);
         }
     }
 
@@ -97,16 +108,16 @@ public class CreateSchedule implements RequestStreamHandler {
         if (!processed) {
             CreateScheduleRequest req = new Gson().fromJson(body, CreateScheduleRequest.class);
             logger.log(req.toString());
-
             CreateScheduleResponse resp;
+
             try {
-                if (createSchedule(req.getAccessCode(), req.getStartTime(), req.getEndTime(), req.getTimeSlotLength(), req.getStartDate(), req.getEndDate())) {
-                    resp = new CreateScheduleResponse("Successfully defined Schedule:" + req.getAccessCode());
+                if (createSchedule(req.orgAccessCode, req.startTime, req.endTime, req.timeSlotLength, req.startDate, req.endDate, req.name, req.timeCreated, req.initialParticipantAccessCode)) {
+                    resp = new CreateScheduleResponse("Successfully defined Schedule:" + req.orgAccessCode);
                 } else {
-                    resp = new CreateScheduleResponse("Unable to create Schedule: " + req.getAccessCode(), 422);
+                    resp = new CreateScheduleResponse("Unable to create Schedule: " + req.orgAccessCode, 422);
                 }
             } catch (Exception e) {
-                resp = new CreateScheduleResponse("Unable to create Schedule: " + req.getAccessCode() + "(" + e.getMessage() + ")", 403);
+                resp = new CreateScheduleResponse("Unable to create Schedule: " + req.orgAccessCode + "(" + e.getMessage() + ")", 403);
             }
 
             // compute proper response

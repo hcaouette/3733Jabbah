@@ -12,29 +12,30 @@ public class User {
     	this.accessCode = accessCode;
     	setPermission(accessCode);
     }
+  
     /*
     public User(String name, String orgPermission) {//organizers
         //name themselves and have another string showing their
         //permission is explicitly stated
-        this.name = name; 
+        this.name = name;
         this.accessCode = this.generateAccessCode(); //generate an access code for the organizer
         this.permissions = "Organizer";
     }
-    
+
     public User(String name) {//with name parameter only,
-        // constructor will be used for participantss
+        // constructor will be used for participants
         this.name = name;
         this.accessCode = this.generateAccessCode(); //generate a new access code for the participant
         this.permissions = "Participant";
     }
-    
+
     public User(String name, boolean isAdmin) {//with name and isAdmin parameters,
         // constructor will be used for System Admininstrators
         this.name = name;
         this.accessCode = this.generateAccessCode();
         this.permissions = "SysAdmin";
     }*/
-    
+  
     public String generateAccessCode() { //generates a random 10 letter access code
         //with a last letter indicating permissions
         //can adjust this later
@@ -55,10 +56,10 @@ public class User {
         else if (permissions.equals("Participant")) {
             code += "p";
         }
-        //now make sure that there are no collisions with any other 
+        //now make sure that there are no collisions with any other
         //accesscode in the database
         //will move this to DAO
-        
+
         return code;
     }
     
