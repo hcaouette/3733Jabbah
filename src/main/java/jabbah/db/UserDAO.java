@@ -118,12 +118,8 @@ public class UserDAO {
     //fix to include accessCode
 	private User generateUser(ResultSet resultSet) throws Exception{
 		String name = resultSet.getString("name");
-		String permission = resultSet.getString("permissions");
-		if(permission.equals("Organizer"))
-			return new User(name, permission);
-		else if(permission.equals("SysAdmin"))
-			return new User(name, true);
-		else
-			return new User(name);
+		String code = resultSet.getString("accessCode");
+		
+		return new User(name, code);		
 	}
 }

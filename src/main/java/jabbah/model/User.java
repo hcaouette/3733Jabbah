@@ -6,7 +6,14 @@ public class User {
     String name;
     String accessCode;
     String permissions;
-
+    
+    public User(String name, String accessCode) {
+    	this.name = name;
+    	this.accessCode = accessCode;
+    	setPermission(accessCode);
+    }
+  
+    /*
     public User(String name, String orgPermission) {//organizers
         //name themselves and have another string showing their
         //permission is explicitly stated
@@ -27,8 +34,8 @@ public class User {
         this.name = name;
         this.accessCode = this.generateAccessCode();
         this.permissions = "SysAdmin";
-    }
-
+    }*/
+  
     public String generateAccessCode() { //generates a random 10 letter access code
         //with a last letter indicating permissions
         //can adjust this later
@@ -57,8 +64,21 @@ public class User {
     }
     
     //check accessCode and set the appropriate permission
-    public boolean setPermission(String code) {
-    	return false; //false case would be the accessCode 11th char does not = O, S, nor P
+    private boolean setPermission(String code) {
+    	if(code.endsWith("O")) {
+    		this.permissions = "Organizer";
+    		return true;
+    	}
+    	else if(code.endsWith("S")) {
+    		this.permissions = "SysAdmin";
+    		return true;
+    	}
+    	else if(code.endsWith("P")) {
+    		this.permissions = "Participant";
+    		return true;
+    	}
+    	else
+    		return false; //false case would be the accessCode 11th char does not = O, S, nor P
     }
     
     //getter functions
