@@ -12,5 +12,21 @@ public class DaysInSchedule {
         this.day = d;
         this.slots = new ArrayList<TimeSlot>();
     }
+    
+    //getter function
+    public Date getDate() {
+    	return this.day;
+    }
+    
+    public boolean addTimeSlot(TimeSlot slot) {
+    	
+    	for(int i = 0; i < this.slots.size(); i++) {
+    		if (slots.get(i).startTime.equals(slot.startTime))
+    			return false; //slot already exist
+    	}
+    	
+    	this.slots.add(slot);
+    	return true;
+    }
 
 }

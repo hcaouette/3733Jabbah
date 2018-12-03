@@ -4,8 +4,8 @@ import java.util.Random;
 
 public class User {
     String name;
-    String accessCode;
-    String permissions;
+    final String accessCode;
+    final String permissions;
     
     public User(String name, String orgPermission) {//organizers
         //name themselves and have another string showing their
@@ -54,5 +54,28 @@ public class User {
         //will move this to DAO
         
         return code;
+    }
+    
+    //check accessCode and set the appropriate permission
+    public boolean setPermission(String code) {
+    	return false; //false case would be the accessCode 11th char does not = O, S, nor P
+    }
+    
+    //getter functions
+    public String getName() {
+    	return this.name;
+    }
+    
+    public String getCode() {
+    	return this.accessCode;
+    }
+    
+    public String getPermission() {
+    	return this.permissions;
+    }
+    
+    //setter function
+    public void editName(String newName) {
+    	this.name = newName;
     }
 }
