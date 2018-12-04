@@ -14,7 +14,7 @@ public class TimeSlot {
 
     public TimeSlot(String startTime, int duration, Date date, String id) {//with no parameters,
         // constructor will be used for organizers
-        this.isOpen = false;
+        this.isOpen = true;
         this.duration = duration;
         this.participant = null;
         this.startTime = startTime;
