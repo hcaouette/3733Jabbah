@@ -32,6 +32,30 @@ public class SchedulesDAO {
             Schedule schedule = null;
             PreparedStatement ps = conn.prepareStatement("SELECT * FROM Schedules WHERE orgAccessCode=?;");
             ps.setString(1,  orgAccessCode);
+            
+            ResultSet resultSet = ps.executeQuery();
+
+            while (resultSet.next()) {
+                schedule = generateSchedule(resultSet);
+            }
+            resultSet.close();
+            ps.close();
+
+            return schedule;
+
+        } catch (Exception e) {
+        	e.printStackTrace();
+            throw new Exception("Failed in getting schedule: " + e.getMessage());
+        }
+    }
+    
+    public Schedule getScheduleParticipant(String initialParticipantAccessCode) throws Exception {
+
+        try {
+            Schedule schedule = null;
+            PreparedStatement ps = conn.prepareStatement("SELECT * FROM Schedules WHERE initialParticipantAccessCode=?;");
+            ps.setString(1,  initialParticipantAccessCode);
+            
             ResultSet resultSet = ps.executeQuery();
 
             while (resultSet.next()) {

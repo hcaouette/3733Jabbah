@@ -27,7 +27,7 @@ import jabbah.model.User;
 	 * Found gson JAR file from
 	 * https://repo1.maven.org/maven2/com/google/code/gson/gson/2.6.2/gson-2.6.2.jar
 	 */
-	public class CreateUser implements RequestStreamHandler {
+	public class GetSchedule implements RequestStreamHandler {
 
 	    public LambdaLogger logger = null;
 
@@ -35,31 +35,37 @@ import jabbah.model.User;
 	     *
 	     * @throws Exception
 	     */
-	    boolean createUser(String name,String AccessCode,String ScheduleID) throws Exception {
-	        if (logger != null) { logger.log("in createUser"); }
-	        UserDAO dao = new UserDAO();
-
+	    boolean getSchedule(String AccessCode) throws Exception {
+	        if (logger != null) { logger.log("in getUser"); }
+	        SchedulesDAO dao = new SchedulesDAO();
+	        //checks if the accessCode is a parctipant or organizer AccessCode
+	        if(AccessCode.endsWith("O")) {
 	        // check if present
-	        User exist = dao.getUser(AccessCode);
-	        //have to parse strings to dates
-	        User createdUser = new User (name,AccessCode,ScheduleID);
+	        Schedule exist = dao.getSchedule(AccessCode);
 	        if (exist == null) {
-	            return dao.addUser(createdUser);
-	        } else {
-	            //wont update schedule if one exists with the same info,
-	            //instead try again with a new random access code
-	            //return createSchedule(generateAccessCode(), endTime, timeSlotLength, startDate, endDate);
-	           //return dao.updateSchedule(createdSchedule);
 	            return false;
-	            //return createSchedule(accessCode, startTime, endTime, timeSlotLength, startDate, endDate);
+	        } else {
+	            
+	            return true;
+	        }
+	        }
+	        else 
+	        {
+	        Schedule exist = dao.getScheduleParticipant(AccessCode);
+	        if (exist == null) {
+	            return false;
+	        } else {
+	            
+	            return true;
+	        }
 	        }
 	    }
 
 	    @Override
 	    public void handleRequest(InputStream input, OutputStream output, Context context) throws IOException {
 	        logger = context.getLogger();
-	        logger.log("Loading Java Lambda handler to create User");
-
+	        logger.log("Loading Java Lambda handler to get Schedule");
+	        UserDAO dao = new UserDAO();
 	        JSONObject headerJson = new JSONObject();
 	        headerJson.put("Content-Type",  "application/json");  // not sure if needed anymore?
 	        headerJson.put("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
@@ -68,7 +74,7 @@ import jabbah.model.User;
 	        JSONObject responseJson = new JSONObject();
 	        responseJson.put("headers", headerJson);
 
-	        CreateUserResponse response = null;
+	        GetScheduleResponse response = null;
 
 	        // extract body from incoming HTTP POST request. If any error, then return 422 error
 	        String body;
@@ -82,7 +88,7 @@ import jabbah.model.User;
 	            String method = (String) event.get("httpMethod");
 	            if (method != null && method.equalsIgnoreCase("OPTIONS")) {
 	                logger.log("Options request");
-	                response = new CreateUserResponse("name", 200);  // OPTIONS needs a 200 response
+	                response = new GetScheduleResponse("name", 200);  // OPTIONS needs a 200 response
 	                responseJson.put("body", new Gson().toJson(response));
 	                processed = true;
 	                body = null;
@@ -95,25 +101,25 @@ import jabbah.model.User;
 	        }
 	        catch (ParseException pe) {
 	            logger.log(pe.toString());
-	            response = new CreateUserResponse("Bad Request:" + pe.getMessage(), 422);  // unable to process input
+	            response = new GetScheduleResponse("Bad Request:" + pe.getMessage(), 422);  // unable to process input
 	            responseJson.put("body", new Gson().toJson(response));
 	            processed = true;
 	            body = null;
 	        }
 
 	        if (!processed) {
-	            CreateUserRequest req = new Gson().fromJson(body, CreateUserRequest.class);
+	            GetScheduleRequest req = new Gson().fromJson(body, GetScheduleRequest.class);
 	            logger.log(req.toString());
-	            CreateUserResponse resp;
+	            GetScheduleResponse resp;
 
 	            try {
-	                if (createUser(req.name, req.accessCode, req.id)) {
-	                    resp = new CreateUserResponse("Successfully defined User:" + req.name);
+	                if (getSchedule(req.accessCode)) {
+	                    resp = new GetScheduleResponse("Successfully found Schedule with accessCode:" +req.accessCode);
 	                } else {
-	                    resp = new CreateUserResponse("Unable to create User: " + req.name, 422);
+	                    resp = new GetScheduleResponse("Unable to find Schedule with accessCode: " + req.accessCode, 422);
 	                }
 	            } catch (Exception e) {
-	                resp = new CreateUserResponse("Unable to create User: " + req.name + "(" + e.getMessage() + ")", 403);
+	                resp = new GetScheduleResponse("Unable to find Schedule with accessCode: " + req.accessCode + "(" + e.getMessage() + ")", 403);
 	            }
 
 	            // compute proper response

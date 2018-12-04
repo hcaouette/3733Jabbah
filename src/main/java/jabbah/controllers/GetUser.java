@@ -27,7 +27,7 @@ import jabbah.model.User;
 	 * Found gson JAR file from
 	 * https://repo1.maven.org/maven2/com/google/code/gson/gson/2.6.2/gson-2.6.2.jar
 	 */
-	public class CreateUser implements RequestStreamHandler {
+	public class GetUser implements RequestStreamHandler {
 
 	    public LambdaLogger logger = null;
 
@@ -35,22 +35,21 @@ import jabbah.model.User;
 	     *
 	     * @throws Exception
 	     */
-	    boolean createUser(String name,String AccessCode,String ScheduleID) throws Exception {
-	        if (logger != null) { logger.log("in createUser"); }
+	    boolean getUser(String AccessCode) throws Exception {
+	        if (logger != null) { logger.log("in getUser"); }
 	        UserDAO dao = new UserDAO();
 
 	        // check if present
 	        User exist = dao.getUser(AccessCode);
 	        //have to parse strings to dates
-	        User createdUser = new User (name,AccessCode,ScheduleID);
 	        if (exist == null) {
-	            return dao.addUser(createdUser);
+	            return false;
 	        } else {
 	            //wont update schedule if one exists with the same info,
 	            //instead try again with a new random access code
 	            //return createSchedule(generateAccessCode(), endTime, timeSlotLength, startDate, endDate);
 	           //return dao.updateSchedule(createdSchedule);
-	            return false;
+	            return true;
 	            //return createSchedule(accessCode, startTime, endTime, timeSlotLength, startDate, endDate);
 	        }
 	    }
@@ -58,8 +57,8 @@ import jabbah.model.User;
 	    @Override
 	    public void handleRequest(InputStream input, OutputStream output, Context context) throws IOException {
 	        logger = context.getLogger();
-	        logger.log("Loading Java Lambda handler to create User");
-
+	        logger.log("Loading Java Lambda handler to get User");
+	        UserDAO dao = new UserDAO();
 	        JSONObject headerJson = new JSONObject();
 	        headerJson.put("Content-Type",  "application/json");  // not sure if needed anymore?
 	        headerJson.put("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
@@ -68,7 +67,7 @@ import jabbah.model.User;
 	        JSONObject responseJson = new JSONObject();
 	        responseJson.put("headers", headerJson);
 
-	        CreateUserResponse response = null;
+	        GetUserResponse response = null;
 
 	        // extract body from incoming HTTP POST request. If any error, then return 422 error
 	        String body;
@@ -82,7 +81,7 @@ import jabbah.model.User;
 	            String method = (String) event.get("httpMethod");
 	            if (method != null && method.equalsIgnoreCase("OPTIONS")) {
 	                logger.log("Options request");
-	                response = new CreateUserResponse("name", 200);  // OPTIONS needs a 200 response
+	                response = new GetUserResponse("name", 200);  // OPTIONS needs a 200 response
 	                responseJson.put("body", new Gson().toJson(response));
 	                processed = true;
 	                body = null;
@@ -95,25 +94,25 @@ import jabbah.model.User;
 	        }
 	        catch (ParseException pe) {
 	            logger.log(pe.toString());
-	            response = new CreateUserResponse("Bad Request:" + pe.getMessage(), 422);  // unable to process input
+	            response = new GetUserResponse("Bad Request:" + pe.getMessage(), 422);  // unable to process input
 	            responseJson.put("body", new Gson().toJson(response));
 	            processed = true;
 	            body = null;
 	        }
 
 	        if (!processed) {
-	            CreateUserRequest req = new Gson().fromJson(body, CreateUserRequest.class);
+	            GetUserRequest req = new Gson().fromJson(body, GetUserRequest.class);
 	            logger.log(req.toString());
-	            CreateUserResponse resp;
+	            GetUserResponse resp;
 
 	            try {
-	                if (createUser(req.name, req.accessCode, req.id)) {
-	                    resp = new CreateUserResponse("Successfully defined User:" + req.name);
+	                if (getUser(req.accessCode)) {
+	                    resp = new GetUserResponse("Successfully found User with accessCode:" +req.accessCode);
 	                } else {
-	                    resp = new CreateUserResponse("Unable to create User: " + req.name, 422);
+	                    resp = new GetUserResponse("Unable to find User: " + req.accessCode, 422);
 	                }
 	            } catch (Exception e) {
-	                resp = new CreateUserResponse("Unable to create User: " + req.name + "(" + e.getMessage() + ")", 403);
+	                resp = new GetUserResponse("Unable to find User: " + req.accessCode + "(" + e.getMessage() + ")", 403);
 	            }
 
 	            // compute proper response
