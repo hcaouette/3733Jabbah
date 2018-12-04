@@ -3,69 +3,7 @@ var add_url = "https://8pzpcdfj7l.execute-api.us-east-2.amazonaws.com/First/cale
 var delete_url = "https://8pzpcdfj7l.execute-api.us-east-2.amazonaws.com/First/calendar"; //deleteSchedule
 
 function processResponse(arg1, arg2, arg3, arg4, arg5, arg6) {
-    //need the following parameters:
-    //timeslotlength must be equal to 10, 15, 20, 30, or 60
-    //startTime and endTime must be in format HH:MM, and start time must be before endtime
-    //startDate and endDate must be in format, and startDate must be before endDate
-    //since accessCode will be generated, it should handle itself
-    /*&& (
-            req.getTimeSlotLength() == 10 || req.getTimeSlotLength() == 15 || req.getTimeSlotLength() == 20 || req.getTimeSlotLength() == 30 || req.getTimeSlotLength() == 60) &&
-            bothTimesValid && datesValid
-            
-            //test to see start and end time are valid:
-            boolean bothTimesValid = false;
-            boolean startTimeLengthValid = (req.getStartTime().length() == 5);
-            boolean startTimeContentsValid = true;
-            if (startTimeLengthValid) { //if proper length, check if contents
-                //are valid
-                for (int i=0; i<5; i++) {
-                    char cvalid = req.getStartTime().charAt(i);
-                    if (i == 2 && cvalid != ':') {
-                        startTimeContentsValid = false;
-                    }
-                    else if (i != 2 && !Character.isDigit(cvalid)) {
-                        startTimeContentsValid = false;
-                    }
-                }
-            }
-            boolean endTimeLengthValid = (req.getEndTime().length() == 5);
-            boolean endTimeContentsValid = true;
-            if (endTimeLengthValid) { //if proper length, check if contents
-                //are valid
-                for (int i=0; i<5; i++) {
-                    char cvalid = req.getEndTime().charAt(i);
-                    if (i == 2 && cvalid != ':') {
-                        endTimeContentsValid = false;
-                    }
-                    else if (i != 2 && !Character.isDigit(cvalid)) {
-                        endTimeContentsValid = false;
-                    }
-                }
-            }
-            //if both start and end time have valid formatting and contents, make sure
-            //that the start time is after the end time and the timeslots are evenly divisible between them
-            if (startTimeContentsValid && startTimeLengthValid && endTimeContentsValid && endTimeLengthValid) {
-                int startTimeHour = (Character.getNumericValue(req.getStartTime().charAt(0)) * 10) + Character.getNumericValue(req.getStartTime().charAt(0));
-                int endTimeHour = (Character.getNumericValue(req.getEndTime().charAt(0)) * 10) + Character.getNumericValue(req.getEndTime().charAt(0));
-                int startTimeMin = (Character.getNumericValue(req.getStartTime().charAt(3)) * 10) + Character.getNumericValue(req.getStartTime().charAt(3));
-                int endTimeMin = (Character.getNumericValue(req.getEndTime().charAt(3)) * 10) + Character.getNumericValue(req.getEndTime().charAt(3));
-                int minDifference = endTimeMin - startTimeMin;
-                if (startTimeHour > endTimeHour && (minDifference % req.getTimeSlotLength() == 0)) {
-                    bothTimesValid = true;
-                }
-                else if (startTimeHour == endTimeHour && (minDifference % req.getTimeSlotLength() == 0) && minDifference > 0) {
-                    bothTimesValid = true;
-                }
-            }
-
-            //now test to make sure start date and end date are valid dates,
-            //and ensure that startDate is before endDate
-
-            boolean datesValid = (req.getStartDate().getTime() < req.getEndDate().getTime());*/
-  //var computation = js["value"];
-
-  // Update computation result
-  //document.addForm.result.value = computation
+    
 }
 function firstLoad(){
     let output = "<label for='loginText'>Enter your access code here, if you've logged in before, or have an access code for your organizer's schedule</label>";
@@ -155,7 +93,7 @@ function createSchedule(){
     let name = document.getElementById("scheduleName").value;
     //console.log(startDay, endDay, startTime, endTime, meetingInterval);
     /*JSON stuff*/
-      var form = document.addForm;
+    var form = document.addForm;
     var arg1 = "qwertyuiopO";
     var arg2 = startDay;
     var arg3 = endDay;
@@ -171,7 +109,7 @@ function createSchedule(){
     data["endTime"] = arg5;
     data["startDate"] = arg2;
     data["endDate"] = arg3;
-    data["timeslotDuration"] = arg6;
+    data["timeSlotLength"] = arg6;
     data["name"] = arg7;
     data["timeCreated"] = Math.floor(Date.now()); //get milliseconds since 1970
     data["initialParticipantAccessCode"] = "qwertyuiopP"
