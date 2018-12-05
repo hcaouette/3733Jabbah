@@ -79,7 +79,7 @@ public class TimeSlotDAO {
 		try {
 			String query = "UPDATE TimeSlot SET participant=? WHERE startTime=? AND idDays=? AND orgAccessCode=?;";
 			PreparedStatement ps = conn.prepareStatement(query);
-			ps.setString(1, slot.getParticipant().getCode());
+			ps.setString(1, slot.getParticipant());
 			ps.setString(2, slot.getTime());
 			ps.setDate(3, slot.getDate());
 			ps.setString(4, slot.getScheduleID());

@@ -54,9 +54,9 @@ public class TimeSlot {
     	this.isOpen = true;
     	this.participant = null;
     }
-    public void book(User participant) {
+    public void book(String participant) {
     	this.isOpen = false;
-    	this.participant = participant.accessCode;
+    	this.participant = participant;
     }
 
 }
