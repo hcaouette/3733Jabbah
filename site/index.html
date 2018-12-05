@@ -330,14 +330,14 @@ function pullSchedule(){
     //instead it should get the days in a schedule based on what access code and info they enter
     //Schedule Creation:
     //name creation is handled on the backend so it can be checked against the server
-    /*let startDay = document.getElementById("createDate").value;
+    let startDay = document.getElementById("createDate").value;
     let endDay = document.getElementById("endDate").value;
     let startTime = document.getElementById("startTime").value;
     let endTime = document.getElementById("endTime").value;
     let meetingInterval = document.getElementById("meetingInterval").value;
     let nameUsed = document.getElementById("scheduleName").value;
     //console.log(startDay, endDay, startTime, endTime, meetingInterval);
-    /*JSON stuff
+    /*JSON stuff*/
     var form = document.addForm;
     var arg1 = "qwertyuiopO";
     var arg2 = startDay;
@@ -379,7 +379,7 @@ function pullSchedule(){
         processResponse("N/A", arg2, arg3, arg4, arg5, arg6);
       }
     };
-    /*Lambda stuff*/
+    /*Lambda stuff
     /**
      * */
 //      console.log("creating");

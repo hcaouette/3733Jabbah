@@ -14,6 +14,16 @@ div.Header{
     border: 2px solid navajowhite;
     border-bottom: none;
 }
+div.Header:currentInfo{
+    background-color: #b7dcff;
+    text-align: left;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    width: 100%;
+    border: 2px solid navajowhite;
+    border-bottom: none;
+    height: 10px;
+}
 div.layout:after{
     content: "";
     display: table;
