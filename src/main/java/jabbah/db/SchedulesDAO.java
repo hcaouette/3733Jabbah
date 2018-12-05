@@ -32,7 +32,7 @@ public class SchedulesDAO {
             Schedule schedule = null;
             PreparedStatement ps = conn.prepareStatement("SELECT * FROM Schedules WHERE orgAccessCode=?;");
             ps.setString(1,  orgAccessCode);
-            
+
             ResultSet resultSet = ps.executeQuery();
 
             while (resultSet.next()) {
@@ -48,14 +48,14 @@ public class SchedulesDAO {
             throw new Exception("Failed in getting schedule: " + e.getMessage());
         }
     }
-    
+
     public Schedule getScheduleParticipant(String initialParticipantAccessCode) throws Exception {
 
         try {
             Schedule schedule = null;
             PreparedStatement ps = conn.prepareStatement("SELECT * FROM Schedules WHERE initialParticipantAccessCode=?;");
             ps.setString(1,  initialParticipantAccessCode);
-            
+
             ResultSet resultSet = ps.executeQuery();
 
             while (resultSet.next()) {
@@ -78,6 +78,11 @@ public class SchedulesDAO {
             ps.setString(1, schedule.getOrgAccessCode());
             int numAffected = ps.executeUpdate();
             ps.close();
+
+            DaysInScheduleDAO d = new DaysInScheduleDAO();
+            TimeSlotDAO t = new TimeSlotDAO();
+            d.deleteDay(new DaysInSchedule(null, schedule.getOrgAccessCode()));
+            t.deleteTimeSlot(new TimeSlot(null, 0, null, schedule.getOrgAccessCode()));
 
             return (numAffected == 1);
 

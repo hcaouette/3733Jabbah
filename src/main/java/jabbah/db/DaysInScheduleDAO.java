@@ -1,15 +1,18 @@
 package jabbah.db;
 
-import java.sql.*;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import jabbah.model.*;
+import jabbah.model.DaysInSchedule;
 
 public class DaysInScheduleDAO {
-	
+
 	java.sql.Connection conn;
-	
+
 	public DaysInScheduleDAO() {
     	try  {
     		conn = DatabaseUtil.connect();
@@ -17,22 +20,22 @@ public class DaysInScheduleDAO {
     		conn = null;
     	}
 	}
-	
+
     public DaysInSchedule getDay(Date day, String id) throws Exception {
-        
+
         try {
             DaysInSchedule date = null;
             PreparedStatement ps = conn.prepareStatement("SELECT * FROM DaysInSchedule WHERE idDays=? AND orgAccessCode =?;");
             ps.setDate(1,  day);
             ps.setString(2, id);
             ResultSet resultSet = ps.executeQuery();
-            
+
             while (resultSet.next()) {
                 date = generateDate(resultSet);
             }
             resultSet.close();
             ps.close();
-            
+
             return date;
 
         } catch (Exception e) {
@@ -40,29 +43,28 @@ public class DaysInScheduleDAO {
             throw new Exception("Failed in getting a day in schedule: " + e.getMessage());
         }
     }
-    
+
     public boolean deleteDay(DaysInSchedule day) throws Exception {
         try {
-            PreparedStatement ps = conn.prepareStatement("DELETE FROM DaysInSchedule WHERE idDays=? AND orgAccessCode=?;");
-            ps.setDate(1, day.getDate());
-            ps.setString(2, day.getScheduleID());
+            PreparedStatement ps = conn.prepareStatement("DELETE FROM DaysInSchedule WHERE orgAccessCode=?;");
+            ps.setString(1, day.getScheduleID());
             int numAffected = ps.executeUpdate();
             ps.close();
-            
-            return (numAffected == 1);
+
+            return numAffected >= 1;
 
         } catch (Exception e) {
             throw new Exception("Failed to insert day: " + e.getMessage());
         }
     }
-    
+
     public boolean addDay(DaysInSchedule day) throws Exception {
         try {
             PreparedStatement ps = conn.prepareStatement("SELECT * FROM DaysInSchedule WHERE idDays=? AND orgAccessCode=?;");
             ps.setDate(1, day.getDate());
             ps.setString(2, day.getScheduleID());
             ResultSet resultSet = ps.executeQuery();
-            
+
             // already present?
             while (resultSet.next()) {
                 DaysInSchedule d = generateDate(resultSet);
@@ -82,7 +84,7 @@ public class DaysInScheduleDAO {
     }
 
     public List<DaysInSchedule> getAllDays() throws Exception {
-        
+
         List<DaysInSchedule> allDays = new ArrayList<>();
         try {
             Statement statement = conn.createStatement();
@@ -101,7 +103,7 @@ public class DaysInScheduleDAO {
             throw new Exception("Failed in getting days: " + e.getMessage());
         }
     }
-    
+
     private DaysInSchedule generateDate(ResultSet resultSet) throws Exception {
         Date day  = resultSet.getDate("idDays");
         String id = resultSet.getString("orgAccessCode");
