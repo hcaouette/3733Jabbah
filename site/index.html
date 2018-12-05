@@ -3,21 +3,61 @@ var add_url = "https://8pzpcdfj7l.execute-api.us-east-2.amazonaws.com/First/cale
 var delete_url = "https://8pzpcdfj7l.execute-api.us-east-2.amazonaws.com/First/calendar"; //deleteSchedule
 
 function processResponse(arg1, arg2, arg3, arg4, arg5, arg6) {
-
+    
 }
+/* We probably won't use these, but in case we do:
+function processGetUserResponse(result, arg2) {
+    // Can grab any DIV or SPAN HTML element and can then manipulate its
+    // contents dynamically via javascript
+    console.log("result:" + result);
+    var js = JSON.parse(result);
+
+    var userCode = js["accessCode"];
+    var orgCode = js["orgAccessCode"];
+    var currentName = js["name"];
+    var status      = js["httpCode"];
+    
+    if (status == 200) {
+      // Update computation result
+      document.addForm.result.value = computation
+    } else {
+      var msg = js["errorMessage"];
+      document.addForm.result.value = "error:" + msg
+    }
+  }
+  
+function processGetScheduleResponse(result, arg2) {
+    // Can grab any DIV or SPAN HTML element and can then manipulate its
+    // contents dynamically via javascript
+    console.log("result:" + result);
+    var js = JSON.parse(result);
+
+    var userCode = js["accessCode"];
+    var orgCode = js["orgAccessCode"];
+    var currentName = js["name"];
+    var status      = js["httpCode"];
+    
+    if (status == 200) {
+      // Update computation result
+      document.addForm.result.value = computation
+    } else {
+      var msg = js["errorMessage"];
+      document.addForm.result.value = "error:" + msg
+    }
+  }
+*/
 function firstLoad(){
-    let output = "<label for='loginText'>Enter your access code here, if you've logged in before, or have an access code for your organizer's schedule</label>";
+    let output = "<label for='loginText'>Enter your access code here, if you're a system admin</label>";
     output+="<br><textarea id='loginText' rows='2' cols='20'></textarea>";
-    output+="<button type='button' onclick='openViewPanel()'>Login</button>";
+    output+="<button type='button' onclick='systemAdmin()'>Login</button>";
     output+="<br><br>";
-    output+="<label for='newOrganizer'>Enter a Username to get started as a new Organizer</label>";
+    output+="<label for='newOrganizer'>Enter a Username to get started as an Organizer</label>";
     output+="<br><textarea id='newOrganizer' rows='2' cols='20'></textarea>";
-    output+=" <button type='button' onclick='newOrganizer()'>Create Schedule</button>";
+    output+=" <button type='button' onclick='organizer()'>Create Schedule</button>";
     output+="<br><br>";
-    output+="<label for='userText'>Enter a username and the access code from your organizer to get started as a participant</label>";
+    output+="<label for='userText'>Enter a Username to get started as a participant</label>";
     output+="<br><textarea id='userText' rows='2' cols='20'></textarea>";
-    output+="  <textarea id='accessCode' rows='2' cols='20'></textarea>";
-    output+="   <button type='button' onclick='newParticipant()'>Participant</button>";
+    output+="   <button type='button' onclick='participant()'>Participant</button>";
 
     document.getElementById("panelPrint").innerHTML = output;
 }
@@ -62,7 +102,7 @@ function makeOrgId() {
     text += "O";
     return text;
   }
-
+  
 function makePartId() {
     var text = "";
     var possible = "abcdefghijklmnopqrstuvwxyz";
@@ -74,76 +114,13 @@ function makePartId() {
     return text;
   }
 
-function openViewPanel(){
-    let str = document.getElementById('loginText').value;
-    let userType = str//.slice(10);
-    console.log(userType);
-    let output = "";
-    if(userType.includes("O")){
-        oldOrganizer();
-    }else if(userType.includes("P")){
-        oldParticipant();
-    }else if(userType.includes("S")){
-        SystemAdmin();
-    }
-}
-
-function openCreateMenu(){
-    let output = "";
-    output+="<p>Enter a starting and ending date:</p>";
-    output+="<textarea id='createDate' rows='2' cols='20' placeholder='yyyy-mm-dd'></textarea>";
-    output+="<textarea id='endDate' rows='2' cols='20' placeholder='yyyy-mm-dd'></textarea><br>";
-    output+="<br><p>Enter a starting and ending time of day:</p>";
-    output+="<textarea id='startTime' rows='2' cols='20' placeholder='hh:mm'></textarea>";
-    output+="<textarea id='endTime' rows='2' cols='20' placeholder='hh:mm'></textarea>";
-    output+="<br><p>Enter a time interval in minutes for meetings:</p>";
-    output+="<textarea id='meetingInterval' rows='2' cols='20' placeholder='30'></textarea><br>";
-    output+="<br><p>Enter a name for your schedule: (20 characters or less)</p>";
-    output+="<textarea id='scheduleName' rows='2' cols='20' placeholder='My Schedule'></textarea><br>";
-    output+="";
-    output+="<br><button type='button' onclick='createSchedule()'>Create Schedule</button>";
-    document.getElementById("panelPrint").innerHTML = output;
-//    console.log("we gottem, boys");
-}
 function createSchedule(){
-    //Organizer Creation:
-    //For each new schedule, a new organizer is created
-    let name = document.getElementById("currentName").innerHTML;
-    document.getElementById("currentScheduleOrgAccessCode").innerHTML = makeOrgId();
-    let orgAccessCode = document.getElementById("currentScheduleOrgAccessCode").innerHTML;
-    document.getElementById("currentScheduleInitialParticipantAccessCode").innerHTML = makePartId();
-    document.getElementById("currentUserAccessCode").innerHTML = orgAccessCode;
-    let partAccessCode = document.getElementById("currentScheduleInitialParticipantAccessCode").innerHTML;
-    let userAccessCode = orgAccessCode;
-    /*
-    //CREATE ORGANZIER IS CALLED HERE WITH name, orgAccessCode, partAccessCode, userAccessCode
-    var data = {};
-    data["orgAccessCode"] = orgAccessCode; //have to be able to find organizer, (user),
-    //and take their fields for the random access codes
-    data["name"] = name;
-    data["accessCode"] = userAccessCode;
-
-    var js = JSON.stringify(data);
-    console.log("JS:" + js);
-    var xhr = new XMLHttpRequest();
-    xhr.open("POST", user_url, true);
-
-    // send the collected data as JSON
-    xhr.send(js);
-
-    // This will process results and update HTML as appropriate.
-    xhr.onloadend = function () {
-      console.log(xhr);
-      console.log(xhr.request);
-      if (xhr.readyState == XMLHttpRequest.DONE) {
-        console.log ("XHR:" + xhr.responseText);
-        //processResponse("qwertyuiopO", arg2, arg3, arg4, arg5, arg6);
-      } else {
-        //processResponse("N/A", arg2, arg3, arg4, arg5, arg6);
-      }
-    */
-
+    
     //Schedule Creation:
+    let orgAccessCode = makeOrgId();
+    document.getElementById("currentInfo").innerHTML += " Org Access Code: " + orgAccessCode;
+    let partAccessCode = makePartId();
+    document.getElementById("currentInfo").innerHTML += " Participant Access Code: " + partAccessCode;
     //name creation is handled on the backend so it can be checked against the server
     let startDay = document.getElementById("createDate").value;
     let endDay = document.getElementById("endDate").value;
@@ -179,10 +156,10 @@ function createSchedule(){
     var xhr = new XMLHttpRequest();
     xhr.open("POST", add_url, true);
 
-  // send the collected data as JSON
-  xhr.send(js);
+    // send the collected data as JSON
+    xhr.send(js);
 
-    // This will process results and update HTML as appropriate.
+    // This will process results and update HTML as appropriate. 
     xhr.onloadend = function () {
       console.log(xhr);
       console.log(xhr.request);
@@ -205,7 +182,7 @@ function processDeleteResponse(result) {
     // Can grab any DIV or SPAN HTML element and can then manipulate its
     // contents dynamically via javascript
     console.log("deleted :" + result);
-
+    
     refreshSchedulesList();
   }
 
@@ -227,7 +204,7 @@ function processDeleteResponse(result) {
     // send the collected data as JSON
     xhr.send(js);
 
-    // This will process results and update HTML as appropriate.
+    // This will process results and update HTML as appropriate. 
     xhr.onloadend = function () {
       console.log(xhr);
       console.log(xhr.request);
@@ -240,48 +217,14 @@ function processDeleteResponse(result) {
     };
   }
 
-function oldParticipant() {
-    //before pulling up the options panel, find the user in the database
-    //and add their info to the header
-
-    //GET REQUEST FOR USER (Participant)
-    //store participant's info
-
-    //show the panel, if the participant exists
-    let output = "<p> User: Participant </p>"
-        output+="<label for='viewDayText'>Enter the day of the month here</label>";
-        output+="<br><textarea id='viewDayText' rows='2' cols='20'></textarea>";
-        output+="<br><br>";
-        output+= "<label for='viewYearText'>Enter the year here</label>";
-        output+="<br><textarea id='viewYearText' rows='2' cols='20'></textarea>";
-        output+="<br><br>";
-        output+= "<label for='viewMonthText'>Enter the month here</label>";
-        output+="<br><textarea id='viewMonthText' rows='2' cols='20'></textarea>";
-        output+="<br><br>";
-        output+="<button type='button' onclick='pullSchedule()'>View Week</button>";
-
-        output+="<br><br>";
-        output+= "<label for='viewWeekdayText'>Enter the weekday here</label>";
-        output+="<br><textarea id='viewWeekdayText' rows='2' cols='20'></textarea>";
-        output+="<br><br>";
-        output+= "<label for='viewStartTimeText'>Enter the starting time here</label>";
-        output+="<br><textarea id='viewStartTimeText' rows='2' cols='20'></textarea>";
-        output+="<br><br>";
-        output+="<button type='button' onclick='searchOpenTimeslots()'>View Timeslots</button>"
-
-        document.getElementById("panelPrint").innerHTML = output;
-}
-
-function newParticipant(){
-    //get info from schedule with entered participant access code
-
-    //GET REQUEST FOR SCHEDULE
-
-    //Store info from schedule
-    //document.getElementById("currentScheduleInitialParticipantAccessCode").innerHTML = ;
+function participant(){
+    //take the entered name to store in the HTML
+    document.getElementById("currentInfo").innerHTML = "Name: " + document.getElementById("userText").value;
 
     //show participant panel
-    let output = "<p> User: Participant </p>"
+    let output = "<p> User: Participant </p>" 
+    output+="<label for = 'secretID'>Enter your secret code here to access a previously created schedule:</label>";
+    output+="<br><textarea id='secretID' rows='2' cols='20'></textarea>";
     output+="<label for='viewDayText'>Enter the day of the month here</label>";
     output+="<br><textarea id='viewDayText' rows='2' cols='20'></textarea>";
     output+="<br><br>";
@@ -292,7 +235,7 @@ function newParticipant(){
     output+="<br><textarea id='viewMonthText' rows='2' cols='20'></textarea>";
     output+="<br><br>";
     output+="<button type='button' onclick='pullSchedule()'>View Week</button>";
-
+    
     output+="<br><br>";
     output+= "<label for='viewWeekdayText'>Enter the weekday here</label>";
     output+="<br><textarea id='viewWeekdayText' rows='2' cols='20'></textarea>";
@@ -300,99 +243,55 @@ function newParticipant(){
     output+= "<label for='viewStartTimeText'>Enter the starting time here</label>";
     output+="<br><textarea id='viewStartTimeText' rows='2' cols='20'></textarea>";
     output+="<br><br>";
-    output+="<button type='button' onclick='searchOpenTimeslots()'>View Timeslots</button>"
+    output+="<button type='button' onclick='pullSchedule()'>View Timeslots</button>"
 
     document.getElementById("panelPrint").innerHTML = output;
 }
 
-function SystemAdmin(){
+function systemAdmin(){
+    //take the entered login info to store in the HTML
+    document.getElementById("currentInfo").innerHTML = "Admin: " + document.getElementById("loginText").value;
     //check if the system admin is in the database
-
-    //GET USER goes here
-
-    //if it is, show the systemAdmin panel
+    
+    //confirmation that the system admin exists goes here
+    //to be implemented later
+    
+    //show the systemAdmin panel
     let output = "<p> User: System Administrator </p>";
-
+    
     output+="<p>View Schedules created within the past X hours. </p>";
     output+="<label for = 'numHours'>Enter the number of hours here:</label>";
     output+="<br><textarea id='numHours' rows='2' cols='20'></textarea>";
     output+="<br><br>";
     output+="<button type = 'button' onclick = 'listSchedules()'>View</button>";
-
+    
     output+="<p>View/Delete Schedules that are more than X days old. </p>";
     output+="<label for = 'numDays'>Enter the number of days here:</label>";
     output+="<br><textarea id='numDays' rows='2' cols='20'></textarea>";
     output+="<br><br>";
     output+="<button type = 'button' onclick = 'listSchedules()'>View</button>";
     output+="<button type = 'button' onclick = 'deleteAllSchedules()'>Delete</button>";
-
+    
     document.getElementById("panelPrint").innerHTML = output;
 }
 
-function oldOrganizer() {
-    //get the user with the access code of this organizer
-    //and store that info in the page's HTML
-    //GET USER GOES HERE
-    //once user is obtained, fill in the info into the doc's fields
-
-    //show the panel if a user is found
-    let output = "<p> User: Organizer </p>";
-
-    output+="<label for = 'month'>Enter month here:</label>";
-    output+="<br><textarea id='viewMonthText' rows='2' cols='20'></textarea>";
-    output+="<br><label for = 'dayOfMonth'>Enter day of month here:</label>";
-    output+="<br><textarea id='viewDayText' rows='2' cols='20'></textarea>";
-    output+="<br><label for = 'year'>Enter year here:</label>";
-    output+="<br><textarea id='viewYearText' rows='2' cols='20'></textarea>";
-    output+="<br><br>";
-    output+="<button type = 'button' onclick = 'pullSchedule()'>View Schedule</button>";
-    output+="<button type = 'button' onclick = 'extendSchedule()'>Extend Schedule</button>";
-
-    output+="<p>Close or Open time slots on a given day or all time slots at a given time </p>";
-    output+="<label for = 'date'>Enter date here:</label>";
-    output+="<br><textarea id='numDays' rows='2' cols='20'></textarea>";
-    output+="<br><label for 'time'>Or enter time here:</label>";
-    output+="<br><textarea id = 'time' rows='2' cols='20' placeholder='hh:mm'></textarea>";
-    output+="<br><br>";
-    output+="<button type = 'button' onclick = 'closeTimeSlot()'>Close Time Slots</button>";
-    output+="<button type = 'button' onclick = 'openTimeSlot()'>Open Time Slots</button>";
-
-    output+="<br><br>";
-    output+="<p>Enter a starting and ending date:</p>";
-    output+="<textarea id='createDate' rows='2' cols='20' placeholder='yyyy-mm-dd'></textarea>";
-    output+="<textarea id='endDate' rows='2' cols='20' placeholder='yyyy-mm-dd'></textarea><br>";
-    output+="<br><p>Enter a starting and ending time of day:</p>";
-    output+="<textarea id='startTime' rows='2' cols='20' placeholder='hh:mm'></textarea>";
-    output+="<textarea id='endTime' rows='2' cols='20' placeholder='hh:mm'></textarea>";
-    output+="<br><p>Enter a time interval in minutes for meetings:</p>";
-    output+="<textarea id='meetingInterval' rows='2' cols='20' placeholder='30'></textarea><br>";
-    output+="<br><p>Enter a name for your schedule: (20 characters or less)</p>";
-    output+="<textarea id='scheduleName' rows='2' cols='20' placeholder='My Schedule'></textarea><br>";
-    output+="";
-    output+="<br><button type='button' onclick='createSchedule()'>Create Schedule</button>";
-    output+="<br><br>";
-    output+="<button type = 'button' onclick = 'deleteSchedule()'>Delete Schedule</button>";
-
-    document.getElementById("panelPrint").innerHTML = output;
-}
-
-function newOrganizer(){
+function organizer(){
     //take the entered name to store in the HTML
-    document.getElementById("currentName").innerHTML = document.getElementById("newOrganizer").value;
-
+    document.getElementById("currentInfo").innerHTML = "Name: " + document.getElementById("newOrganizer").value;
+    
     //show the panel for organizers
     let output = "<p> User: Organizer </p>";
-
+    
     output+="<label for = 'month'>Enter month here:</label>";
-    output+="<br><textarea id='viewMonthText' rows='2' cols='20'></textarea>";
+    output+="<br><textarea id='month' rows='2' cols='20'></textarea>";
     output+="<br><label for = 'dayOfMonth'>Enter day of month here:</label>";
-    output+="<br><textarea id='viewDayText' rows='2' cols='20'></textarea>";
+    output+="<br><textarea id='dayOfMonth' rows='2' cols='20'></textarea>";
     output+="<br><label for = 'year'>Enter year here:</label>";
-    output+="<br><textarea id='viewYearText' rows='2' cols='20'></textarea>";
+    output+="<br><textarea id='year' rows='2' cols='20'></textarea>";
     output+="<br><br>";
     output+="<button type = 'button' onclick = 'pullSchedule()'>View Schedule</button>";
     output+="<button type = 'button' onclick = 'extendSchedule()'>Extend Schedule</button>";
-
+    
     output+="<p>Close or Open time slots on a given day or all time slots at a given time </p>";
     output+="<label for = 'date'>Enter date here:</label>";
     output+="<br><textarea id='numDays' rows='2' cols='20'></textarea>";
@@ -401,7 +300,7 @@ function newOrganizer(){
     output+="<br><br>";
     output+="<button type = 'button' onclick = 'closeTimeSlot()'>Close Time Slots</button>";
     output+="<button type = 'button' onclick = 'openTimeSlot()'>Open Time Slots</button>";
-
+    
     output+="<br><br>";
     output+="<p>Enter a starting and ending date:</p>";
     output+="<textarea id='createDate' rows='2' cols='20' placeholder='yyyy-mm-dd'></textarea>";
@@ -416,84 +315,78 @@ function newOrganizer(){
     output+="";
     output+="<br><button type='button' onclick='createSchedule()'>Create Schedule</button>";
     output+="<br><br>";
+    output+="<label for = 'secretID'>Enter your secret code here to access/delete a previously created schedule:</label>";
+    output+="<br><textarea id='secretID' rows='2' cols='20'></textarea>";
+    output+="<br><br>";
     output+="<button type = 'button' onclick = 'deleteSchedule()'>Delete Schedule</button>";
-
+    
     document.getElementById("panelPrint").innerHTML = output;
 }
-
 function pullSchedule(){
-  console.log("yeehaw");
-  document.getElementById("panelPrint").innerHTML += "<br><br>pulling schedule for you now";
-  //Organizer Creation:
-  //For each new schedule, a new organizer is created
-  let name = document.getElementById("currentName").innerHTML;
-  document.getElementById("currentScheduleOrgAccessCode").innerHTML = makeOrgId();
-  let orgAccessCode = document.getElementById("currentScheduleOrgAccessCode").innerHTML;
-  document.getElementById("currentScheduleInitialParticipantAccessCode").innerHTML = makePartId();
-  document.getElementById("currentUserAccessCode").innerHTML = orgAccessCode;
-  let partAccessCode = document.getElementById("currentScheduleInitialParticipantAccessCode").innerHTML;
-  let userAccessCode = orgAccessCode;
 
-  //Schedule Creation:
-  //name creation is handled on the backend so it can be checked against the server
-  let startDay = document.getElementById("createDate").value;
-  let endDay = document.getElementById("endDate").value;
-  let startTime = document.getElementById("startTime").value;
-  let endTime = document.getElementById("endTime").value;
-  let meetingInterval = document.getElementById("meetingInterval").value;
-  let nameUsed = document.getElementById("scheduleName").value;
-  //console.log(startDay, endDay, startTime, endTime, meetingInterval);
-  /*JSON stuff*/
-  var form = document.addForm;
-  var arg1 = "qwertyuiopO";
-  var arg2 = startDay;
-  var arg3 = endDay;
-  var arg4 = startTime;
-  var arg5 = endTime;
-  var arg6 = meetingInterval;
-  var arg7 = nameUsed;
+    console.log("yeehaw");
+    document.getElementById("panelPrint").innerHTML += "<br><br>pulling schedule for you now";
+    //a new schedule would not be created for pulling up the week in a schedule,
+    //instead it should get the days in a schedule based on what access code and info they enter
+    //Schedule Creation:
+    //name creation is handled on the backend so it can be checked against the server
+    /*let startDay = document.getElementById("createDate").value;
+    let endDay = document.getElementById("endDate").value;
+    let startTime = document.getElementById("startTime").value;
+    let endTime = document.getElementById("endTime").value;
+    let meetingInterval = document.getElementById("meetingInterval").value;
+    let nameUsed = document.getElementById("scheduleName").value;
+    //console.log(startDay, endDay, startTime, endTime, meetingInterval);
+    /*JSON stuff
+    var form = document.addForm;
+    var arg1 = "qwertyuiopO";
+    var arg2 = startDay;
+    var arg3 = endDay;
+    var arg4 = startTime;
+    var arg5 = endTime;
+    var arg6 = meetingInterval;
+    var arg7 = nameUsed;
 
-  var data = {};
-  data["orgAccessCode"] = orgAccessCode; //have to be able to find organizer, (user),
-  //and take their fields for the random access codes
-  data["startTime"] = arg4;
-  data["endTime"] = arg5;
-  data["startDate"] = arg2;
-  data["endDate"] = arg3;
-  data["timeSlotLength"] = arg6;
-  data["name"] = arg7;
-  data["timeCreated"] = Math.floor(Date.now()); //get milliseconds since 1970
-  data["initialParticipantAccessCode"] = partAccessCode;
+    var data = {};
+    data["orgAccessCode"] = orgAccessCode; //have to be able to find organizer, (user),
+    //and take their fields for the random access codes
+    data["startTime"] = arg4;
+    data["endTime"] = arg5;
+    data["startDate"] = arg2;
+    data["endDate"] = arg3;
+    data["timeSlotLength"] = arg6;
+    data["name"] = arg7;
+    data["timeCreated"] = Math.floor(Date.now()); //get milliseconds since 1970
+    data["initialParticipantAccessCode"] = partAccessCode;
 
-  var js = JSON.stringify(data);
-  console.log("JS:" + js);
-  var xhr = new XMLHttpRequest();
-  xhr.open("POST", add_url, true);
+    var js = JSON.stringify(data);
+    console.log("JS:" + js);
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", add_url, true);
 
-// send the collected data as JSON
-xhr.send(js);
+  // send the collected data as JSON
 
-  // This will process results and update HTML as appropriate.
-  xhr.onloadend = function () {
-    console.log(xhr);
-    console.log(xhr.request);
-    if (xhr.readyState == XMLHttpRequest.DONE) {
-      console.log ("XHR:" + xhr.responseText);
-      processResponse(orgAccessCode, arg2, arg3, arg4, arg5, arg6);
-    } else {
-      processResponse("N/A", arg2, arg3, arg4, arg5, arg6);
-    }
-  };
-  /*Lambda stuff*/
-  /**
-   * */
+  xhr.send(js);
 
-//    console.log("creating");
-  loadCal();
+    // This will process results and update HTML as appropriate.
+    xhr.onloadend = function () {
+      console.log(xhr);
+      console.log(xhr.request);
+      if (xhr.readyState == XMLHttpRequest.DONE) {
+        console.log ("XHR:" + xhr.responseText);
+        processResponse(orgAccessCode, arg2, arg3, arg4, arg5, arg6);
+      } else {
+        processResponse("N/A", arg2, arg3, arg4, arg5, arg6);
+      }
+    };
+    /*Lambda stuff*/
+    /**
+     * */
+//      console.log("creating");
+    loadCal();
 }
 </script>
 
-<!--BODY time______________________________________________________________________________-->
   <title>Jabbah-Cal</title>
   <meta charset="utf-8">
   <link rel="stylesheet" type="text/css" href="style.css">
@@ -502,10 +395,7 @@ xhr.send(js);
 <body onload="firstLoad()">
   <div class="layout">
   <div class="Header">Welcome to the Jabbah-cal</div>
-    <div id="currentName" style="display: none;"></div>
-    <div id="currentScheduleOrgAccessCode" style="display: none;"></div>
-    <div id="currentUserAccessCode" style="display: none;"></div>
-    <div id="currentScheduleInitialParticipantAccessCode" style="display: none;"></div>
+    <div id="currentInfo"></div>
   </div>
     <div class="Panel">
         <div id="panelPrint"></div>
