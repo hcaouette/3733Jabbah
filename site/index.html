@@ -243,7 +243,7 @@ function participant(){
     output+= "<label for='viewStartTimeText'>Enter the starting time here</label>";
     output+="<br><textarea id='viewStartTimeText' rows='2' cols='20'></textarea>";
     output+="<br><br>";
-    output+="<button type='button' onclick='pullSchedule()'>View Timeslots</button>"
+    output+="<button type='button' onclick='searchOpenTimeslots()'>View Timeslots</button>"
 
     document.getElementById("panelPrint").innerHTML = output;
 }
@@ -282,12 +282,12 @@ function organizer(){
     //show the panel for organizers
     let output = "<p> User: Organizer </p>";
     
-    output+="<label for = 'month'>Enter month here:</label>";
-    output+="<br><textarea id='month' rows='2' cols='20'></textarea>";
-    output+="<br><label for = 'dayOfMonth'>Enter day of month here:</label>";
-    output+="<br><textarea id='dayOfMonth' rows='2' cols='20'></textarea>";
-    output+="<br><label for = 'year'>Enter year here:</label>";
-    output+="<br><textarea id='year' rows='2' cols='20'></textarea>";
+    output+="<label for = 'viewMonthText'>Enter month here:</label>";
+    output+="<br><textarea id='viewMonthText' rows='2' cols='20'></textarea>";
+    output+="<br><label for = 'viewDayText'>Enter day of month here:</label>";
+    output+="<br><textarea id='viewDayText' rows='2' cols='20'></textarea>";
+    output+="<br><label for = 'viewYearText'>Enter year here:</label>";
+    output+="<br><textarea id='viewYearText' rows='2' cols='20'></textarea>";
     output+="<br><br>";
     output+="<button type = 'button' onclick = 'pullSchedule()'>View Schedule</button>";
     output+="<button type = 'button' onclick = 'extendSchedule()'>Extend Schedule</button>";
