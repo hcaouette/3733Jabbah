@@ -10,7 +10,6 @@ public class Schedule {
     Date startDate;
     Date endDate;
     String orgAccessCode;
-  
     String initialParticipantAccessCode;
     long timeCreated;
   //  ArrayList<User> participantList;
