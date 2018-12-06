@@ -147,8 +147,18 @@ public class TimeSlotDAO {
 		String startTime = resultSet.getString("startTime");
 		Date day = resultSet.getDate("idDays");
 		String id = resultSet.getString("orgAccessCode");
-
-		return new TimeSlot(startTime, duration, day, id);
+		boolean open = resultSet.getBoolean("isOpen");
+		String participant = resultSet.getString("participant");
+		
+		TimeSlot s = new TimeSlot(startTime, duration, day, id);
+		
+		// make sure isOpen and participant matches what's in the database
+		if(open)
+			s.openSlot();
+		
+		s.book(participant);
+		
+		return s;
 	}
 
 }
