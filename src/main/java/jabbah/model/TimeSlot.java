@@ -51,11 +51,9 @@ public class TimeSlot {
     	this.isOpen = false;
     }
     public void cancel() {
-    	this.isOpen = true;
     	this.participant = null;
     }
     public void book(String participant) {
-    	this.isOpen = false;
     	this.participant = participant;
     }
 
