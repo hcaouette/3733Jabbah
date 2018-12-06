@@ -155,6 +155,8 @@ public class TimeSlotDAO {
 		// make sure isOpen and participant matches what's in the database
 		if(open)
 			s.openSlot();
+		else
+			s.closeSlot();
 		
 		s.book(participant);
 		
