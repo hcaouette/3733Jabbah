@@ -35,48 +35,33 @@ public class CreateMeetingTest2 {
 		
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         java.util.Date idDay = null;
-        idDay = sdf.parse("1888-08-17");
+        idDay = sdf.parse("2020-08-17");
         java.sql.Date idDayParsed = new java.sql.Date(idDay.getTime());
 		
-        TimeSlot s = new TimeSlot("12:12", 0, idDayParsed, "9066827");
-        dao.updateParticipant(s);
+        int rnd = (int)(Math.random() * 1000000);
+        
+        TimeSlot s = new TimeSlot("05:45", 0, idDayParsed, "x" + rnd);
+        //open time slot
+        s.openSlot();
+        dao.addTimeSlot(s);
 		
-		// make sure time slot is open
-		OpenTimeSlot handler = new OpenTimeSlot();
+		CreateMeeting hand = new CreateMeeting();
 		
-		OpenTimeSlotRequest otsr = new OpenTimeSlotRequest("12:12", "1888-08-17", "9066827");
+		int rnd2 = (int)(Math.random() * 1000000);
+		CreateMeetingRequest cmr = new CreateMeetingRequest(rnd2 + "P", "05:45", "2020-08-17", "x" + rnd);
 		
-		String otsRequest = new Gson().toJson(otsr);
+		String otsRequest = new Gson().toJson(cmr);
 		String jsonRequest = new Gson().toJson(new PostRequest(otsRequest));
 		
 		InputStream input = new ByteArrayInputStream(jsonRequest.getBytes());
 		OutputStream output = new ByteArrayOutputStream();
 		
-		handler.handleRequest(input, output, createContext("create"));
-		
-        PostResponse post = new Gson().fromJson(output.toString(), PostResponse.class);
-        OpenTimeSlotResponse resp = new Gson().fromJson(post.body, OpenTimeSlotResponse.class);
-        System.out.println(resp);
-
-        Assert.assertEquals("Successfully opened time slot: 12:12", resp.response);
-		
-		CreateMeeting hand = new CreateMeeting();
-		
-		int rnd = (int)(Math.random() * 1000000);
-		CreateMeetingRequest cmr = new CreateMeetingRequest(rnd + "P", "12:12", "1888-08-17", "9066827");
-		
-		otsRequest = new Gson().toJson(cmr);
-		jsonRequest = new Gson().toJson(new PostRequest(otsRequest));
-		
-		input = new ByteArrayInputStream(jsonRequest.getBytes());
-		output = new ByteArrayOutputStream();
-		
 		hand.handleRequest(input, output, createContext("create"));
 		
-        post = new Gson().fromJson(output.toString(), PostResponse.class);
+        PostResponse post = new Gson().fromJson(output.toString(), PostResponse.class);
         CreateMeetingResponse cmresp = new Gson().fromJson(post.body, CreateMeetingResponse.class);
         System.out.println(cmresp);
 
-        Assert.assertEquals("Successfully booked time slot: 12:12", cmresp.response);        
+        Assert.assertEquals("Successfully booked time slot: 05:45", cmresp.response);        
 	}
 }
