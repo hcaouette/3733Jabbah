@@ -49,11 +49,11 @@ function processGetScheduleResponse(result, arg2) {
 function firstLoad(){
     let output = "<label for='loginText'>Enter your access code here, if you're a system admin</label>";
     output+="<br><textarea id='loginText' rows='2' cols='20'></textarea>";
-    output+="<button type='button' onclick='systemAdmin()'>Login</button>";
+    output+="<button type='button' onclick='systemAdmin()'>System Admin</button>";
     output+="<br><br>";
     output+="<label for='newOrganizer'>Enter a Username to get started as an Organizer</label>";
     output+="<br><textarea id='newOrganizer' rows='2' cols='20'></textarea>";
-    output+=" <button type='button' onclick='organizer()'>Create Schedule</button>";
+    output+=" <button type='button' onclick='organizer()'>Organizer</button>";
     output+="<br><br>";
     output+="<label for='userText'>Enter a Username to get started as a participant</label>";
     output+="<br><textarea id='userText' rows='2' cols='20'></textarea>";
@@ -93,10 +93,10 @@ function bookFunc(){
 }
 
 function makeOrgId() {
-    var text = "";
-    var possible = "abcdefghijklmnopqrstuvwxyz";
+    let text = "";
+    let possible = "abcdefghijklmnopqrstuvwxyz";
 
-    for (var i = 0; i < 10; i++)
+    for (let i = 0; i < 10; i++)
       text += possible.charAt(Math.floor(Math.random() * possible.length));
 
     text += "O";
@@ -104,10 +104,10 @@ function makeOrgId() {
   }
   
 function makePartId() {
-    var text = "";
-    var possible = "abcdefghijklmnopqrstuvwxyz";
+    let text = "";
+    let possible = "abcdefghijklmnopqrstuvwxyz";
 
-    for (var i = 0; i < 10; i++)
+    for (let i = 0; i < 10; i++)
       text += possible.charAt(Math.floor(Math.random() * possible.length));
 
     text += "P";
@@ -130,16 +130,16 @@ function createSchedule(){
     let nameUsed = document.getElementById("scheduleName").value;
     //console.log(startDay, endDay, startTime, endTime, meetingInterval);
     /*JSON stuff*/
-    var form = document.addForm;
-    var arg1 = "qwertyuiopO";
-    var arg2 = startDay;
-    var arg3 = endDay;
-    var arg4 = startTime;
-    var arg5 = endTime;
-    var arg6 = meetingInterval;
-    var arg7 = nameUsed;
+    let form = document.addForm;
+    let arg1 = "qwertyuiopO";
+    let arg2 = startDay;
+    let arg3 = endDay;
+    let arg4 = startTime;
+    let arg5 = endTime;
+    let arg6 = meetingInterval;
+    let arg7 = nameUsed;
 
-    var data = {};
+    let data = {};
     data["orgAccessCode"] = orgAccessCode; //have to be able to find organizer, (user),
     //and take their fields for the random access codes
     data["startTime"] = arg4;
@@ -151,9 +151,9 @@ function createSchedule(){
     data["timeCreated"] = Math.floor(Date.now()); //get milliseconds since 1970
     data["initialParticipantAccessCode"] = partAccessCode;
 
-    var js = JSON.stringify(data);
+    let js = JSON.stringify(data);
     console.log("JS:" + js);
-    var xhr = new XMLHttpRequest();
+    let xhr = new XMLHttpRequest();
     xhr.open("POST", add_url, true);
 
     // send the collected data as JSON
@@ -183,22 +183,23 @@ function processDeleteResponse(result) {
     // contents dynamically via javascript
     console.log("deleted :" + result);
     
-    refreshSchedulesList();
+    //refreshSchedulesList();
   }
 
-  function requestDelete(orgAccessCode) {
-     if (confirm("Request to delete " + orgAccessCode)) {
-       processDelete(orgAccessCode);
+  function deleteSchedule(orgAccessCodeh) {
+     if (confirm("Are you sure you want to delete the entered schedule?")) {
+       processDelete(orgAccessCodeh);
      }
   }
 
   function processDelete(orgAccessCode) {
-    var data = {};
-    data["orgAccessCode"] = orgAccessCode;
+    let orgAccessCoded = document.getElementById("secretID").value;
+    let data = {};
+    data["orgAccessCode"] = orgAccessCoded;
 
-    var js = JSON.stringify(data);
+    let js = JSON.stringify(data);
     console.log("JS:" + js);
-    var xhr = new XMLHttpRequest();
+    let xhr = new XMLHttpRequest();
     xhr.open("DELETE", delete_url, true);
 
     // send the collected data as JSON
@@ -251,11 +252,7 @@ function participant(){
 function systemAdmin(){
     //take the entered login info to store in the HTML
     document.getElementById("currentInfo").innerHTML = "Admin: " + document.getElementById("loginText").value;
-    //check if the system admin is in the database
-    
-    //confirmation that the system admin exists goes here
-    //to be implemented later
-    
+
     //show the systemAdmin panel
     let output = "<p> User: System Administrator </p>";
     
@@ -338,16 +335,15 @@ function pullSchedule(){
     let nameUsed = document.getElementById("scheduleName").value;
     //console.log(startDay, endDay, startTime, endTime, meetingInterval);
     /*JSON stuff*/
-    var form = document.addForm;
-    var arg1 = "qwertyuiopO";
-    var arg2 = startDay;
-    var arg3 = endDay;
-    var arg4 = startTime;
-    var arg5 = endTime;
-    var arg6 = meetingInterval;
-    var arg7 = nameUsed;
+    let form = document.addForm;
+    let arg2 = startDay;
+    let arg3 = endDay;
+    let arg4 = startTime;
+    let arg5 = endTime;
+    let arg6 = meetingInterval;
+    let arg7 = nameUsed;
 
-    var data = {};
+    let data = {};
     data["orgAccessCode"] = orgAccessCode; //have to be able to find organizer, (user),
     //and take their fields for the random access codes
     data["startTime"] = arg4;
@@ -359,9 +355,9 @@ function pullSchedule(){
     data["timeCreated"] = Math.floor(Date.now()); //get milliseconds since 1970
     data["initialParticipantAccessCode"] = partAccessCode;
 
-    var js = JSON.stringify(data);
+    let js = JSON.stringify(data);
     console.log("JS:" + js);
-    var xhr = new XMLHttpRequest();
+    let xhr = new XMLHttpRequest();
     xhr.open("POST", add_url, true);
 
   // send the collected data as JSON
