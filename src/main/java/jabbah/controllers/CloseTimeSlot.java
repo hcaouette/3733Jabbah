@@ -77,7 +77,7 @@ public class CloseTimeSlot implements RequestStreamHandler {
 			}
 		} catch (ParseException pe) {
 			logger.log(pe.toString());
-			response = new CloseTimeSlotResponse("Bad REquest: " + pe.getMessage(), 422);  // unable to process input
+			response = new CloseTimeSlotResponse("Bad Request: " + pe.getMessage(), 422);  // unable to process input
 	        responseJson.put("body", new Gson().toJson(response));
 	        processed = true;
 	        body = null;
