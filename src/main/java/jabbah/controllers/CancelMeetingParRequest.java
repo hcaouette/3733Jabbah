@@ -1,12 +1,12 @@
 package jabbah.controllers;
 
-public class CreateMeetingRequest {
+public class CancelMeetingParRequest {
 	String accessCode;
 	String startTime;
 	String day;
 	String scheduleID;
 	
-	public CreateMeetingRequest(String code, String sT, String day, String id) {
+	public CancelMeetingParRequest(String code, String sT, String day, String id) {
 		this.accessCode = code;
 		this.startTime = sT;
 		this.day = day;
@@ -15,6 +15,6 @@ public class CreateMeetingRequest {
 	
 	@Override
 	public String toString() {
-		return "Create Meeting(" + accessCode + ", " + startTime + " on " + day + ")";
+		return "Cancel Meeting(" + accessCode + ", " + startTime + " on " + day + ")";
 	}
 }
