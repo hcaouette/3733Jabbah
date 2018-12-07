@@ -149,18 +149,117 @@ public class TimeSlotDAO {
 		String id = resultSet.getString("orgAccessCode");
 		boolean open = resultSet.getBoolean("isOpen");
 		String participant = resultSet.getString("participant");
-		
+
 		TimeSlot s = new TimeSlot(startTime, duration, day, id);
-		
+
 		// make sure isOpen and participant matches what's in the database
 		if(open)
 			s.openSlot();
 		else
 			s.closeSlot();
-		
+
 		s.book(participant);
-		
+
 		return s;
 	}
 
+        public List<TimeSlot> getSpecificTimeSlot(String accessCode, String month, String monthDay, String startingTime,
+            String weekday, String year) throws Exception {
+        if (month.equals("")) {
+            month = null;
+        }
+        if (monthDay.equals("")) {
+            monthDay = null;
+        }
+        if (weekday.equals("")) {
+            weekday = null;
+        }
+        if (year.equals("")) {
+            year = null;
+        }
+        if (startingTime.equals("")) {
+            startingTime = null;
+        }
+        List<TimeSlot> allTimeSlots = new ArrayList<>();
+        try {
+            String query = "SELECT * FROM TimeSlot WHERE startTime =? AND idDays=? AND orgAccessCode=?";
+            PreparedStatement ps = conn.prepareStatement(query);
+            if (!startingTime.equals(null)) {
+                ps.setString(1, startingTime);
+            } else {
+                ps.setString(1, "*");
+            }
+            ps.setString(3, accessCode);
+
+            //for each timeslot found,
+            //filter by all optional values
+            //as part of date, and weekday too
+            if (!month.equals(null) && !year.equals(null) &&
+                    !monthDay.equals(null) && !weekday.equals(null)) { //all four values are given
+
+            }
+            else if (month.equals(null) && !year.equals(null) &&
+                    !monthDay.equals(null) && !weekday.equals(null)) { //all values are given
+                //except for month
+
+            }
+            else if (!month.equals(null) && year.equals(null) && !monthDay.equals(null) && !weekday.equals(null)) { //all values are given
+                //except for year
+            }
+            else if (!month.equals(null) && !year.equals(null) && monthDay.equals(null) && !weekday.equals(null)) { //all values are given
+                //except for monthDay
+            }
+            else if (!month.equals(null) && !year.equals(null) && !monthDay.equals(null) && weekday.equals(null)) { //all values are given
+                java.sql.Date date = new Date(Integer.parseInt(year), Integer.parseInt(month), Integer.parseInt(monthDay));
+                date.toString();
+                //except for weekDay
+            }
+            else if (month.equals(null) && year.equals(null) && !monthDay.equals(null) && !weekday.equals(null)) {
+                //monthDay and weekDay given
+            }
+            else if (month.equals(null) && !year.equals(null) && monthDay.equals(null) && !weekday.equals(null)) {
+                //year and weekDay given
+            }
+            else if (month.equals(null) && !year.equals(null) && !monthDay.equals(null) && weekday.equals(null)) {
+                //year and monthDay given
+            }
+            else if (!month.equals(null) && !year.equals(null) && monthDay.equals(null) && weekday.equals(null)) {
+                //month and year given
+            }
+            else if (!month.equals(null) && year.equals(null) && !monthDay.equals(null) && weekday.equals(null)) {
+                //month and monthDay given
+            }
+            else if (!month.equals(null) && year.equals(null) && monthDay.equals(null) && !weekday.equals(null)) {
+                //month and weekday given
+            }
+
+            else if (!month.equals(null) && year.equals(null) && monthDay.equals(null) && weekday.equals(null)) {
+                //month given
+            }
+            else if (month.equals(null) && !year.equals(null) && monthDay.equals(null) && weekday.equals(null)) {
+                //year given
+            }
+            else if (month.equals(null) && year.equals(null) && !monthDay.equals(null) && weekday.equals(null)) {
+                //monthDay given
+            }
+            else if (month.equals(null) && year.equals(null) && monthDay.equals(null) && !weekday.equals(null)) {
+                //weekday given
+            }
+            else { //no optional parameters for date or weekday given
+            ps.setString(2, "*");
+            }
+            ResultSet resultSet = ps.executeQuery(query);
+            while (resultSet.next()) {
+                TimeSlot slot = generateTimeSlot(resultSet);
+                allTimeSlots.add(slot);
+            }
+            resultSet.close();
+            ps.close();
+            return allTimeSlots;
+
+        } catch (Exception e) {
+            throw new Exception("Failed in getting time slots: " + e.getMessage());
+        }
+    }
 }
+

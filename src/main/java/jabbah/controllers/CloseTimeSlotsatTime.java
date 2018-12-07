@@ -6,7 +6,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import org.json.simple.JSONObject;
@@ -22,22 +21,22 @@ import jabbah.db.TimeSlotDAO;
 import jabbah.model.TimeSlot;
 
 public class CloseTimeSlotsatTime implements RequestStreamHandler {
-	
+
 	public LambdaLogger logger = null;
-	
+
 	boolean closeTimeSlotsatTime(String sT, int dur,String id) throws Exception{
 		if(logger != null) { logger.log("in createTimeSlot");}
 		TimeSlotDAO dao = new TimeSlotDAO();
-		
+
 		ArrayList<TimeSlot> SlotsAtTime = new ArrayList<TimeSlot>();
-        
-		dao.g
-        TimeSlot slot = new TimeSlot (sT, dur, idDayParsed, id);
-        slot.closeSlot();
-        
-        return dao.updateTimeSlot(slot);
+
+		//dao.g
+        //TimeSlot slot = new TimeSlot (sT, dur, idDayParsed, id);
+        //slot.closeSlot();
+		return false;
+        //return dao.updateTimeSlot(slot);
 	}
-	
+
 	@Override
 	public void handleRequest(InputStream input, OutputStream output, Context context) throws IOException{
 		logger = context.getLogger();
@@ -47,12 +46,12 @@ public class CloseTimeSlotsatTime implements RequestStreamHandler {
 		headerJson.put("Content-Type",  "application/json");  // not sure if needed anymore?
 		headerJson.put("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
 	    headerJson.put("Access-Control-Allow-Origin",  "*");
-	        
+
 		JSONObject responseJson = new JSONObject();
 		responseJson.put("headers", headerJson);
 
 		CloseTimeSlotResponse response = null;
-		
+
 		// extract body from incoming HTTP POST request. If any error, then return 422 error
 		String body;
 		boolean processed = false;
@@ -61,7 +60,7 @@ public class CloseTimeSlotsatTime implements RequestStreamHandler {
 			JSONParser parser = new JSONParser();
 			JSONObject event = (JSONObject) parser.parse(reader);
 			logger.log("event:" + event.toJSONString());
-			
+
 			String method = (String) event.get("httpMethod");
 			if (method != null && method.equalsIgnoreCase("OPTIONS")) {
 				logger.log("Options request");
@@ -85,9 +84,9 @@ public class CloseTimeSlotsatTime implements RequestStreamHandler {
 		if (!processed) {
 			CloseTimeSlotRequest req = new Gson().fromJson(body, CloseTimeSlotRequest.class);
 			logger.log(req.toString());
-			
+
 			CloseTimeSlotResponse resp;
-			
+/*
 			try {
 				if(createTimeSlot(req.startTime, 0, req.idDay, req.scheduleID)) {
 					resp = new CloseTimeSlotResponse("Successfully closed time slot: " + req.startTime);
@@ -96,17 +95,17 @@ public class CloseTimeSlotsatTime implements RequestStreamHandler {
 					resp = new CloseTimeSlotResponse("Unable to close time slot: " + req.startTime, 422);
 				}
 			}catch (Exception e) {
-				resp = new CloseTimeSlotResponse("Unable to close time slot: " + req.startTime + "(" + e.getMessage() + ")", 403);   
+				resp = new CloseTimeSlotResponse("Unable to close time slot: " + req.startTime + "(" + e.getMessage() + ")", 403);
 			}
 			//compute proper response
 			responseJson.put("body", new Gson().toJson(resp));
-			
+*/
 		}
-		
+
         logger.log("end result:" + responseJson.toJSONString());
         logger.log(responseJson.toJSONString());
         OutputStreamWriter writer = new OutputStreamWriter(output, "UTF-8");
-        writer.write(responseJson.toJSONString());  
+        writer.write(responseJson.toJSONString());
         writer.close();
 	}
 }
