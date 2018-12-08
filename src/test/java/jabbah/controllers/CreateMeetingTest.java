@@ -5,6 +5,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.sql.Date;
 import java.text.SimpleDateFormat;
 
 import org.junit.Assert;
@@ -20,14 +21,14 @@ import jabbah.model.TimeSlot;
  * A simple test harness for locally invoking your Lambda function handler.
  */
 
-public class CloseTimeSlotTest {
+public class CreateMeetingTest {
 	Context createContext(String apiCall) {
         TestContext ctx = new TestContext();
         ctx.setFunctionName(apiCall);
         return ctx;
     }
 	@Test
-	public void testCloseTimeSlot() throws Exception{
+	public void testCloseTimeSlotFalse() throws Exception{
 		
 		//create a time slot
 		TimeSlotDAO dao = new TimeSlotDAO();
@@ -39,29 +40,29 @@ public class CloseTimeSlotTest {
 		
         int rnd = (int)(Math.random() * 1000000);
         
-        TimeSlot s = new TimeSlot("09:10", 20, idDayParsed, "x" + rnd);
-        //open time slot
-        s.openSlot();
+        TimeSlot s = new TimeSlot("03:10", 20, idDayParsed, "x" + rnd);
+        //close time slot
+        s.closeSlot();
         dao.addTimeSlot(s);
 		
-        //close created time slot
-		CloseTimeSlot handler = new CloseTimeSlot();
+        //try to book slot - should fail because slot is not open
+		CreateMeeting hand = new CreateMeeting();
 		
-		CloseTimeSlotRequest otsr = new CloseTimeSlotRequest("09:10", "2018-12-01", "x" + rnd);
+		int rnd2 = (int)(Math.random() * 1000000);
+		CreateMeetingRequest cmr = new CreateMeetingRequest(rnd2 + "P", "03:10", "2018-12-01", "x" + rnd);
 		
-		String otsRequest = new Gson().toJson(otsr);
+		String otsRequest = new Gson().toJson(cmr);
 		String jsonRequest = new Gson().toJson(new PostRequest(otsRequest));
 		
 		InputStream input = new ByteArrayInputStream(jsonRequest.getBytes());
 		OutputStream output = new ByteArrayOutputStream();
 		
-		handler.handleRequest(input, output, createContext("create"));
+		hand.handleRequest(input, output, createContext("create"));
 		
         PostResponse post = new Gson().fromJson(output.toString(), PostResponse.class);
-        CloseTimeSlotResponse resp = new Gson().fromJson(post.body, CloseTimeSlotResponse.class);
-        System.out.println(resp);
+        CreateMeetingResponse cmresp = new Gson().fromJson(post.body, CreateMeetingResponse.class);
+        System.out.println(cmresp);
 
-        Assert.assertEquals("Successfully closed time slot: 09:10", resp.response);
+        Assert.assertEquals("Unable to book time slot: 03:10", cmresp.response);
 	}
-
 }

@@ -20,11 +20,11 @@ import com.google.gson.Gson;
 import jabbah.db.TimeSlotDAO;
 import jabbah.model.TimeSlot;
 
-public class CloseTimeSlot implements RequestStreamHandler {
+public class CreateMeeting implements RequestStreamHandler {
 	
 	public LambdaLogger logger = null;
 	
-	boolean createTimeSlot(String sT, int dur, String day, String id) throws Exception{
+	boolean bookTimeSlot(String participantCode, String sT, int dur, String day, String id) throws Exception{
 		if(logger != null) { logger.log("in createTimeSlot");}
 		TimeSlotDAO dao = new TimeSlotDAO();
 		
@@ -33,10 +33,15 @@ public class CloseTimeSlot implements RequestStreamHandler {
         idDay = sdf.parse(day);
         java.sql.Date idDayParsed = new java.sql.Date(idDay.getTime());
         
-        TimeSlot slot = new TimeSlot (sT, dur, idDayParsed, id);
-        slot.closeSlot();
+		// check if slot is open
+		TimeSlot slot = dao.getTimeSlot(sT, idDayParsed, id);
+		if(!slot.open())
+			return false;
         
-        return dao.updateTimeSlot(slot);
+        slot = new TimeSlot (sT, dur, idDayParsed, id);
+        slot.book(participantCode);
+        
+        return dao.updateParticipant(slot);
 	}
 	
 	@Override
@@ -52,7 +57,7 @@ public class CloseTimeSlot implements RequestStreamHandler {
 		JSONObject responseJson = new JSONObject();
 		responseJson.put("headers", headerJson);
 
-		CloseTimeSlotResponse response = null;
+		CreateMeetingResponse response = null;
 		
 		// extract body from incoming HTTP POST request. If any error, then return 422 error
 		String body;
@@ -77,27 +82,27 @@ public class CloseTimeSlot implements RequestStreamHandler {
 			}
 		} catch (ParseException pe) {
 			logger.log(pe.toString());
-			response = new CloseTimeSlotResponse("Bad Request: " + pe.getMessage(), 422);  // unable to process input
+			response = new CreateMeetingResponse("Bad REquest: " + pe.getMessage(), 422);  // unable to process input
 	        responseJson.put("body", new Gson().toJson(response));
 	        processed = true;
 	        body = null;
 		}
 
 		if (!processed) {
-			CloseTimeSlotRequest req = new Gson().fromJson(body, CloseTimeSlotRequest.class);
+			CreateMeetingRequest req = new Gson().fromJson(body, CreateMeetingRequest.class);
 			logger.log(req.toString());
 			
-			CloseTimeSlotResponse resp;
+			CreateMeetingResponse resp;
 			
 			try {
-				if(createTimeSlot(req.startTime, 0, req.idDay, req.scheduleID)) {
-					resp = new CloseTimeSlotResponse("Successfully closed time slot: " + req.startTime);
+				if(bookTimeSlot(req.accessCode, req.startTime, 0, req.day, req.scheduleID)) {
+					resp = new CreateMeetingResponse("Successfully booked time slot: " + req.startTime);
 				}
 				else {
-					resp = new CloseTimeSlotResponse("Unable to close time slot: " + req.startTime, 422);
+					resp = new CreateMeetingResponse("Unable to book time slot: " + req.startTime, 422);
 				}
 			}catch (Exception e) {
-				resp = new CloseTimeSlotResponse("Unable to close time slot: " + req.startTime + "(" + e.getMessage() + ")", 403);   
+				resp = new CreateMeetingResponse("Unable to book time slot: " + req.startTime + "(" + e.getMessage() + ")", 403);   
 			}
 			//compute proper response
 			responseJson.put("body", new Gson().toJson(resp));
