@@ -31,7 +31,7 @@ public class ShowOpenTimeslotsTest {
     }
 
     @Test
-    public void testCreateAndChangeConstant() throws Exception {
+    public void testShowTwoOpen() throws Exception {
         TimeSlotDAO dao = new TimeSlotDAO();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         String startDateString = "2018-12-07";

@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import jabbah.model.DaysInSchedule;
 import jabbah.model.TimeSlot;
 
 public class TimeSlotDAO {
@@ -152,6 +151,7 @@ public class TimeSlotDAO {
 		String id = resultSet.getString("orgAccessCode");
 		boolean open = resultSet.getBoolean("isOpen");
 		String participant = resultSet.getString("participant");
+        String name = resultSet.getString("name");
 
 		TimeSlot s = new TimeSlot(startTime, duration, day, id);
 
@@ -161,7 +161,7 @@ public class TimeSlotDAO {
 		else
 			s.closeSlot();
 
-		s.book(participant);
+		s.book(participant, null);
 
 		return s;
 	}
@@ -169,7 +169,7 @@ public class TimeSlotDAO {
         List<TimeSlot> allTimeSlots = new ArrayList<TimeSlot>();
         for (String x: Dates)
         {
-        	
+
         	PreparedStatement ps = conn.prepareStatement("SELECT * FROM TimeSlot WHERE idDays=? AND orgAccessCode=?;");
         	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             java.util.Date startDateUtil = null;
@@ -188,7 +188,6 @@ public class TimeSlotDAO {
         }
         return allTimeSlots;
 	}
-        @SuppressWarnings("deprecation")
         public List<TimeSlot> getSpecificTimeSlot(String accessCode, String month, String monthDay, String startingTime,
             String weekday, String year) throws Exception {
         List<TimeSlot> allTimeSlots = new ArrayList<TimeSlot>();
@@ -237,7 +236,7 @@ public class TimeSlotDAO {
                             (month.equals("") || month.equals(Integer.toString(monthh))) &&
                             (year.equals("") || year.equals(yearZZ)) &&
                             (monthDay.equals("") || monthDay.equals(Integer.toString(day))) &&
-                                    (slot.isOpen())) {
+                                    (slot.isOpen()) && (slot.getParticipant() == null)) {
                         //include only timeslots that fit the request
                         allTimeSlots.add(slot);
                     }

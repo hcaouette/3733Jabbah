@@ -214,6 +214,30 @@ public class SchedulesDAO {
         }
     }
 
+    public List<Schedule> getNewSchedules(String hour, String currentHour) throws Exception {
+
+        List<Schedule> allSchedules = new ArrayList<>();
+        try {
+            Statement statement = conn.createStatement();
+            String query = "SELECT * FROM Schedules";
+            ResultSet resultSet = statement.executeQuery(query);
+
+            while (resultSet.next()) {
+                Schedule s = generateSchedule(resultSet);
+                //only add to list to return if timeslot
+                //is created within the given number of hours
+                if(s.getTimeCreated() + (Long.parseLong(hour) * 60 * 60 * 1000) >= Long.parseLong(currentHour))
+                allSchedules.add(s);
+            }
+            resultSet.close();
+            statement.close();
+            return allSchedules;
+
+        } catch (Exception e) {
+            throw new Exception("Failed in getting schedules: " + e.getMessage());
+        }
+    }
+
     private Schedule generateSchedule(ResultSet resultSet) throws Exception {
         String accessCode  = resultSet.getString("orgAccessCode");
         String startTime = resultSet.getString("startTime");
