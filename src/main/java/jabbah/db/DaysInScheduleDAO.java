@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import jabbah.model.DaysInSchedule;
@@ -43,7 +44,58 @@ public class DaysInScheduleDAO {
             throw new Exception("Failed in getting a day in schedule: " + e.getMessage());
         }
     }
-
+   
+    public List<DaysInSchedule> getWeek(Date day, String id) throws Exception{
+    	List<DaysInSchedule> weekOfDays = new ArrayList<>();
+    	Calendar Cal = Calendar.getInstance();
+    	Cal.setTime(day);
+    	Date sqlDay;
+    	sqlDay = new java.sql.Date(Cal.getTimeInMillis());
+    	PreparedStatement ps = conn.prepareStatement("SELECT * FROM DaysInSchedule WHERE idDays=? AND orgAccessCode =?;");
+    	try {
+    		// Calendar goes from Sunday to Saturday 1-7
+    		
+    		int dow = Cal.get(Calendar.DAY_OF_WEEK);
+    		Cal.roll(Calendar.DAY_OF_WEEK, -(dow-2));
+    		
+    		/*int firstCount = 0;
+    		int numMissingDays =0;
+    		while(firstCount<5)
+    		{
+    			ps = conn.prepareStatement("SELECT * FROM DaysInSchedule WHERE idDays=? AND orgAccessCode =?;");
+    			
+    			sqlday.setTime(Cal.getTimeInMillis());
+    			CheckCal.setTime(sqlday);
+    			Cal.roll(Calendar.DAY_OF_WEEK, 1);
+    			firstCount++;
+    			if(!ps.execute())
+    			{
+    				numMissingDays = 0;
+    			}
+    			
+    		}*/
+    		int count = 0;
+    		while(count<5)
+    		{
+    		sqlDay.setTime(Cal.getTimeInMillis());
+    		ps = conn.prepareStatement("SELECT * FROM DaysInSchedule WHERE idDays=? AND orgAccessCode =?;");
+       		count++;
+    		ps.setDate(1, sqlDay);
+    		ps.setString(2, id);
+    		//Always returns true but is handled later
+    		if(ps.execute())
+    		{
+    		weekOfDays.add(getDay(sqlDay, id));    	
+    		}
+    		Cal.roll(Calendar.DAY_OF_WEEK, 1);
+            }
+            return weekOfDays;
+    		}
+    	catch (Exception e) {
+    		throw new Exception ("Failed to make a week of days: " + e.getMessage());
+    	}
+    	
+    }
     public boolean deleteDay(DaysInSchedule day) throws Exception {
         try {
             PreparedStatement ps = conn.prepareStatement("DELETE FROM DaysInSchedule WHERE orgAccessCode=?;");
@@ -76,6 +128,7 @@ public class DaysInScheduleDAO {
             ps.setDate(1,  day.getDate());
             ps.setString(2,  day.getScheduleID());
             ps.execute();
+            ps.close();
             return true;
 
         } catch (Exception e) {
