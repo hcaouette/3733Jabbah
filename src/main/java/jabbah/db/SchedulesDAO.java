@@ -263,4 +263,23 @@ public class SchedulesDAO {
         java.sql.Date endDate = new java.sql.Date(endDateUtil.getTime());
         return new Schedule (accessCode, startTime,endTime,timeSlotLength,startDate,endDate,name,timeCreated,initialParticipantAccessCode);
     }
+
+    public boolean deleteOldSchedules(String day, String currentTime) throws Exception {
+        try { //currently incomplete
+            PreparedStatement ps = conn.prepareStatement("DELETE FROM Schedules WHERE timeCreated=?;");
+            ps.setString(1, currentTime);
+            int numAffected = ps.executeUpdate();
+            ps.close();
+
+            DaysInScheduleDAO d = new DaysInScheduleDAO();
+            TimeSlotDAO t = new TimeSlotDAO();
+           // d.deleteOldDay(new DaysInSchedule(null, schedule.getOrgAccessCode()));
+           // t.deleteTimeSlot(new TimeSlot(null, 0, null, schedule.getOrgAccessCode()));
+
+            return (numAffected == 1);
+
+        } catch (Exception e) {
+            throw new Exception("Failed to delete schedule: " + e.getMessage());
+        }
+    }
 }
