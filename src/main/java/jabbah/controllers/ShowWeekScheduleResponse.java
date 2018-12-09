@@ -7,7 +7,7 @@ import java.util.List;
 public class ShowWeekScheduleResponse {
 	List<DaysInSchedule> week;
 	int httpCode;
-	
+	// not used yet maybe later
 	public ShowWeekScheduleResponse(List<DaysInSchedule> week, int code) {
 		this.week = week;
 		this.httpCode = code;
