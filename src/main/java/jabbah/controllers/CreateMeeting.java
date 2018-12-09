@@ -21,29 +21,29 @@ import jabbah.db.TimeSlotDAO;
 import jabbah.model.TimeSlot;
 
 public class CreateMeeting implements RequestStreamHandler {
-	
+
 	public LambdaLogger logger = null;
-	
-	boolean bookTimeSlot(String participantCode, String sT, int dur, String day, String id) throws Exception{
+
+	boolean bookTimeSlot(String participantCode, String sT, int dur, String day, String id, String name) throws Exception{
 		if(logger != null) { logger.log("in createTimeSlot");}
 		TimeSlotDAO dao = new TimeSlotDAO();
-		
+
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         java.util.Date idDay = null;
         idDay = sdf.parse(day);
         java.sql.Date idDayParsed = new java.sql.Date(idDay.getTime());
-        
+
 		// check if slot is open
 		TimeSlot slot = dao.getTimeSlot(sT, idDayParsed, id);
 		if(!slot.open())
 			return false;
-        
+
         slot = new TimeSlot (sT, dur, idDayParsed, id);
-        slot.book(participantCode);
-        
+        slot.book(participantCode, name);
+
         return dao.updateParticipant(slot);
 	}
-	
+
 	@Override
 	public void handleRequest(InputStream input, OutputStream output, Context context) throws IOException{
 		logger = context.getLogger();
@@ -53,12 +53,12 @@ public class CreateMeeting implements RequestStreamHandler {
 		headerJson.put("Content-Type",  "application/json");  // not sure if needed anymore?
 		headerJson.put("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
 	    headerJson.put("Access-Control-Allow-Origin",  "*");
-	        
+
 		JSONObject responseJson = new JSONObject();
 		responseJson.put("headers", headerJson);
 
 		CreateMeetingResponse response = null;
-		
+
 		// extract body from incoming HTTP POST request. If any error, then return 422 error
 		String body;
 		boolean processed = false;
@@ -67,7 +67,7 @@ public class CreateMeeting implements RequestStreamHandler {
 			JSONParser parser = new JSONParser();
 			JSONObject event = (JSONObject) parser.parse(reader);
 			logger.log("event:" + event.toJSONString());
-			
+
 			String method = (String) event.get("httpMethod");
 			if (method != null && method.equalsIgnoreCase("OPTIONS")) {
 				logger.log("Options request");
@@ -91,28 +91,28 @@ public class CreateMeeting implements RequestStreamHandler {
 		if (!processed) {
 			CreateMeetingRequest req = new Gson().fromJson(body, CreateMeetingRequest.class);
 			logger.log(req.toString());
-			
+
 			CreateMeetingResponse resp;
-			
+
 			try {
-				if(bookTimeSlot(req.accessCode, req.startTime, 0, req.day, req.scheduleID)) {
+				if(bookTimeSlot(req.accessCode, req.startTime, 0, req.day, req.scheduleID, req.name)) {
 					resp = new CreateMeetingResponse("Successfully booked time slot: " + req.startTime);
 				}
 				else {
 					resp = new CreateMeetingResponse("Unable to book time slot: " + req.startTime, 422);
 				}
 			}catch (Exception e) {
-				resp = new CreateMeetingResponse("Unable to book time slot: " + req.startTime + "(" + e.getMessage() + ")", 403);   
+				resp = new CreateMeetingResponse("Unable to book time slot: " + req.startTime + "(" + e.getMessage() + ")", 403);
 			}
 			//compute proper response
 			responseJson.put("body", new Gson().toJson(resp));
-			
+
 		}
-		
+
         logger.log("end result:" + responseJson.toJSONString());
         logger.log(responseJson.toJSONString());
         OutputStreamWriter writer = new OutputStreamWriter(output, "UTF-8");
-        writer.write(responseJson.toJSONString());  
+        writer.write(responseJson.toJSONString());
         writer.close();
 	}
 }
