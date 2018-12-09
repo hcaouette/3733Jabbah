@@ -165,9 +165,9 @@ function createSchedule(){
       console.log(xhr.request);
       if (xhr.readyState == XMLHttpRequest.DONE) {
         console.log ("XHR:" + xhr.responseText);
-        processResponse(orgAccessCode, arg2, arg3, arg4, arg5, arg6);
+        //processResponse(orgAccessCode, arg2, arg3, arg4, arg5, arg6);
       } else {
-        processResponse("N/A", arg2, arg3, arg4, arg5, arg6);
+        //processResponse("N/A", arg2, arg3, arg4, arg5, arg6);
       }
     };
     /*Lambda stuff*/
@@ -226,16 +226,14 @@ function participant(){
     let output = "<p> User: Participant </p>"
     output+="<label for = 'secretID'>Enter your secret code here to access a previously created schedule:</label>";
     output+="<br><textarea id='secretID' rows='2' cols='20'></textarea>";
-    output+="<label for='viewDayText'>Enter the day of the month here</label>";
-    output+="<br><textarea id='viewDayText' rows='2' cols='20'></textarea>";
+    output+="<br><label for = 'viewYearText'>Enter year here:</label>";
+    output+="<br><textarea id='viewYearText' rows='2' cols='20' placeholder='yyyy'></textarea>";
+    output+="<br><label for = 'viewMonthText'>Enter month here:</label>";
+    output+="<br><textarea id='viewMonthText' rows='2' cols='20' placeholder='mm'></textarea>";
+    output+="<br><label for = 'viewDayText'>Enter day of month here:</label>";
+    output+="<br><textarea id='viewDayText' rows='2' cols='20' placeholder='dd'></textarea>";
     output+="<br><br>";
-    output+= "<label for='viewYearText'>Enter the year here</label>";
-    output+="<br><textarea id='viewYearText' rows='2' cols='20'></textarea>";
-    output+="<br><br>";
-    output+= "<label for='viewMonthText'>Enter the month here</label>";
-    output+="<br><textarea id='viewMonthText' rows='2' cols='20'></textarea>";
-    output+="<br><br>";
-    output+="<button type='button' onclick='pullSchedule()'>View Week</button>";
+    output+="<button type='button' onclick='pullSchedule(participant)'>View Week</button>";
 
     output+="<br><br>";
     output+= "<label for='viewWeekdayText'>Enter the weekday here</label>";
@@ -279,14 +277,14 @@ function organizer(){
     //show the panel for organizers
     let output = "<p> User: Organizer </p>";
 
-    output+="<label for = 'viewMonthText'>Enter month here:</label>";
-    output+="<br><textarea id='viewMonthText' rows='2' cols='20'></textarea>";
-    output+="<br><label for = 'viewDayText'>Enter day of month here:</label>";
-    output+="<br><textarea id='viewDayText' rows='2' cols='20'></textarea>";
     output+="<br><label for = 'viewYearText'>Enter year here:</label>";
-    output+="<br><textarea id='viewYearText' rows='2' cols='20'></textarea>";
+    output+="<br><textarea id='viewYearText' rows='2' cols='20' placeholder='yyyy'></textarea>";
+    output+="<br><label for = 'viewMonthText'>Enter month here:</label>";
+    output+="<br><textarea id='viewMonthText' rows='2' cols='20' placeholder='mm'></textarea>";
+    output+="<br><label for = 'viewDayText'>Enter day of month here:</label>";
+    output+="<br><textarea id='viewDayText' rows='2' cols='20' placeholder='dd'></textarea>";
     output+="<br><br>";
-    output+="<button type = 'button' onclick = 'pullSchedule()'>View Schedule</button>";
+    output+="<button type = 'button' onclick = 'pullSchedule(organizer)'>View Schedule</button>";
     output+="<button type = 'button' onclick = 'extendSchedule()'>Extend Schedule</button>";
 
     output+="<p>Close or Open time slots on a given day or all time slots at a given time </p>";
@@ -319,44 +317,44 @@ function organizer(){
 
     document.getElementById("panelPrint").innerHTML = output;
 }
-function pullSchedule(){
+function pullSchedule(userType){
 
+    console.log(userType);
     console.log("yeehaw");
     document.getElementById("panelPrint").innerHTML += "<br>pulling schedule for you now";
     //a new schedule would not be created for pulling up the week in a schedule,
     //instead it should get the days in a schedule based on what access code and info they enter
     //Schedule Creation:
     //name creation is handled on the backend so it can be checked against the server
-    let secretID = document.getElementById("secretID");
+    let secretID = document.getElementById("secretID").value;
     let viewDay = document.getElementById("viewDayText").value;
     let viewMonth = document.getElementById("viewMonthText").value;
     let viewYear = document.getElementById("viewYearText").value;
-    console.log(secretID.value);
+    console.log(secretID);
     console.log(viewDay);
     console.log(viewMonth);
     console.log(viewYear);
     //console.log(startDay, endDay, startTime, endTime, meetingInterval);
     /*JSON stuff*/
     let form = document.addForm;
-    let arg2 = secretID;
-    let arg3 = viewDay;
-    let arg4 = viewMonth;
-    let arg5 = viewYear;
+    let arg2 = viewYear;
+    let arg3 = viewMonth;
+    let arg4 = viewDay;
+    let arg5 = secretID;
 
     let data = {};
-    data["participantID"] = arg2; //participants secret code to find a schedule,
-    //and take their fields for the random access codes
-    data["viewDay"] = arg3;
-    data["viewMonth"] = arg4;
-    data["viewYear"] = arg5;
+    data["viewYear"] = arg2;
+    data["viewMonth"] = arg3;
+    data["viewDay"] = arg4;
+    data["participantID"] = arg5;
+
 
     let js = JSON.stringify(data);
     console.log("JS:" + js);
-/**    let xhr = new XMLHttpRequest();
+    let xhr = new XMLHttpRequest();
     xhr.open("POST", add_url, true);
 
   // send the collected data as JSON
-
   xhr.send(js);
 
     // This will process results and update HTML as appropriate.
@@ -370,11 +368,8 @@ function pullSchedule(){
         processResponse("N/A", arg2, arg3, arg4, arg5, arg6);
       }
     };
-    /*Lambda stuff
-    /**
-     * */
-//      console.log("creating");
-  //  loadCal();
+      console.log("creating");
+    loadCal();
 }
 </script>
 
