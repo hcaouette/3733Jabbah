@@ -20,11 +20,11 @@ import com.google.gson.Gson;
 import jabbah.db.TimeSlotDAO;
 import jabbah.model.TimeSlot;
 
-public class CloseTimeSlotsatTime implements RequestStreamHandler {
+public class OpenTimeSlotsatTime implements RequestStreamHandler {
 
 	public LambdaLogger logger = null;
 
-	boolean closeTimeSlotsatTime(String sT, String id) throws Exception{
+	boolean openTimeSlotsatTime(String sT, String id) throws Exception{
 		if(logger != null) { logger.log("in createTimeSlot");}
 		TimeSlotDAO dao = new TimeSlotDAO();
 		
@@ -36,7 +36,7 @@ public class CloseTimeSlotsatTime implements RequestStreamHandler {
 			//check for all time slot with given schedule id and given starting time
 			if(s.getScheduleID().equals(id) && s.getTime().equals(sT)) {
 				count++;
-				s.closeSlot();
+				s.openSlot();
 				if(!dao.updateTimeSlot(s))
 					return false;
 			}
@@ -60,7 +60,7 @@ public class CloseTimeSlotsatTime implements RequestStreamHandler {
 		JSONObject responseJson = new JSONObject();
 		responseJson.put("headers", headerJson);
 
-		CloseTimeSlotResponse response = null;
+		OpenTimeSlotResponse response = null;
 
 		// extract body from incoming HTTP POST request. If any error, then return 422 error
 		String body;
@@ -85,27 +85,27 @@ public class CloseTimeSlotsatTime implements RequestStreamHandler {
 			}
 		} catch (ParseException pe) {
 			logger.log(pe.toString());
-			response = new CloseTimeSlotResponse("Bad REquest: " + pe.getMessage(), 422);  // unable to process input
+			response = new OpenTimeSlotResponse("Bad REquest: " + pe.getMessage(), 422);  // unable to process input
 	        responseJson.put("body", new Gson().toJson(response));
 	        processed = true;
 	        body = null;
 		}
 
 		if (!processed) {
-			CloseTimeSlotsatTimeRequest req = new Gson().fromJson(body, CloseTimeSlotsatTimeRequest.class);
+			OpenTimeSlotsatTimeRequest req = new Gson().fromJson(body, OpenTimeSlotsatTimeRequest.class);
 			logger.log(req.toString());
 
-			CloseTimeSlotResponse resp;
+			OpenTimeSlotResponse resp;
 
 			try {
-				if(closeTimeSlotsatTime(req.startTime, req.scheduleID)) {
-					resp = new CloseTimeSlotResponse("Successfully closed all time slots: " + req.startTime);
+				if(openTimeSlotsatTime(req.startTime, req.scheduleID)) {
+					resp = new OpenTimeSlotResponse("Successfully opened all time slots: " + req.startTime);
 				}
 				else {
-					resp = new CloseTimeSlotResponse("Unable to close all time slots: " + req.startTime, 422);
+					resp = new OpenTimeSlotResponse("Unable to open all time slots: " + req.startTime, 422);
 				}
 			}catch (Exception e) {
-				resp = new CloseTimeSlotResponse("Unable to close all time slots: " + req.startTime + "(" + e.getMessage() + ")", 403);
+				resp = new OpenTimeSlotResponse("Unable to open all time slots: " + req.startTime + "(" + e.getMessage() + ")", 403);
 			}
 			//compute proper response
 			responseJson.put("body", new Gson().toJson(resp));
