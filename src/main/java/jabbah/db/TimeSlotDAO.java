@@ -4,10 +4,12 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import jabbah.model.DaysInSchedule;
 import jabbah.model.TimeSlot;
 
 public class TimeSlotDAO {
@@ -163,7 +165,29 @@ public class TimeSlotDAO {
 
 		return s;
 	}
-
+	public List<TimeSlot> getTimesSlotsForDates (List<String> Dates,String orgAccessCode) throws Exception {
+        List<TimeSlot> allTimeSlots = new ArrayList<TimeSlot>();
+        for (String x: Dates)
+        {
+        	
+        	PreparedStatement ps = conn.prepareStatement("SELECT * FROM TimeSlot WHERE idDays=? AND orgAccessCode=?;");
+        	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            java.util.Date startDateUtil = null;
+            startDateUtil = sdf.parse(x);
+            java.sql.Date dateParsed = new java.sql.Date(startDateUtil.getTime());
+            ps.setDate(1, dateParsed);
+            ps.setString(2, orgAccessCode);
+            ResultSet resultSet = ps.executeQuery();
+            TimeSlot s;
+            while (resultSet.next()) {
+                s = generateTimeSlot(resultSet);
+                allTimeSlots.add(s);
+            }
+            ps.close();
+            resultSet.close();
+        }
+        return allTimeSlots;
+	}
         @SuppressWarnings("deprecation")
         public List<TimeSlot> getSpecificTimeSlot(String accessCode, String month, String monthDay, String startingTime,
             String weekday, String year) throws Exception {

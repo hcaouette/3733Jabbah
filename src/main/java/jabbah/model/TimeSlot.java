@@ -72,5 +72,8 @@ public class TimeSlot {
     public void setOpen(boolean isOpen) {
         this.isOpen = isOpen;
     }
-
+    public String toString() {
+        return "Fields(" + startTime + "," + duration + "," + participant + "," + isOpen +
+                 "," + idDays + "," + orgAccessCode + ")";
+    }
 }

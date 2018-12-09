@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.sql.Date;
 import java.text.SimpleDateFormat;
 
 import org.json.simple.JSONObject;
@@ -21,6 +22,7 @@ import jabbah.db.*;
 import jabbah.model.*;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -35,10 +37,11 @@ public class ShowWeekScheduleHandler implements RequestStreamHandler {
      * 
      * @throws Exception 
      */
-    List<String> retrieveWeek(String date,String id) throws Exception {
+    List<TimeSlot> retrieveWeek(String date,String id) throws Exception {
     	if(logger != null) { logger.log("in retrieveWeek"); }
     	List<String> weekOfDates = new ArrayList<String>();
     	DaysInScheduleDAO dao = new DaysInScheduleDAO();
+    	TimeSlotDAO daoTime = new TimeSlotDAO();
     	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         java.util.Date startDateUtil = null;
         startDateUtil = sdf.parse(date);
@@ -50,8 +53,57 @@ public class ShowWeekScheduleHandler implements RequestStreamHandler {
     		weekOfDates.add(x.getDate().toString());
     		}
     	}
-    	return weekOfDates;
     	
+    	return daoTime.getTimesSlotsForDates (weekOfDates,id); 
+    	
+    }
+    String retrieveFirstDayOfWeek(String date, String id) throws Exception {
+    	if(logger != null) { logger.log("in retrieveWeek"); }
+    	List<String> weekOfDates = new ArrayList<String>();
+    	DaysInScheduleDAO dao = new DaysInScheduleDAO();
+    	TimeSlotDAO daoTime = new TimeSlotDAO();
+    	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        java.util.Date startDateUtil = null;
+        startDateUtil = sdf.parse(date);
+        java.sql.Date dateParsed = new java.sql.Date(startDateUtil.getTime());
+    	List<DaysInSchedule> weekOfDays =  dao.getWeek(dateParsed, id);
+    	int y = 0;
+    	String dayOfWeek = "";
+    	for (DaysInSchedule x: weekOfDays)
+    	{
+    		if(x!=null) {
+        	
+        	if (y==0)
+        	{ 
+        	Date day = x.getDate();
+        	Calendar Cal = Calendar.getInstance();
+        	Cal.setTime(day);
+        	int dow = Cal.get(Calendar.DAY_OF_WEEK);
+        	if(dow == 2)
+        	{
+        	dayOfWeek = "Monday";
+        	}
+        	if(dow == 3)
+        	{
+        	dayOfWeek = "Tuesday";
+        	}
+        	if(dow == 4)
+        	{
+        	dayOfWeek = "Wednesday";
+        	}
+        	if(dow == 5)
+        	{
+        	dayOfWeek = "Thursday";
+        	}
+        	if(dow == 6)
+        	{
+        	dayOfWeek = "Friday";
+        	}
+        	y++;
+        	}
+    		}
+    	}
+    	return dayOfWeek;
     }
     
     @Override
@@ -107,7 +159,7 @@ public class ShowWeekScheduleHandler implements RequestStreamHandler {
 
             try {
                 if (retrieveWeek(req.date,req.scheduleID) != null) {
-                    resp = new CreateScheduleResponse("Successfully found week:" + retrieveWeek(req.date,req.scheduleID));
+                    resp = new CreateScheduleResponse("Successfully found week:" + retrieveFirstDayOfWeek(req.date,req.scheduleID)+ retrieveWeek(req.date,req.scheduleID).toString());
                 } else {
                     resp = new CreateScheduleResponse("Unable to find week for day: " + req.date, 422);
                 }
