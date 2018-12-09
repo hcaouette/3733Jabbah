@@ -4,7 +4,7 @@ import java.sql.Date;
 
 public class TimeSlot {
     String startTime;
-	int duration;
+	  int duration;
     String participant;
     private boolean isOpen;
 
