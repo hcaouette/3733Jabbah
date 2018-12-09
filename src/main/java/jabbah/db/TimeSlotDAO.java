@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import jabbah.model.TimeSlot;
@@ -109,7 +110,7 @@ public class TimeSlotDAO {
             ps = conn.prepareStatement("INSERT INTO TimeSlot (startTime, duration, participant, isOpen, idDays, orgAccessCode) values(?,?,?,?,?,?);");
             ps.setString(1,  slot.getTime());
             ps.setInt(2,  slot.getDuration());
-            ps.setString(3, slot.getParticipant()); //
+            ps.setString(3, slot.getParticipant());
             ps.setBoolean(4,  slot.open());
             ps.setDate(5, slot.getDate());
             ps.setString(6,  slot.getScheduleID());
@@ -163,98 +164,63 @@ public class TimeSlotDAO {
 		return s;
 	}
 
+        @SuppressWarnings("deprecation")
         public List<TimeSlot> getSpecificTimeSlot(String accessCode, String month, String monthDay, String startingTime,
             String weekday, String year) throws Exception {
-        if (month.equals("")) {
-            month = null;
-        }
-        if (monthDay.equals("")) {
-            monthDay = null;
-        }
-        if (weekday.equals("")) {
-            weekday = null;
-        }
-        if (year.equals("")) {
-            year = null;
-        }
-        if (startingTime.equals("")) {
-            startingTime = null;
-        }
-        List<TimeSlot> allTimeSlots = new ArrayList<>();
+        List<TimeSlot> allTimeSlots = new ArrayList<TimeSlot>();
         try {
-            String query = "SELECT * FROM TimeSlot WHERE startTime =? AND idDays=? AND orgAccessCode=?";
-            PreparedStatement ps = conn.prepareStatement(query);
-            if (!startingTime.equals(null)) {
-                ps.setString(1, startingTime);
-            } else {
-                ps.setString(1, "*");
-            }
-            ps.setString(3, accessCode);
+            Statement statement = conn.createStatement();
+            String query = "SELECT * FROM TimeSlot";
+            ResultSet resultSet = statement.executeQuery(query);
 
-            //for each timeslot found,
-            //filter by all optional values
-            //as part of date, and weekday too
-            if (!month.equals(null) && !year.equals(null) &&
-                    !monthDay.equals(null) && !weekday.equals(null)) { //all four values are given
-
-            }
-            else if (month.equals(null) && !year.equals(null) &&
-                    !monthDay.equals(null) && !weekday.equals(null)) { //all values are given
-                //except for month
-
-            }
-            else if (!month.equals(null) && year.equals(null) && !monthDay.equals(null) && !weekday.equals(null)) { //all values are given
-                //except for year
-            }
-            else if (!month.equals(null) && !year.equals(null) && monthDay.equals(null) && !weekday.equals(null)) { //all values are given
-                //except for monthDay
-            }
-            else if (!month.equals(null) && !year.equals(null) && !monthDay.equals(null) && weekday.equals(null)) { //all values are given
-                java.sql.Date date = new Date(Integer.parseInt(year), Integer.parseInt(month), Integer.parseInt(monthDay));
-                date.toString();
-                //except for weekDay
-            }
-            else if (month.equals(null) && year.equals(null) && !monthDay.equals(null) && !weekday.equals(null)) {
-                //monthDay and weekDay given
-            }
-            else if (month.equals(null) && !year.equals(null) && monthDay.equals(null) && !weekday.equals(null)) {
-                //year and weekDay given
-            }
-            else if (month.equals(null) && !year.equals(null) && !monthDay.equals(null) && weekday.equals(null)) {
-                //year and monthDay given
-            }
-            else if (!month.equals(null) && !year.equals(null) && monthDay.equals(null) && weekday.equals(null)) {
-                //month and year given
-            }
-            else if (!month.equals(null) && year.equals(null) && !monthDay.equals(null) && weekday.equals(null)) {
-                //month and monthDay given
-            }
-            else if (!month.equals(null) && year.equals(null) && monthDay.equals(null) && !weekday.equals(null)) {
-                //month and weekday given
-            }
-
-            else if (!month.equals(null) && year.equals(null) && monthDay.equals(null) && weekday.equals(null)) {
-                //month given
-            }
-            else if (month.equals(null) && !year.equals(null) && monthDay.equals(null) && weekday.equals(null)) {
-                //year given
-            }
-            else if (month.equals(null) && year.equals(null) && !monthDay.equals(null) && weekday.equals(null)) {
-                //monthDay given
-            }
-            else if (month.equals(null) && year.equals(null) && monthDay.equals(null) && !weekday.equals(null)) {
-                //weekday given
-            }
-            else { //no optional parameters for date or weekday given
-            ps.setString(2, "*");
-            }
-            ResultSet resultSet = ps.executeQuery(query);
             while (resultSet.next()) {
                 TimeSlot slot = generateTimeSlot(resultSet);
-                allTimeSlots.add(slot);
+                //filter out any timeslots on the wrong day of week
+                Calendar c = Calendar.getInstance();
+                c.setTime(slot.getDate());
+                int dayOfWeekNum = c.get(Calendar.DAY_OF_WEEK);
+                if (dayOfWeekNum != 1 && dayOfWeekNum != 7) {
+                    //don't get timeslots for saturday and sunday
+                    String dayOfWeek;
+                    if (dayOfWeekNum == 2) {
+                        dayOfWeek = "Monday";
+                    } else if (dayOfWeekNum == 3) {
+                        dayOfWeek = "Tuesday";
+                    }
+                    else if (dayOfWeekNum == 4) {
+                        dayOfWeek = "Wednesday";
+                    }
+                    else if (dayOfWeekNum == 5) {
+                        dayOfWeek = "Thursday";
+                    }
+                    else if (dayOfWeekNum == 6) {
+                        dayOfWeek = "Friday";
+                    }
+                    else {
+                        dayOfWeek = "Should never get here";
+                    }
+                  java.sql.Date dat = slot.getDate();
+                  //create calander instance and get required params
+                  Calendar cal = Calendar.getInstance();
+                  cal.setTime(dat);
+                  int monthh = cal.get(Calendar.MONTH) + 1;
+                  int day = cal.get(Calendar.DAY_OF_MONTH);
+                  int yearh = cal.get(Calendar.YEAR);
+                  String yearZZ = Integer.toString(yearh);
+                    if (accessCode.equals(slot.getOrgAccessCode()) &&
+                            (weekday.equals("") || weekday.equals(dayOfWeek)) &&
+                            (startingTime.equals("") || startingTime.equals(slot.getTime())) &&
+                            (month.equals("") || month.equals(Integer.toString(monthh))) &&
+                            (year.equals("") || year.equals(yearZZ)) &&
+                            (monthDay.equals("") || monthDay.equals(Integer.toString(day))) &&
+                                    (slot.isOpen())) {
+                        //include only timeslots that fit the request
+                        allTimeSlots.add(slot);
+                    }
+                }
             }
             resultSet.close();
-            ps.close();
+            statement.close();
             return allTimeSlots;
 
         } catch (Exception e) {
