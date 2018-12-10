@@ -64,7 +64,7 @@ function firstLoad(){
 }
 
 function bookFunc(){
-    window.confirm("Please confirm you want to book");
+    //window.confirm("Please confirm you want to book");
 }
 
 function makeOrgId() {
@@ -154,38 +154,38 @@ function processDeleteResponse(result) {
     //refreshSchedulesList();
   }
 
-  function deleteSchedule(orgAccessCodeh) {
-     if (confirm("Are you sure you want to delete the entered schedule?")) {
-       processDelete(orgAccessCodeh);
-     }
-  }
+function deleteSchedule(orgAccessCodeh) {
+   if (confirm("Are you sure you want to delete the entered schedule?")) {
+     processDelete(orgAccessCodeh);
+   }
+}
 
-  function processDelete(orgAccessCode) {
-    let orgAccessCoded = document.getElementById("secretID").value;
-    let data = {};
-    data["orgAccessCode"] = orgAccessCoded;
+function processDelete(orgAccessCode) {
+  let orgAccessCoded = document.getElementById("secretID").value;
+  let data = {};
+  data["orgAccessCode"] = orgAccessCoded;
 
-    let js = JSON.stringify(data);
-    console.log("JS:" + js);
-    let xhr = new XMLHttpRequest();
-    xhr.open("DELETE", delete_url, true);
+  let js = JSON.stringify(data);
+  console.log("JS:" + js);
+  let xhr = new XMLHttpRequest();
+  xhr.open("DELETE", delete_url, true);
 
-    // send the collected data as JSON
-    xhr.send(js);
+  // send the collected data as JSON
+  xhr.send(js);
 
-    // This will process results and update HTML as appropriate.
-    xhr.onloadend = function () {
-      console.log(xhr);
-      console.log(xhr.request);
-      if (xhr.readyState == XMLHttpRequest.DONE) {
-        console.log ("XHR:" + xhr.responseText);
-        processDeleteResponse(xhr.responseText);
-      } else {
-        processDeleteResponse("N/A");
-      }
-    };
-  }
-  
+  // This will process results and update HTML as appropriate.
+  xhr.onloadend = function () {
+    console.log(xhr);
+    console.log(xhr.request);
+    if (xhr.readyState == XMLHttpRequest.DONE) {
+      console.log ("XHR:" + xhr.responseText);
+      processDeleteResponse(xhr.responseText);
+    } else {
+      processDeleteResponse("N/A");
+    }
+  };
+}
+
 function pullSchedule(){
       //a new schedule would not be created for pulling up the week in a schedule,
       //instead it should get the days in a schedule based on what access code and info they enter
@@ -279,16 +279,22 @@ function processResp(result) {
       }
 
       let i = 0;
+      let k = 0;
       while (i < (numIntervals*columns)) {
           let currSlot = jDataTwo.week[i];
-          let currTime = currSlot["startingTime"];
+          let currSlotForTime = jDataTwo.week[k];
+          let currTime = currSlotForTime["startTime"];
           myTable += "<tr><td>"+currTime+"</td>";
           for (let j = 0; j < columns; j++) {
               currSlot = jDataTwo.week[i + j];
               if (currSlot["isOpen"] == 0) {
                   //if slot is closed, make it able to be opened by clicking on it
                   //myTable += "<td><button type='button' onclick="openFunc(\'' + currSlot["idDays"] + "," + currSlot["startTime"] + '\')">Open</button></td>";
-                  myTable += "<td><button type='button' onclick='bookFunc()'>Open</button></td>";
+                  myTable += "<td id='";
+                  myTable += currSlot.idDays.toString();
+                  myTable += currSlot.startTime.toString();
+                  myTable += "'><button id='calButton' type='button' onclick='bookFunc()'>Open</button></td>";
+                  console.log(currSlot.idDays.toString(), currSlot.startTime.toString());
               } else {
                   //if slot is open, make it able to be closed by clicking on it
                   //myTable += "<td><button type='button' onclick='closeFunc('\' + currSlot["idDays"] + "," + currSlot["startTime"])'>Close</button></td>";
@@ -296,6 +302,7 @@ function processResp(result) {
               }
           }
           i += columns;
+          k++;
           myTable += "</tr>";
       }
       /*for (let i = 0; i < numIntervals; i++) {
