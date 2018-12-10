@@ -63,8 +63,8 @@ function firstLoad(){
     document.getElementById("panelPrint").innerHTML = output;
 }
 
-function bookFunc(){
-    //window.confirm("Please confirm you want to book");
+function bookFunc(day, time){
+    window.confirm("Please confirm you want to book at ", day, ", ", time);
 }
 
 function makeOrgId() {
@@ -290,15 +290,27 @@ function processResp(result) {
               if (currSlot["isOpen"] == 0) {
                   //if slot is closed, make it able to be opened by clicking on it
                   //myTable += "<td><button type='button' onclick="openFunc(\'' + currSlot["idDays"] + "," + currSlot["startTime"] + '\')">Open</button></td>";
-                  myTable += "<td id='";
-                  myTable += currSlot.idDays.toString();
-                  myTable += currSlot.startTime.toString();
-                  myTable += "'><button id='calButton' type='button' onclick='bookFunc()'>Open</button></td>";
+                  let myLine = "<td><button id='calButton' type='button' onclick='bookFunc(";
+                  myLine += currSlot.idDays.toString();
+                  myLine += ",";
+                  myLine += currSlot.startTime.toString();
+                  myLine += ")'";
+                  myLine += ">Open</button></td>";
                   console.log(currSlot.idDays.toString(), currSlot.startTime.toString());
+                  console.log(myLine);
+                  myTable+=myLine;
               } else {
                   //if slot is open, make it able to be closed by clicking on it
                   //myTable += "<td><button type='button' onclick='closeFunc('\' + currSlot["idDays"] + "," + currSlot["startTime"])'>Close</button></td>";
-                  myTable += "<td><button type='button' onclick='bookFunc()'>Close</button></td>";
+                  let myLine = "<td><button id='calButton' type='button' onclick='bookFunc(";
+                  myLine += currSlot.idDays.toString();
+                  myLine += ",";
+                  myLine += currSlot.startTime.toString();
+                  myLine += ")'";
+                  myLine += ">Open</button></td>";
+                  console.log(currSlot.idDays.toString(), currSlot.startTime.toString());
+                  console.log(myLine);
+                  myTable+=myLine;
               }
           }
           i += columns;
