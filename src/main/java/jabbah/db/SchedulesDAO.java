@@ -182,6 +182,12 @@ public class SchedulesDAO {
                     if (currentMinute < 10) {
                         timeString = currentHour + ":0" + currentMinute;
                     }
+                    if (currentHour < 10) {
+                        timeString = "0" + currentHour + ":" + currentMinute;
+                    }
+                    if (currentHour < 10 && currentMinute < 10) {
+                        timeString = "0" + currentHour + ":0" + currentMinute;
+                    }
                     //now add the timeslot for the current time
                     t.addTimeSlot(new TimeSlot(timeString, schedule.getTimeSlotLength(), currentDay, schedule.getOrgAccessCode()));
                     currentTime = currentTime + schedule.getTimeSlotLength();
