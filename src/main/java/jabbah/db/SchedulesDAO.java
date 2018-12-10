@@ -179,6 +179,9 @@ public class SchedulesDAO {
                     int currentHour = ((currentTime - (currentTime % 60)) / 60);
                     int currentMinute = (currentTime % 60);
                     String timeString = currentHour + ":" + currentMinute;
+                    if (currentMinute < 10) {
+                        timeString = currentHour + ":0" + currentMinute;
+                    }
                     //now add the timeslot for the current time
                     t.addTimeSlot(new TimeSlot(timeString, schedule.getTimeSlotLength(), currentDay, schedule.getOrgAccessCode()));
                     currentTime = currentTime + schedule.getTimeSlotLength();
