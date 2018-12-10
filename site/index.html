@@ -64,7 +64,9 @@ function firstLoad(){
 }
 
 function bookFunc(day, time){
-    window.confirm("Please confirm you want to book at ", day, ", ", time);
+  console.log(day);
+  console.log(time);
+    window.confirm("Please confirm you want to book at "+day+", "+time);
 }
 
 function makeOrgId() {
@@ -291,9 +293,9 @@ function processResp(result) {
                   //if slot is closed, make it able to be opened by clicking on it
                   //myTable += "<td><button type='button' onclick="openFunc(\'' + currSlot["idDays"] + "," + currSlot["startTime"] + '\')">Open</button></td>";
                   let myLine = "<td><button id='calButton' type='button' onclick='bookFunc(";
-                  myLine += currSlot.idDays.toString();
+                  myLine += "\""+currSlot.idDays.toString()+"\"";
                   myLine += ",";
-                  myLine += currSlot.startTime.toString();
+                  myLine += "\""+currSlot.startTime.toString()+"\"";
                   myLine += ")'";
                   myLine += ">Open</button></td>";
                   console.log(currSlot.idDays.toString(), currSlot.startTime.toString());
@@ -303,9 +305,9 @@ function processResp(result) {
                   //if slot is open, make it able to be closed by clicking on it
                   //myTable += "<td><button type='button' onclick='closeFunc('\' + currSlot["idDays"] + "," + currSlot["startTime"])'>Close</button></td>";
                   let myLine = "<td><button id='calButton' type='button' onclick='bookFunc(";
-                  myLine += currSlot.idDays.toString();
+                  myLine += "\""+currSlot.idDays.toString()+"\"";
                   myLine += ",";
-                  myLine += currSlot.startTime.toString();
+                  myLine += "\""+currSlot.startTime.toString()+"\"";
                   myLine += ")'";
                   myLine += ">Open</button></td>";
                   console.log(currSlot.idDays.toString(), currSlot.startTime.toString());
