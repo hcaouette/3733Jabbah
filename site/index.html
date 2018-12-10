@@ -106,7 +106,6 @@ function createSchedule(){
     //console.log(startDay, endDay, startTime, endTime, meetingInterval);
     /*JSON stuff*/
     let form = document.addForm;
-    let arg1 = "qwertyuiopO";
     let arg2 = startDay;
     let arg3 = endDay;
     let arg4 = startTime;
@@ -186,6 +185,117 @@ function processDeleteResponse(result) {
       }
     };
   }
+  
+  function pullSchedule(){
+      //a new schedule would not be created for pulling up the week in a schedule,
+      //instead it should get the days in a schedule based on what access code and info they enter
+      //Schedule Creation:
+      //name creation is handled on the backend so it can be checked against the server
+      let secretID = document.getElementById("secretID").value;
+      console.log(secretID);
+      let viewDate = document.getElementById("viewDateText").value;
+      console.log(viewDate);
+      /*JSON stuff*/
+      let form = document.addForm;
+      let arg2 = viewDate;
+      let arg5 = secretID;
+
+      let data = {};
+      data["date"] = arg2;
+      data["scheduleID"] = arg5;
+
+      let js = JSON.stringify(data);
+      console.log("JS:" + js);
+      let xhr = new XMLHttpRequest();
+      xhr.open("POST", display_url, true);
+
+    // send the collected data as JSON
+    xhr.send(js);
+
+      // This will process results and update HTML as appropriate.
+      xhr.onloadend = function () {
+        console.log(xhr);
+        console.log(xhr.request);
+        if (xhr.readyState == XMLHttpRequest.DONE) {
+          console.log ("XHR:" + xhr.responseText);
+          processResp(xhr.responseText);
+        } else {
+            processResp("N/A");
+        }
+      };
+  }
+function processResp(result) {
+      let jData = JSON.parse(result);
+      console.log(jData);
+      //loading calender(visually) to html
+      let start = jData["startingDay"];
+      let startDayJson = jData.week[0];
+      let startTime = startDayJson["startTime"];
+      let numIntervals = jData["interval"];
+      let myTable = "<table><tr><td style='font-size:16px;'>TIME</td>";
+      //add the correct number of columns
+      let columns = 0;
+      if (start == "Monday") {
+      myTable += "<td>MON</td>";
+      myTable += "<td>TUE</td>";
+      myTable += "<td>WED</td>";
+      myTable += "<td>THU</td>";
+      myTable += "<td>FRI</td></tr>";
+      columns = 5;
+      } else if (start == "Tuesday") {
+          myTable += "<td>TUE</td>";
+          myTable += "<td>WED</td>";
+          myTable += "<td>THU</td>";
+          myTable += "<td>FRI</td></tr>";
+          columns = 4;
+          }
+      else if (start == "Wednesday") {
+          myTable += "<td>WED</td>";
+          myTable += "<td>THU</td>";
+          myTable += "<td>FRI</td></tr>";
+          columns = 3;
+          }
+      else if (start == "Thursday") {
+          myTable += "<td>THU</td>";
+          myTable += "<td>FRI</td></tr>";
+          columns = 2;
+          }
+      else {
+          myTable += "<td>FRI</td></tr>";
+          columns = 1;
+      }
+
+      let i = 0;
+      while (i < (numIntervals*columns)) {
+          let currSlot = jData.week[i];
+          let currTime = currSlot["startingTime"];
+          myTable += "<tr><td>"+currTime+"</td>";
+          for (let j = 0; j < columns; j++) {
+              currSlot = jData.week[i + j];
+              if (currSlot["isOpen"] == 0) {
+                  myTable += "<td><button type='button' onclick='bookFunc()'>Open</button></td>";
+              } else {
+                  myTable += "<td><button type='button' onclick='bookFunc()'>Close</button></td>";
+              }
+          }
+          i += columns;
+          myTable += "</tr>";
+      }
+      /*for (let i = 0; i < numIntervals; i++) {
+          let currTime = (i*interval);
+          let nexTime = ((i+1)*interval);
+          myTable += "<tr><td>"+currTime+"-"+nexTime+"</td>";
+          myTable += "<td><button type='button' onclick='bookFunc()'>Click Me!</button></td>";
+          myTable += "<td><button type='button' onclick='bookFunc()'>Click Me!</button></td>";
+          myTable += "<td><button type='button' onclick='bookFunc()'>Click Me!</button></td>";
+          myTable += "<td><button type='button' onclick='bookFunc()'>Click Me!</button></td>";
+          myTable += "<td><button type='button' onclick='bookFunc()'>Click Me!</button></td></tr>";
+      }  */
+
+      myTable += "</table>";
+      /**console.log(myTable);*/
+      document.getElementById("tablePrint").innerHTML = myTable;
+  }
 
 function participant(){
     //take the entered name to store in the HTML
@@ -246,8 +356,8 @@ function organizer(){
     //show the panel for organizers
     let output = "<p> User: Organizer </p>";
 
-    output+="<br><label for = 'viewYearText'>Enter year here:</label>";
-    output+="<br><textarea id='viewYearText' rows='2' cols='20' placeholder='yyyy'></textarea>";
+    output+="<br><label for = 'viewDateText'>Enter date of the week to view here:</label>";
+    output+="<br><textarea id='viewDateText' rows='2' cols='20' placeholder='yyyy'></textarea>";
     output+="<br><label for = 'viewMonthText'>Enter month here:</label>";
     output+="<br><textarea id='viewMonthText' rows='2' cols='20' placeholder='mm'></textarea>";
     output+="<br><label for = 'viewDayText'>Enter day of month here:</label>";
@@ -285,77 +395,6 @@ function organizer(){
     output+="<button type = 'button' onclick = 'deleteSchedule()'>Delete Schedule</button>";
 
     document.getElementById("panelPrint").innerHTML = output;
-}
-
-function pullSchedule(){
-    //a new schedule would not be created for pulling up the week in a schedule,
-    //instead it should get the days in a schedule based on what access code and info they enter
-    //Schedule Creation:
-    //name creation is handled on the backend so it can be checked against the server
-    let secretID = document.getElementById("secretID").value;
-    let viewDay = document.getElementById("viewDayText").value;
-    let viewMonth = document.getElementById("viewMonthText").value;
-    let viewYear = document.getElementById("viewYearText").value;
-    /*JSON stuff*/
-    let form = document.addForm;
-    let arg2 = viewYear;
-    let arg3 = viewMonth;
-    let arg4 = viewDay;
-    let arg5 = secretID;
-
-    let data = {};
-    data["viewYear"] = arg2;
-    data["viewMonth"] = arg3;
-    data["viewDay"] = arg4;
-    data["participantID"] = arg5;
-
-    let js = JSON.stringify(data);
-    console.log("JS:" + js);
-    let xhr = new XMLHttpRequest();
-    xhr.open("GET", display_url, true);
-
-  // send the collected data as JSON
-  xhr.send(js);
-
-    // This will process results and update HTML as appropriate.
-    xhr.onloadend = function () {
-      console.log(xhr);
-      console.log(xhr.request);
-      if (xhr.readyState == XMLHttpRequest.DONE) {
-        console.log ("XHR:" + xhr.responseText);
-        //processResponse(orgAccessCode, arg2, arg3, arg4, arg5, arg6);
-      } else {
-        //processResponse("N/A", arg2, arg3, arg4, arg5, arg6);
-      }
-    };
-
-    let data = xhr.responseText;
-    let jData = JSON.parse(data);
-    console.log(jData);
-    //loading calender(visually) to html
-    let interval = ; 
-    let numIntervals =
-    let myTable = "<table><tr><td style='font-size:16px;'>TIME</td>";
-    myTable += "<td>MON</td>";
-    myTable += "<td>TUE</td>";
-    myTable += "<td>WED</td>";
-    myTable += "<td>THU</td>";
-    myTable += "<td>FRI</td></tr>";
-
-    for (let i = 0; i < numIntervals; i++) {
-        let currTime = (i*interval);
-        let nexTime = ((i+1)*interval);
-        myTable += "<tr><td>"+currTime+"-"+nexTime+"</td>";
-        myTable += "<td><button type='button' onclick='bookFunc()'>Click Me!</button></td>";
-        myTable += "<td><button type='button' onclick='bookFunc()'>Click Me!</button></td>";
-        myTable += "<td><button type='button' onclick='bookFunc()'>Click Me!</button></td>";
-        myTable += "<td><button type='button' onclick='bookFunc()'>Click Me!</button></td>";
-        myTable += "<td><button type='button' onclick='bookFunc()'>Click Me!</button></td></tr>";
-    }
-
-    myTable += "</table>";
-    /**console.log(myTable);*/
-    document.getElementById("tablePrint").innerHTML = myTable;
 }
 </script>
 
