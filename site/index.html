@@ -186,7 +186,7 @@ function processDeleteResponse(result) {
     };
   }
   
-  function pullSchedule(){
+function pullSchedule(){
       //a new schedule would not be created for pulling up the week in a schedule,
       //instead it should get the days in a schedule based on what access code and info they enter
       //Schedule Creation:
@@ -219,19 +219,32 @@ function processDeleteResponse(result) {
         if (xhr.readyState == XMLHttpRequest.DONE) {
           console.log ("XHR:" + xhr.responseText);
           processResp(xhr.responseText);
+          //processResp(xhr.responseText.body);
         } else {
             processResp("N/A");
         }
       };
-  }
+}
 function processResp(result) {
+      console.log(result.startingDay);
       let jData = JSON.parse(result);
       console.log(jData);
       //loading calender(visually) to html
-      let start = jData["startingDay"];
-      let startDayJson = jData.week[0];
-      let startTime = startDayJson["startTime"];
-      let numIntervals = jData["interval"];
+      //let start = jData["startingDay"];
+      let indexes = Object.keys(jData);
+      console.log(indexes);
+      console.log(jData["body"]);
+      let jDataTwo = JSON.parse(jData["body"]);
+      console.log(jDataTwo.week[0]);
+      //console.log(JSON.parse(indexes[1]));
+      let start = jDataTwo.startingDay;
+      console.log(start);
+      //console.log(jData.body.["startingDay"]);
+      let startDayJson = jDataTwo.week[0];
+      console.log(startDayJson);
+      let startTime = startDayJson.startTime;
+      console.log(startTime);
+      let numIntervals = jDataTwo.interval; //the number of timeslots per day
       let myTable = "<table><tr><td style='font-size:16px;'>TIME</td>";
       //add the correct number of columns
       let columns = 0;
@@ -267,14 +280,18 @@ function processResp(result) {
 
       let i = 0;
       while (i < (numIntervals*columns)) {
-          let currSlot = jData.week[i];
+          let currSlot = jDataTwo.week[i];
           let currTime = currSlot["startingTime"];
           myTable += "<tr><td>"+currTime+"</td>";
           for (let j = 0; j < columns; j++) {
-              currSlot = jData.week[i + j];
+              currSlot = jDataTwo.week[i + j];
               if (currSlot["isOpen"] == 0) {
+                  //if slot is closed, make it able to be opened by clicking on it
+                  //myTable += "<td><button type='button' onclick="openFunc(\'' + currSlot["idDays"] + "," + currSlot["startTime"] + '\')">Open</button></td>";
                   myTable += "<td><button type='button' onclick='bookFunc()'>Open</button></td>";
               } else {
+                  //if slot is open, make it able to be closed by clicking on it
+                  //myTable += "<td><button type='button' onclick='closeFunc('\' + currSlot["idDays"] + "," + currSlot["startTime"])'>Close</button></td>";
                   myTable += "<td><button type='button' onclick='bookFunc()'>Close</button></td>";
               }
           }
