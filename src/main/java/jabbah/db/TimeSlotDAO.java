@@ -161,7 +161,7 @@ public class TimeSlotDAO {
 		else
 			s.closeSlot();
 
-		s.book(participant, null);
+		s.book(participant);
 
 		return s;
 	}

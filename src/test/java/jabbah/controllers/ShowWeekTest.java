@@ -48,9 +48,9 @@ public class ShowWeekTest {
 
         PostResponse post = new Gson().fromJson(output.toString(), PostResponse.class);
         PostResponse post2 = new Gson().fromJson(output2.toString(), PostResponse.class);
-        CreateScheduleResponse resp = new Gson().fromJson(post2.body, CreateScheduleResponse.class);
+        ShowWeekScheduleResponse resp = new Gson().fromJson(post2.body, ShowWeekScheduleResponse.class);
         System.out.println(resp);
 
-        Assert.assertEquals("Successfully found week:" + "Tuesday[Fields(12:12,15,null,true,2019-02-05," + rndS + ",null), Fields(12:12,15,null,true,2019-02-06,"+ rndS + ",null)]", resp.response);
+        Assert.assertEquals("Response([Fields(12:12,15,null,true,2019-02-05,"+rndS+"), Fields(12:12,15,null,true,2019-02-06,"+rndS	+")],Tuesday,0)", resp.toString());
     }
 }

@@ -4,24 +4,22 @@ import java.sql.Date;
 
 public class TimeSlot {
     String startTime;
-	  int duration;
+	int duration;
     String participant;
     private boolean isOpen;
 
     // to know which day within which schedule it is associated with
     Date idDays;
     private String orgAccessCode;
-    String name;
 
     public TimeSlot(String startTime, int duration, Date date, String id) {//with no parameters,
         // constructor will be used for organizers
-        this.setOpen(true);
+        this.isOpen = true;
         this.duration = duration;
         this.participant = null;
         this.startTime = startTime;
         this.idDays = date;
         this.setOrgAccessCode(id);
-        this.name = null;
     }
 
     //getter functions
@@ -51,16 +49,12 @@ public class TimeSlot {
     }
     public void closeSlot() {
     	this.setOpen(false);
-    	this.name = null;
-    	this.participant = null;
     }
     public void cancel() {
     	this.participant = null;
-    	this.name = null;
     }
-    public void book(String participant, String name) {
+    public void book(String participant) {
     	this.participant = participant;
-    	this.name = name;
     }
 
     public String getOrgAccessCode() {
@@ -78,9 +72,8 @@ public class TimeSlot {
     public void setOpen(boolean isOpen) {
         this.isOpen = isOpen;
     }
-    @Override
     public String toString() {
         return "Fields(" + startTime + "," + duration + "," + participant + "," + isOpen +
-                 "," + idDays + "," + orgAccessCode + "," + name + ")";
+                 "," + idDays + "," + orgAccessCode	 + ")";
     }
 }

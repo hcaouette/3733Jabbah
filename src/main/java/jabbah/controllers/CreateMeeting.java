@@ -39,7 +39,7 @@ public class CreateMeeting implements RequestStreamHandler {
 			return false;
 
         slot = new TimeSlot (sT, dur, idDayParsed, id);
-        slot.book(participantCode, name);
+        slot.book(name);
 
         return dao.updateParticipant(slot);
 	}

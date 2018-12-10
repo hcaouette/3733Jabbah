@@ -40,7 +40,7 @@ public class CancelMeetingParTest2 {
 		int rnd2 = (int)(Math.random() * 1000000);
 
         TimeSlot s = new TimeSlot("19:00", 60, idDayParsed, "x" + rnd);
-        s.book("abcdeP", "jeff");
+        s.book("jeff");
 
         dao.addTimeSlot(s);
 

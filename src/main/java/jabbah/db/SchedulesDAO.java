@@ -213,6 +213,28 @@ public class SchedulesDAO {
             throw new Exception("Failed in getting schedules: " + e.getMessage());
         }
     }
+    public String getOrgAccessCode(String initialParticipantAccessCode) throws Exception
+    {
+    	try {
+            Schedule schedule = null;
+            PreparedStatement ps = conn.prepareStatement("SELECT * FROM Schedules WHERE initialParticipantAccessCode=?;");
+            ps.setString(1,  initialParticipantAccessCode);
+
+            ResultSet resultSet = ps.executeQuery();
+
+            while (resultSet.next()) {
+                schedule = generateSchedule(resultSet);
+            }
+            resultSet.close();
+            ps.close();
+
+            return schedule.getOrgAccessCode();
+
+        } catch (Exception e) {
+        	e.printStackTrace();
+            throw new Exception("Failed in getting schedule: " + e.getMessage());
+        }
+    }
 
     public List<Schedule> getNewSchedules(String hour, String currentHour) throws Exception {
 
