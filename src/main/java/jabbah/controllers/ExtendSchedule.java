@@ -6,9 +6,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -19,17 +16,12 @@ import com.amazonaws.services.lambda.runtime.LambdaLogger;
 import com.amazonaws.services.lambda.runtime.RequestStreamHandler;
 import com.google.gson.Gson;
 
-import jabbah.db.DaysInScheduleDAO;
 import jabbah.db.SchedulesDAO;
-import jabbah.db.TimeSlotDAO;
-import jabbah.model.DaysInSchedule;
-import jabbah.model.Schedule;
-import jabbah.model.TimeSlot;
 
 public class ExtendSchedule implements RequestStreamHandler {
 
         public LambdaLogger logger = null;
-        
+
         @Override
         public void handleRequest(InputStream input, OutputStream output, Context context) throws IOException {
             logger = context.getLogger();
@@ -72,8 +64,6 @@ public class ExtendSchedule implements RequestStreamHandler {
 
                 SchedulesDAO dao = new SchedulesDAO();
 
-                // See how awkward it is to call delete with an object, when you only
-                // have one part of its information?
                 ExtendScheduleResponse resp;
                 try {
                     if (dao.extendSchedule(req.date,req.scheduleID)) {
