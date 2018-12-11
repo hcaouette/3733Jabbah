@@ -69,7 +69,7 @@ public class DeleteOldSchedules implements RequestStreamHandler {
                 DeleteOldSchedulesResponse resp;
                 try {
                     if (dao.deleteOldSchedules(req.day, req.currentTime)) {
-                        resp = new DeleteOldSchedulesResponse("Deleted schedules that are" + req.day + "days old:" + req.currentTime);
+                        resp = new DeleteOldSchedulesResponse("Deleted schedules that are " + req.day + " days old: " + req.currentTime);
                     } else {
                         resp = new DeleteOldSchedulesResponse("Unable to delete schedules: " + req.currentTime, 422);
                     }
