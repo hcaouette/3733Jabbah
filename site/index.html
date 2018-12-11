@@ -379,6 +379,7 @@ function openTimeSlot(){
       processResp("N/A");
     }
   };
+  console.log("opened all at"+openTime);
 
   //opening-by-date case
   let form = document.addForm;
@@ -407,6 +408,7 @@ function openTimeSlot(){
       processResp("N/A");
     }
   };
+  console.log("opened all at"+openDay);
 }
 function closeTimeSlot(){
   let secretID = document.getElementById("secretID").value;
@@ -447,6 +449,7 @@ function closeTimeSlot(){
       processResp("N/A");
     }
   };
+  console.log("opened all at"+closeTime);
 
   //closing-by-date case
   let form = document.addForm;
@@ -475,6 +478,7 @@ function closeTimeSlot(){
       processResp("N/A");
     }
   };
+  console.log("opened all at"+closeDay);
 }
 
 //creation and deletion
