@@ -36,13 +36,14 @@ public class CreateMeeting implements RequestStreamHandler {
         java.util.Date idDay = null;
         idDay = sdf.parse(day);
         java.sql.Date idDayParsed = new java.sql.Date(idDay.getTime());
-
+        /*
 		// check if slot is open
 		TimeSlot slot = dao.getTimeSlot(sT, idDayParsed, id);
 		if(!slot.open())
 			return false;
-
-        slot = new TimeSlot (sT, dur, idDayParsed, id);
+		*/
+        
+        TimeSlot slot = new TimeSlot (sT, dur, idDayParsed, id);
         slot.book(participantCode, name);
 
         return dao.updateParticipant(slot) && dao.updateName(slot);
