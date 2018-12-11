@@ -26,40 +26,63 @@ public class CancelMeetingParTest {
         return ctx;
     }
 	@Test
-	public void testCloseTimeSlotTrue() throws Exception{
+	public void testCancelMeetingTrue() throws Exception{
 
-		//create time slot
-		TimeSlotDAO dao = new TimeSlotDAO();
+		//create a schedule
+        CreateSchedule handler = new CreateSchedule();
 
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        java.util.Date idDay = null;
-        idDay = sdf.parse("2025-08-17");
-        java.sql.Date idDayParsed = new java.sql.Date(idDay.getTime());
+        int rnd = (int) (Math.random() * 10000000);
+        int rndTwo = (int) (Math.random() * 10000000);
+        String rndS = Integer.toString(rnd);
+        String rndSTwo = Integer.toString(rndTwo);
+        CreateScheduleRequest ar = new CreateScheduleRequest("w" + rndS, "03:00", "03:50", 10, "2001-08-15", "2001-08-20", "hmmm", 1, rndSTwo);
 
-        int rnd = (int)(Math.random() * 1000000);
-		int rnd2 = (int)(Math.random() * 1000000);
+        String ccRequest = new Gson().toJson(ar);
+        String jsonRequest = new Gson().toJson(new PostRequest(ccRequest));
 
-        TimeSlot s = new TimeSlot("19:00", 60, idDayParsed, "x" + rnd);
-        s.book("jeff");
+        InputStream input = new ByteArrayInputStream(jsonRequest.getBytes());
+        OutputStream output = new ByteArrayOutputStream();
 
-        dao.addTimeSlot(s);
+        handler.handleRequest(input, output, createContext("create"));
 
-		CancelMeetingPar hand = new CancelMeetingPar();
+        PostResponse post = new Gson().fromJson(output.toString(), PostResponse.class);
+        CreateScheduleResponse resp = new Gson().fromJson(post.body, CreateScheduleResponse.class);
+        System.out.println(resp);
+        
+        //creates a meeting
+		CreateMeeting hand = new CreateMeeting();
 
-		CancelMeetingParRequest cmr = new CancelMeetingParRequest(rnd2 + "P", "19:00", "2025-08-17", "x" + rnd);
+		CreateMeetingRequest cmr = new CreateMeetingRequest(rndSTwo, "3:10", "2001-08-19", "jeff", "12345");
 
 		String otsRequest = new Gson().toJson(cmr);
-		String jsonRequest = new Gson().toJson(new PostRequest(otsRequest));
+		jsonRequest = new Gson().toJson(new PostRequest(otsRequest));
 
-		InputStream input = new ByteArrayInputStream(jsonRequest.getBytes());
-		OutputStream output = new ByteArrayOutputStream();
+		input = new ByteArrayInputStream(jsonRequest.getBytes());
+		output = new ByteArrayOutputStream();
 
 		hand.handleRequest(input, output, createContext("create"));
 
-        PostResponse post = new Gson().fromJson(output.toString(), PostResponse.class);
-        CancelMeetingParResponse cmresp = new Gson().fromJson(post.body, CancelMeetingParResponse.class);
+        post = new Gson().fromJson(output.toString(), PostResponse.class);
+        CreateMeetingResponse cmresp = new Gson().fromJson(post.body, CreateMeetingResponse.class);
         System.out.println(cmresp);
 
-        Assert.assertEquals("Successfully cancelled meeting at: 19:00", cmresp.response);
+        //cancel the created meeting
+		CancelMeetingPar canMetHandler = new CancelMeetingPar();
+
+		CancelMeetingParRequest canMetReq = new CancelMeetingParRequest(rndSTwo, "3:10", "2001-08-19", "12345");
+
+		otsRequest = new Gson().toJson(canMetReq);
+		jsonRequest = new Gson().toJson(new PostRequest(otsRequest));
+
+		input = new ByteArrayInputStream(jsonRequest.getBytes());
+		output = new ByteArrayOutputStream();
+
+		canMetHandler.handleRequest(input, output, createContext("create"));
+
+        post = new Gson().fromJson(output.toString(), PostResponse.class);
+        CancelMeetingParResponse cmresps = new Gson().fromJson(post.body, CancelMeetingParResponse.class);
+        System.out.println(cmresps);
+
+        Assert.assertEquals("Successfully cancelled meeting at: 3:10", cmresps.response);
 	}
 }

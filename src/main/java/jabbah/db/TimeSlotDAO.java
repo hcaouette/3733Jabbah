@@ -74,6 +74,23 @@ public class TimeSlotDAO {
             throw new Exception("Failed to update time slot: " + e.getMessage());
         }
     }
+	
+	public boolean updateName(TimeSlot slot) throws Exception {
+        try {
+        	String query = "UPDATE TimeSlot SET name=? WHERE startTime=? AND idDays=? AND orgAccessCode=?;";
+        	PreparedStatement ps = conn.prepareStatement(query);
+            ps.setString(1, slot.getName());
+            ps.setString(2, slot.getTime());
+            ps.setDate(3, slot.getDate());
+            ps.setString(4, slot.getScheduleID());
+            int numAffected = ps.executeUpdate();
+            ps.close();
+
+            return numAffected == 1;
+        } catch (Exception e) {
+            throw new Exception("Failed to update time slot: " + e.getMessage());
+        }
+    }
 
 	public boolean updateParticipant(TimeSlot slot)throws Exception{
 		try {
@@ -161,7 +178,7 @@ public class TimeSlotDAO {
 		else
 			s.closeSlot();
 
-		s.book(participant);
+		s.book(participant, name);
 
 		return s;
 	}

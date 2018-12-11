@@ -17,6 +17,7 @@ import com.amazonaws.services.lambda.runtime.LambdaLogger;
 import com.amazonaws.services.lambda.runtime.RequestStreamHandler;
 import com.google.gson.Gson;
 
+import jabbah.db.SchedulesDAO;
 import jabbah.db.TimeSlotDAO;
 import jabbah.model.TimeSlot;
 
@@ -24,9 +25,12 @@ public class CreateMeeting implements RequestStreamHandler {
 
 	public LambdaLogger logger = null;
 
-	boolean bookTimeSlot(String participantCode, String sT, int dur, String day, String id, String name) throws Exception{
+	boolean bookTimeSlot(String initialCode, String sT, int dur, String day, String name, String participantCode) throws Exception{
 		if(logger != null) { logger.log("in createTimeSlot");}
 		TimeSlotDAO dao = new TimeSlotDAO();
+		SchedulesDAO daoS = new SchedulesDAO();
+		
+		String id = daoS.getOrgAccessCode(initialCode);
 
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         java.util.Date idDay = null;
@@ -39,9 +43,9 @@ public class CreateMeeting implements RequestStreamHandler {
 			return false;
 
         slot = new TimeSlot (sT, dur, idDayParsed, id);
-        slot.book(name);
+        slot.book(participantCode, name);
 
-        return dao.updateParticipant(slot);
+        return dao.updateParticipant(slot) && dao.updateName(slot);
 	}
 
 	@Override
@@ -95,7 +99,7 @@ public class CreateMeeting implements RequestStreamHandler {
 			CreateMeetingResponse resp;
 
 			try {
-				if(bookTimeSlot(req.accessCode, req.startTime, 0, req.day, req.scheduleID, req.name)) {
+				if(bookTimeSlot(req.initialAccessCode, req.startTime, 0, req.day, req.name, req.newParticipantCode)) {
 					resp = new CreateMeetingResponse("Successfully booked time slot: " + req.startTime);
 				}
 				else {
