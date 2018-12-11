@@ -380,7 +380,7 @@ function openTimeSlot(){
     }
   };
 
-  //opening by date case
+  //opening-by-date case
   let form = document.addForm;
   let arg2 = openDay;
   let arg5 = secretID;
@@ -407,9 +407,75 @@ function openTimeSlot(){
       processResp("N/A");
     }
   };
-
 }
-function closeTimeSlot(){}
+function closeTimeSlot(){
+  let secretID = document.getElementById("secretID").value;
+  let closeDay = document.getElementById("numDays").value;
+  let closeTime = document.getElementById("time").value;
+
+  //makes sure both fields aren't filled
+  if((closeDay != null) && (closeTime != null)){
+    alert("you can only enter one of these fields");
+    console.log("failed to mass open slots")
+    return;
+  }
+
+  //closing-by-time case
+  let form = document.addForm;
+  let arg2 = closeTime;
+  let arg5 = secretID;
+
+  let data = {};
+  data["startTime"] = arg2;
+  data["scheduleID"] = arg5;
+
+  let js = JSON.stringify(data);
+  console.log("JS:" + js);
+  let xhr = new XMLHttpRequest();
+  xhr.open("POST", closeOnTime_url, true);
+  // send the collected data as JSON
+  xhr.send(js);
+
+  // This will process results and update HTML as appropriate.
+  xhr.onloadend = function () {
+    console.log(xhr);
+    console.log(xhr.request);
+    if (xhr.readyState == XMLHttpRequest.DONE) {
+      console.log ("XHR:" + xhr.responseText);
+      processResp(xhr.responseText);
+    } else {
+      processResp("N/A");
+    }
+  };
+
+  //closing-by-date case
+  let form = document.addForm;
+  let arg2 = closeDay;
+  let arg5 = secretID;
+
+  let data = {};
+  data["day"] = arg2;
+  data["scheduleID"] = arg5;
+
+  let js = JSON.stringify(data);
+  console.log("JS:" + js);
+  let xhr = new XMLHttpRequest();
+  xhr.open("POST", closeOnDay_url, true);
+  // send the collected data as JSON
+  xhr.send(js);
+
+  // This will process results and update HTML as appropriate.
+  xhr.onloadend = function () {
+    console.log(xhr);
+    console.log(xhr.request);
+    if (xhr.readyState == XMLHttpRequest.DONE) {
+      console.log ("XHR:" + xhr.responseText);
+      processResp(xhr.responseText);
+    } else {
+      processResp("N/A");
+    }
+  };
+}
 
 //creation and deletion
 function makeOrgId() {
