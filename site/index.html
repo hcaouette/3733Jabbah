@@ -177,7 +177,7 @@ function cancelFunc(days, startTime){
           let arg = yearTest + "-" + monthTest + "-" + dayTest;
 
           //
-          
+
           let data = {};
           data["day"] = arg;
           data["startTime"] = startTime;
@@ -419,13 +419,17 @@ function processResp(result) {
 
       let i = 0;
       let k = 0;
+      let userType = document.getElementById("secretID").value.substring(10,11);
+      console.log(userType);
       while (i < (numIntervals*columns)) {
           let currSlot = jDataTwo.week[i];
           let currSlotForTime = jDataTwo.week[k];
           let currTime = currSlotForTime["startTime"];
           myTable += "<tr><td>"+currTime+"</td>";
           for (let j = 0; j < columns; j++) {
-              currSlot = jDataTwo.week[i + j];
+            currSlot = jDataTwo.week[i + j];
+            if(userType ==="O" || userType ==="S"){
+              //display schedules using Org/Sysadmin information
               if (currSlot["isOpen"] == 0) {
                   //if slot is closed, make it able to be opened by clicking on it
                   //myTable += "<td><button type='button' onclick="openFunc(\'' + currSlot["idDays"] + "," + currSlot["startTime"] + '\')">Open</button></td>";
@@ -435,8 +439,6 @@ function processResp(result) {
                   myLine += "\""+currSlot.startTime.toString()+"\"";
                   myLine += ")'";
                   myLine += ">Open</button></td>";
-                  console.log(currSlot.idDays.toString(), currSlot.startTime.toString());
-                  console.log(myLine);
                   myTable+=myLine;
               } else {
                   //if slot is open, make it able to be closed by clicking on it
@@ -447,10 +449,32 @@ function processResp(result) {
                   myLine += "\""+currSlot.startTime.toString()+"\"";
                   myLine += ")'";
                   myLine += ">Close</button></td>";
-                  console.log(currSlot.idDays.toString(), currSlot.startTime.toString());
-                  console.log(myLine);
                   myTable+=myLine;
               }
+            }else{
+              //display schedules using Participant specific information
+              if (currSlot["isOpen"] == 0) {
+                  //if slot is closed, make it able to be opened by clicking on it
+                  //myTable += "<td><button type='button' onclick="openFunc(\'' + currSlot["idDays"] + "," + currSlot["startTime"] + '\')">Open</button></td>";
+                  let myLine = "<td><button id='calButton' type='button' onclick='openFunc(";
+                  myLine += "\""+currSlot.idDays.toString()+"\"";
+                  myLine += ",";
+                  myLine += "\""+currSlot.startTime.toString()+"\"";
+                  myLine += ")'";
+                  myLine += ">Open</button></td>";
+                  myTable+=myLine;
+              } /**else if(currSlot["isOpen"] == 1 && currSlot[]) {
+                  //if slot is open, make it able to be closed by clicking on it
+                  //myTable += "<td><button type='button' onclick='closeFunc('\' + currSlot["idDays"] + "," + currSlot["startTime"])'>Close</button></td>";
+                  let myLine = "<td><button id='calButton' type='button' onclick='bookFunc(";
+                  myLine += "\""+currSlot.idDays.toString()+"\"";
+                  myLine += ",";
+                  myLine += "\""+currSlot.startTime.toString()+"\"";
+                  myLine += ")'";
+                  myLine += ">Book</button></td>";
+                  myTable+=myLine;
+              }*/
+            }
           }
           i += columns;
           k++;
@@ -525,7 +549,7 @@ function openFunc(days, startTime) {
             }
         };
     }
-    
+
 function closeFunc(days, startTime) {
     let form = document.addForm;
     let monthTest = days.substring(0, 3);
