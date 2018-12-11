@@ -470,25 +470,23 @@ function processResp(result) {
               if (currSlot["isOpen"] == 0) {
                   //if slot is closed, make it able to be opened by clicking on it
                   //myTable += "<td><button type='button' onclick="openFunc(\'' + currSlot["idDays"] + "," + currSlot["startTime"] + '\')">Open</button></td>";
-                  let myLine = "<td><button id='calButton' type='button' onclick='openFunc(";
-                  myLine += "\""+currSlot.idDays.toString()+"\"";
-                  myLine += ",";
-                  myLine += "\""+currSlot.startTime.toString()+"\"";
-                  myLine += ")'";
-                  myLine += ">Open</button></td>";
-                  myTable+=myLine;
+                  myTable += "<td><button id='calButton' type='button' onclick='openFunc(";
+                  myTable += "\""+currSlot.idDays.toString()+"\"";
+                  myTable += ",";
+                  myTable += "\""+currSlot.startTime.toString()+"\"";
+                  myTable += ")'";
+                  myTable += ">Open</button></td>";
               } else {
                   //if slot is open, make it able to be closed by clicking on it
                   //myTable += "<td><button type='button' onclick='closeFunc('\' + currSlot["idDays"] + "," + currSlot["startTime"])'>Close</button></td>";
-                  let myLine = "<td><button id='calButton' type='button' onclick='closeFunc(";
-                  myLine += "\""+currSlot.idDays.toString()+"\"";
-                  myLine += ",";
-                  myLine += "\""+currSlot.startTime.toString()+"\"";
-                  myLine += ")'";
-                  myLine += ">Close</button></td>";
-                  myTable+=myLine;
+                  myTable += "<td><button id='calButton' type='button' onclick='closeFunc(";
+                  myTable += "\""+currSlot.idDays.toString()+"\"";
+                  myTable += ",";
+                  myTable += "\""+currSlot.startTime.toString()+"\"";
+                  myTable += ")'";
+                  myTable += ">Close</button></td>";
               }
-            
+
           }
           i += columns;
           k++;
@@ -498,7 +496,7 @@ function processResp(result) {
       /**console.log(myTable);*/
       document.getElementById("tablePrint").innerHTML = myTable;
   }
-  
+
 function processRespP(result){
     let jData = JSON.parse(result);
     console.log(jData);
@@ -565,28 +563,26 @@ function processRespP(result){
             if (currSlot["isOpen"] == 0) {
                 //if slot is closed, show nothing to participant
                 //myTable += "<td><button type='button' onclick="openFunc(\'' + currSlot["idDays"] + "," + currSlot["startTime"] + '\')">Open</button></td>";
-                let myLine = "<td><p>CLOSED</p></td>";
+                let myTable = "<td><p>CLOSED</p></td>";
             } else if (currSlot["name"] == null) {
                 //if slot is open, make it able to be booked by clicking on it
                 //myTable += "<td><button type='button' onclick="openFunc(\'' + currSlot["idDays"] + "," + currSlot["startTime"] + '\')">Open</button></td>";
-                let myLine = "<td><button id='calButton' type='button' onclick='bookFunc(";
-                myLine += "\""+currSlot.idDays.toString()+"\"";
-                myLine += ",";
-                myLine += "\""+currSlot.startTime.toString()+"\"";
-                myLine += ")'";
-                myLine += ">Book</button></td>";
+                myTable = "<td><button id='calButton' type='button' onclick='bookFunc(";
+                myTable += "\""+currSlot.idDays.toString()+"\"";
+                myTable += ",";
+                myTable += "\""+currSlot.startTime.toString()+"\"";
+                myTable += ")'";
+                myTable += ">Book</button></td>";
             } else {
                 //if slot is open, make it able to be closed by clicking on it
                 //myTable += "<td><button type='button' onclick='closeFunc('\' + currSlot["idDays"] + "," + currSlot["startTime"])'>Close</button></td>";
-                let myLine = "<td><button id='calButton' type='button' onclick='cancelFunc(";
-                myLine += "\""+currSlot.idDays.toString()+"\"";
-                myLine += ",";
-                myLine += "\""+currSlot.startTime.toString()+"\"";
-                myLine += ")'";
-                myLine += ">Cancel</button></td>";
-                myTable+=myLine;
+                 myTable = "<td><button id='calButton' type='button' onclick='cancelFunc(";
+                myTable += "\""+currSlot.idDays.toString()+"\"";
+                myTable += ",";
+                myTable += "\""+currSlot.startTime.toString()+"\"";
+                myTable += ")'";
+                myTable += ">Cancel</button></td>"
             }
-          
         }
         i += columns;
         k++;
