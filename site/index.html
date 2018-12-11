@@ -4,7 +4,7 @@ var delete_url = "https://8pzpcdfj7l.execute-api.us-east-2.amazonaws.com/First/c
 var display_url = "https://8pzpcdfj7l.execute-api.us-east-2.amazonaws.com/First/showweek";//show schedule by week, pullSchedule()
 var open_url = "https://8pzpcdfj7l.execute-api.us-east-2.amazonaws.com/First/opentimeslot";
 var close_url = "https://8pzpcdfj7l.execute-api.us-east-2.amazonaws.com/First/closetimeslot";
-var book_url = "https://8pzpcdfj7l.execute-api.us-east-2.amazonaws.com/First/createMeeting";
+var book_url = "https://8pzpcdfj7l.execute-api.us-east-2.amazonaws.com/First/createmeeting";
 var cancel_url = "https://8pzpcdfj7l.execute-api.us-east-2.amazonaws.com/First/cancelmeetingparticipant";
 var displayP_url = "https://8pzpcdfj7l.execute-api.us-east-2.amazonaws.com/First/showweekparticipant";
 function processResponse(arg1, arg2, arg3, arg4, arg5, arg6) {
@@ -111,8 +111,9 @@ function bookFunc(days, startTime){
         data["day"] = arg;
         data["startTime"] = startTime;
         data["initialAccessCode"] = document.getElementById("secretID").value;
-        data["name"] = document.getElementById("name").value;
+        data["name"] = document.getElementById("currentName").innerHTML.substring(6);
         data["newParticipantCode"] = arg2;
+        console.log(data["name"]);
 
         let js = JSON.stringify(data);
         console.log("JS:" + js);
@@ -129,7 +130,7 @@ function bookFunc(days, startTime){
             if (xhr.readyState == XMLHttpRequest.DONE) {
                 console.log("XHR:" + xhr.responseText);
                 alert("Your unique id is: " + arg2);
-                pullSchedule();
+                pullScheduleP();
                 //processResp(xhr.responseText.body);
             } else {
                 //processResp("N/A");
@@ -576,7 +577,7 @@ function processRespP(result){
             } else {
                 //if slot is open, make it able to be closed by clicking on it
                 //myTable += "<td><button type='button' onclick='closeFunc('\' + currSlot["idDays"] + "," + currSlot["startTime"])'>Close</button></td>";
-                 myTable = "<td><button id='calButton' type='button' onclick='cancelFunc(";
+                myTable += "<td><button id='calButton' type='button' onclick='cancelFunc(";
                 myTable += "\""+currSlot.idDays.toString()+"\"";
                 myTable += ",";
                 myTable += "\""+currSlot.startTime.toString()+"\"";
