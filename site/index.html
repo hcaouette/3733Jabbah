@@ -183,7 +183,7 @@ function cancelFunc(days, startTime){
           data["day"] = arg;
           data["startTime"] = startTime;
           data["participantCode"] = initAcc;
-          data["intialAccessCode"] = document.getElementById("secretID").value;
+          data["initialAccessCode"] = document.getElementById("secretID").value;
 
           let js = JSON.stringify(data);
           console.log("JS:" + js);
@@ -199,7 +199,7 @@ function cancelFunc(days, startTime){
               console.log(xhr.request);
               if (xhr.readyState == XMLHttpRequest.DONE) {
                   console.log("XHR:" + xhr.responseText);
-                  pullSchedule();
+                  pullScheduleP();
                   //processResp(xhr.responseText.body);
               } else {
                   //processResp("N/A");
@@ -564,7 +564,7 @@ function processRespP(result){
                 //if slot is closed, show nothing to participant
                 //myTable += "<td><button type='button' onclick="openFunc(\'' + currSlot["idDays"] + "," + currSlot["startTime"] + '\')">Open</button></td>";
                 myTable += "<td><p>CLOSED</p></td>";
-            } else if (currSlot["name"] == null) {
+            } else if (currSlot["participant"] == null) {
                 //if slot is open, make it able to be booked by clicking on it
                 //myTable += "<td><button type='button' onclick="openFunc(\'' + currSlot["idDays"] + "," + currSlot["startTime"] + '\')">Open</button></td>";
                 myTable += "<td><button id='calButton' type='button' onclick='bookFunc(";
