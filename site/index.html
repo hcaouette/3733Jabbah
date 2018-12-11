@@ -426,35 +426,35 @@ function processResp(result) {
       let numIntervals = jDataTwo.interval; //the number of timeslots per day
       let myTable = "<table><tr><td style='font-size:16px;'>TIME</td>";
       //add the correct number of columns
-      let columns = 0;
+      let columns = (jDataTwo.week.length / numIntervals);
       if (start == "Monday") {
       myTable += "<td>MON</td>";
       myTable += "<td>TUE</td>";
       myTable += "<td>WED</td>";
       myTable += "<td>THU</td>";
       myTable += "<td>FRI</td></tr>";
-      columns = 5;
+      //columns = 5;
       } else if (start == "Tuesday") {
           myTable += "<td>TUE</td>";
           myTable += "<td>WED</td>";
           myTable += "<td>THU</td>";
           myTable += "<td>FRI</td></tr>";
-          columns = 4;
+          //columns = 4;
           }
       else if (start == "Wednesday") {
           myTable += "<td>WED</td>";
           myTable += "<td>THU</td>";
           myTable += "<td>FRI</td></tr>";
-          columns = 3;
+          //columns = 3;
           }
       else if (start == "Thursday") {
           myTable += "<td>THU</td>";
           myTable += "<td>FRI</td></tr>";
-          columns = 2;
+          //columns = 2;
           }
       else {
           myTable += "<td>FRI</td></tr>";
-          columns = 1;
+          //columns = 1;
       }
 
       let i = 0;
@@ -480,6 +480,14 @@ function processResp(result) {
               } else {
                   //if slot is open, make it able to be closed by clicking on it
                   //myTable += "<td><button type='button' onclick='closeFunc('\' + currSlot["idDays"] + "," + currSlot["startTime"])'>Close</button></td>";
+<<<<<<< HEAD
+=======
+                  if (currSlot["name"] != null) {
+                  myTable += "<p>";
+                  myTable += currSlot.name.toString();
+                  myTable += "</p>";
+                  }
+>>>>>>> 12d629daedb35fd043f4c44711e7847660495e7e
                   myTable += "<td><button id='calButton' type='button' onclick='closeFunc(";
                   myTable += "\""+currSlot.idDays.toString()+"\"";
                   myTable += ",";
@@ -582,6 +590,14 @@ function processRespP(result){
             } else {
                 //if slot is open, make it able to be closed by clicking on it
                 //myTable += "<td><button type='button' onclick='closeFunc('\' + currSlot["idDays"] + "," + currSlot["startTime"])'>Close</button></td>";
+<<<<<<< HEAD
+=======
+                if (currSlot["name"] != null) {
+                  myTable += "<p>";
+                  myTable += currSlot.name.toString();
+                  myTable += "</p>";
+                }
+>>>>>>> 12d629daedb35fd043f4c44711e7847660495e7e
                 myTable += "<td><button id='calButton' type='button' onclick='cancelFunc(";
                 myTable += "\""+currSlot.idDays.toString()+"\"";
                 myTable += ",";
