@@ -563,7 +563,7 @@ function processRespP(result){
             if (currSlot["isOpen"] == 0) {
                 //if slot is closed, show nothing to participant
                 //myTable += "<td><button type='button' onclick="openFunc(\'' + currSlot["idDays"] + "," + currSlot["startTime"] + '\')">Open</button></td>";
-                let myTable = "<td><p>CLOSED</p></td>";
+                myTable += "<td><p>CLOSED</p></td>";
             } else if (currSlot["name"] == null) {
                 //if slot is open, make it able to be booked by clicking on it
                 //myTable += "<td><button type='button' onclick="openFunc(\'' + currSlot["idDays"] + "," + currSlot["startTime"] + '\')">Open</button></td>";
