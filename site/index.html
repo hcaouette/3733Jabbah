@@ -567,7 +567,7 @@ function processRespP(result){
             } else if (currSlot["name"] == null) {
                 //if slot is open, make it able to be booked by clicking on it
                 //myTable += "<td><button type='button' onclick="openFunc(\'' + currSlot["idDays"] + "," + currSlot["startTime"] + '\')">Open</button></td>";
-                myTable = "<td><button id='calButton' type='button' onclick='bookFunc(";
+                myTable += "<td><button id='calButton' type='button' onclick='bookFunc(";
                 myTable += "\""+currSlot.idDays.toString()+"\"";
                 myTable += ",";
                 myTable += "\""+currSlot.startTime.toString()+"\"";
