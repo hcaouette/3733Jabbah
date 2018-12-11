@@ -25,42 +25,111 @@ public class CreateMeetingTest {
         ctx.setFunctionName(apiCall);
         return ctx;
     }
+	
 	@Test
-	public void testCloseTimeSlotFalse() throws Exception{
+	public void testCreateMeetingFalse() throws Exception{
+		
+		//create a schedule
+        CreateSchedule handler = new CreateSchedule();
 
-		//create a time slot
-		TimeSlotDAO dao = new TimeSlotDAO();
+        int rnd = (int) (Math.random() * 10000000);
+        int rndTwo = (int) (Math.random() * 10000000);
+        String rndS = Integer.toString(rnd);
+        String rndSTwo = Integer.toString(rndTwo);
+        CreateScheduleRequest ar = new CreateScheduleRequest("w" + rndS, "12:00", "12:50", 10, "2000-08-15", "2000-08-20", "hi", 1, rndSTwo);
 
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        java.util.Date idDay = null;
-        idDay = sdf.parse("2018-12-01");
-        java.sql.Date idDayParsed = new java.sql.Date(idDay.getTime());
+        String ccRequest = new Gson().toJson(ar);
+        String jsonRequest = new Gson().toJson(new PostRequest(ccRequest));
 
-        int rnd = (int)(Math.random() * 1000000);
+        InputStream input = new ByteArrayInputStream(jsonRequest.getBytes());
+        OutputStream output = new ByteArrayOutputStream();
 
-        TimeSlot s = new TimeSlot("03:10", 20, idDayParsed, "x" + rnd);
-        //close time slot
-        s.closeSlot();
-        dao.addTimeSlot(s);
+        handler.handleRequest(input, output, createContext("create"));
 
+        PostResponse post = new Gson().fromJson(output.toString(), PostResponse.class);
+        CreateScheduleResponse resp = new Gson().fromJson(post.body, CreateScheduleResponse.class);
+        System.out.println(resp);
+        
+        //close timeslot at 12:10 on 2000-08-17
+        
+		CloseTimeSlot handlerC = new CloseTimeSlot();
+		
+		CloseTimeSlotRequest otsr = new CloseTimeSlotRequest("12:10", "2000-08-17", "w" + rndS);
+		
+		String otsRequest = new Gson().toJson(otsr);
+		jsonRequest = new Gson().toJson(new PostRequest(otsRequest));
+		
+		input = new ByteArrayInputStream(jsonRequest.getBytes());
+		output = new ByteArrayOutputStream();
+		
+		handlerC.handleRequest(input, output, createContext("create"));
+		
+        post = new Gson().fromJson(output.toString(), PostResponse.class);
+        CloseTimeSlotResponse resps = new Gson().fromJson(post.body, CloseTimeSlotResponse.class);
+        System.out.println(resps);
+		
         //try to book slot - should fail because slot is not open
 		CreateMeeting hand = new CreateMeeting();
 
-		int rnd2 = (int)(Math.random() * 1000000);
-		CreateMeetingRequest cmr = new CreateMeetingRequest(rnd2 + "P", "03:10", "2018-12-01", "x" + rnd, "jeff");
+		//int rnd2 = (int)(Math.random() * 1000000);
+		CreateMeetingRequest cmr = new CreateMeetingRequest(rndSTwo, "12:10", "2000-08-17", "jeff", "12345");
 
-		String otsRequest = new Gson().toJson(cmr);
-		String jsonRequest = new Gson().toJson(new PostRequest(otsRequest));
+		otsRequest = new Gson().toJson(cmr);
+		jsonRequest = new Gson().toJson(new PostRequest(otsRequest));
 
-		InputStream input = new ByteArrayInputStream(jsonRequest.getBytes());
-		OutputStream output = new ByteArrayOutputStream();
+		input = new ByteArrayInputStream(jsonRequest.getBytes());
+		output = new ByteArrayOutputStream();
 
 		hand.handleRequest(input, output, createContext("create"));
 
-        PostResponse post = new Gson().fromJson(output.toString(), PostResponse.class);
+        post = new Gson().fromJson(output.toString(), PostResponse.class);
         CreateMeetingResponse cmresp = new Gson().fromJson(post.body, CreateMeetingResponse.class);
         System.out.println(cmresp);
 
-        Assert.assertEquals("Unable to book time slot: 03:10", cmresp.response);
+        Assert.assertEquals("Unable to book time slot: 12:10", cmresp.response);
+	}
+	
+	@Test
+	public void testCreateMeetingTrue() throws Exception{
+		
+		//create a schedule
+        CreateSchedule handler = new CreateSchedule();
+
+        int rnd = (int) (Math.random() * 10000000);
+        int rndTwo = (int) (Math.random() * 10000000);
+        String rndS = Integer.toString(rnd);
+        String rndSTwo = Integer.toString(rndTwo);
+        CreateScheduleRequest ar = new CreateScheduleRequest("w" + rndS, "12:00", "12:50", 10, "2000-08-15", "2000-08-20", "hi", 1, rndSTwo);
+
+        String ccRequest = new Gson().toJson(ar);
+        String jsonRequest = new Gson().toJson(new PostRequest(ccRequest));
+
+        InputStream input = new ByteArrayInputStream(jsonRequest.getBytes());
+        OutputStream output = new ByteArrayOutputStream();
+
+        handler.handleRequest(input, output, createContext("create"));
+
+        PostResponse post = new Gson().fromJson(output.toString(), PostResponse.class);
+        CreateScheduleResponse resp = new Gson().fromJson(post.body, CreateScheduleResponse.class);
+        System.out.println(resp);
+		
+        //try to book slot - should succeed
+		CreateMeeting hand = new CreateMeeting();
+
+		CreateMeetingRequest cmr = new CreateMeetingRequest(rndSTwo, "12:10", "2000-08-17", "jeff", "12345");
+
+		String otsRequest = new Gson().toJson(cmr);
+		jsonRequest = new Gson().toJson(new PostRequest(otsRequest));
+
+		input = new ByteArrayInputStream(jsonRequest.getBytes());
+		output = new ByteArrayOutputStream();
+
+		hand.handleRequest(input, output, createContext("create"));
+
+        post = new Gson().fromJson(output.toString(), PostResponse.class);
+        CreateMeetingResponse cmresp = new Gson().fromJson(post.body, CreateMeetingResponse.class);
+        System.out.println(cmresp);
+
+        Assert.assertEquals("Successfully booked time slot: 12:10", cmresp.response);
 	}
 }
