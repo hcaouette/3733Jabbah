@@ -480,17 +480,18 @@ function processResp(result) {
               } else {
                   //if slot is open, make it able to be closed by clicking on it
                   //myTable += "<td><button type='button' onclick='closeFunc('\' + currSlot["idDays"] + "," + currSlot["startTime"])'>Close</button></td>";
-                  if(currSlot.name != undefined){
-                  myTable += "<p>";
-                  myTable += currSlot.name.toString();
-                  myTable += "</p>";
-                  }
                   myTable += "<td><button id='calButton' type='button' onclick='closeFunc(";
                   myTable += "\""+currSlot.idDays.toString()+"\"";
                   myTable += ",";
                   myTable += "\""+currSlot.startTime.toString()+"\"";
                   myTable += ")'";
-                  myTable += ">Close</button></td>";
+                  myTable += ">Close</button>";
+                  if(currSlot.name != undefined){
+                  myTable += "<p>";
+                  myTable += currSlot.name.toString();
+                  myTable += "</p>";
+                  }
+                  myTable += "</td>";
               }
 
           }
@@ -581,17 +582,18 @@ function processRespP(result){
             } else {
                 //if slot is open, make it able to be closed by clicking on it
                 //myTable += "<td><button type='button' onclick='closeFunc('\' + currSlot["idDays"] + "," + currSlot["startTime"])'>Close</button></td>";
-                if(currSlot.name != undefined){
-                myTable += "<p>";
-                myTable += currSlot.name.toString();
-                myTable += "</p>";
-                }
                 myTable += "<td><button id='calButton' type='button' onclick='cancelFunc(";
                 myTable += "\""+currSlot.idDays.toString()+"\"";
                 myTable += ",";
                 myTable += "\""+currSlot.startTime.toString()+"\"";
                 myTable += ")'";
-                myTable += ">Cancel</button></td>"
+                myTable += ">Cancel</button>";
+                if(currSlot.name != undefined){
+                myTable += "<p>";
+                myTable += currSlot.name.toString();
+                myTable += "</p>";
+                }
+                myTable += "</td>"
             }
         }
         i += columns;
