@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import org.joda.time.Days;
+
 import jabbah.model.DaysInSchedule;
 import jabbah.model.Schedule;
 import jabbah.model.TimeSlot;
@@ -313,4 +315,152 @@ public class SchedulesDAO {
             throw new Exception("Failed to delete schedule: " + e.getMessage());
         }
     }
+
+	public boolean extendSchedule(String date, String scheduleID) {
+		try {
+			Schedule schedule = getSchedule(scheduleID);
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+	        java.util.Date startDateUtil = null;
+	        startDateUtil = sdf.parse(date);
+	        java.sql.Date dateParsed = new java.sql.Date(startDateUtil.getTime());
+	        if (dateParsed.compareTo(schedule.getEndDate()) > 0) {
+	           //"NewDate is after EndingDate"
+	        	String queryOne = "UPDATE Schedules SET endDate=? WHERE orgAccessCode=?;";
+	        	PreparedStatement ps = conn.prepareStatement(queryOne);
+				ps.setDate(1, dateParsed);
+				ps.setString(2, scheduleID);
+				int numAffected = ps.executeUpdate();
+				ps.close();
+	        	
+	            long diff = dateParsed.getTime() - schedule.getEndDate().getTime();
+	            long numberOfDays = TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
+
+	            if (numberOfDays < 1) {
+	                return false;
+	            }
+
+	            int totalTime;
+	            int startHour = Integer.parseInt(schedule.getStartTime().substring(0, 2));
+	            int startMinute = Integer.parseInt(schedule.getStartTime().substring(3, 5));
+	            int endHour = Integer.parseInt(schedule.getEndTime().substring(0, 2));
+	            int endMinute = Integer.parseInt(schedule.getEndTime().substring(3, 5));
+	            int startTime = (startHour * 60) + startMinute; //starting time in minutes
+	            int endTime = (endHour * 60) + endMinute; //endingTime in minutes
+	            totalTime = endTime - startTime; //the total time in minutes per day
+	            if (totalTime % schedule.getTimeSlotLength() != 0) {
+	                //if the timeslots don't line up properly, fail
+	                return false;
+	            }
+	            int totalTimeslots = totalTime / schedule.getTimeSlotLength();
+
+	            DaysInScheduleDAO d = new DaysInScheduleDAO();
+	            TimeSlotDAO t = new TimeSlotDAO();
+	            Date currentDay = schedule.getEndDate();
+	            // add a date and start at one because you don't start on the current day
+	            currentDay = new Date((currentDay.getTime() + (1 * 24 * 60 * 60 * 1000)));
+	            //add a DayInSchedule,
+	            //then add all TimeSlots for that day,
+	            //repeat until all days are added and have all timeslots added
+	            for (int i = 1; i< (numberOfDays + 1); i++) {
+	                d.addDay(new DaysInSchedule(currentDay, schedule.getOrgAccessCode()));
+	                int currentTime = startTime; //for each new day, reset to starting time
+	                for (int j = 0; j< totalTimeslots; j++) {
+	                    //first parse the current time for the timeslot as a string
+	                    int currentHour = ((currentTime - (currentTime % 60)) / 60);
+	                    int currentMinute = (currentTime % 60);
+	                    String timeString = currentHour + ":" + currentMinute;
+	                    if (currentMinute < 10) {
+	                        timeString = currentHour + ":0" + currentMinute;
+	                    }
+	                    if (currentHour < 10) {
+	                        timeString = "0" + currentHour + ":" + currentMinute;
+	                    }
+	                    if (currentHour < 10 && currentMinute < 10) {
+	                        timeString = "0" + currentHour + ":0" + currentMinute;
+	                    }
+	                    //now add the timeslot for the current time
+	                    t.addTimeSlot(new TimeSlot(timeString, schedule.getTimeSlotLength(), currentDay, schedule.getOrgAccessCode()));
+	                    currentTime = currentTime + schedule.getTimeSlotLength();
+	                }
+	                //increment by a day by adding the number of milliseconds
+	                currentDay = new Date((currentDay.getTime() + (1 * 24 * 60 * 60 * 1000)));
+	                
+	            }
+	            return numAffected == 1;
+	        } else if (dateParsed.compareTo(schedule.getStartDate()) < 0) {
+	            //NewDate is before startingDate
+	        	String queryTwo = "UPDATE Schedules SET startDate=? WHERE orgAccessCode=?;";
+	        	PreparedStatement ps = conn.prepareStatement(queryTwo);
+				ps.setDate(1, dateParsed);
+				ps.setString(2, scheduleID);
+				int numAffected = ps.executeUpdate();
+				ps.close();
+				long diff =  schedule.getStartDate().getTime()-dateParsed.getTime();
+	            long numberOfDays = TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
+
+	            if (numberOfDays < 1) {
+	                return false;
+	            }
+
+	            int totalTime;
+	            int startHour = Integer.parseInt(schedule.getStartTime().substring(0, 2));
+	            int startMinute = Integer.parseInt(schedule.getStartTime().substring(3, 5));
+	            int endHour = Integer.parseInt(schedule.getEndTime().substring(0, 2));
+	            int endMinute = Integer.parseInt(schedule.getEndTime().substring(3, 5));
+	            int startTime = (startHour * 60) + startMinute; //starting time in minutes
+	            int endTime = (endHour * 60) + endMinute; //endingTime in minutes
+	            totalTime = endTime - startTime; //the total time in minutes per day
+	            if (totalTime % schedule.getTimeSlotLength() != 0) {
+	                //if the timeslots don't line up properly, fail
+	                return false;
+	            }
+	            int totalTimeslots = totalTime / schedule.getTimeSlotLength();
+
+	            DaysInScheduleDAO d = new DaysInScheduleDAO();
+	            TimeSlotDAO t = new TimeSlotDAO();
+	            Date currentDay = schedule.getEndDate();
+	          
+	            //add a DayInSchedule,
+	            //then add all TimeSlots for that day,
+	            //repeat until all days are added and have all timeslots added
+	            //is one shorter than normal so that it won't include the start date of the schedule
+	            for (int i = 0; i< (numberOfDays); i++) {
+	                d.addDay(new DaysInSchedule(currentDay, schedule.getOrgAccessCode()));
+	                int currentTime = startTime; //for each new day, reset to starting time
+	                for (int j = 0; j< totalTimeslots; j++) {
+	                    //first parse the current time for the timeslot as a string
+	                    int currentHour = ((currentTime - (currentTime % 60)) / 60);
+	                    int currentMinute = (currentTime % 60);
+	                    String timeString = currentHour + ":" + currentMinute;
+	                    if (currentMinute < 10) {
+	                        timeString = currentHour + ":0" + currentMinute;
+	                    }
+	                    if (currentHour < 10) {
+	                        timeString = "0" + currentHour + ":" + currentMinute;
+	                    }
+	                    if (currentHour < 10 && currentMinute < 10) {
+	                        timeString = "0" + currentHour + ":0" + currentMinute;
+	                    }
+	                    //now add the timeslot for the current time
+	                    t.addTimeSlot(new TimeSlot(timeString, schedule.getTimeSlotLength(), currentDay, schedule.getOrgAccessCode()));
+	                    currentTime = currentTime + schedule.getTimeSlotLength();
+	                }
+	                //increment by a day by adding the number of milliseconds
+	                currentDay = new Date((currentDay.getTime() + (1 * 24 * 60 * 60 * 1000)));
+	            }
+				
+				
+	        	return numAffected == 1;
+	        } else {
+	            return false;
+	        }
+			
+			}
+			 catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return false;
+		
+	}
 }
