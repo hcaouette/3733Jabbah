@@ -1,20 +1,20 @@
 package jabbah.controllers;
 
 public class CancelMeetingParRequest {
-	String accessCode;
+	String initialAccessCode;
 	String startTime;
 	String day;
-	String scheduleID;
+	String participantCode;
 	
-	public CancelMeetingParRequest(String code, String sT, String day, String id) {
-		this.accessCode = code;
+	public CancelMeetingParRequest(String code, String sT, String day, String parID) {
+		this.initialAccessCode = code;
 		this.startTime = sT;
 		this.day = day;
-		this.scheduleID = id;
+		this.participantCode = parID;
 	}
 	
 	@Override
 	public String toString() {
-		return "Cancel Meeting(" + accessCode + ", " + startTime + " on " + day + ")";
+		return "Cancel Meeting(" + initialAccessCode + ", " + startTime + " on " + day + ")";
 	}
 }

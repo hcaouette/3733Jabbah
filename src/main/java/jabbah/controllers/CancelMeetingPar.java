@@ -17,6 +17,7 @@ import com.amazonaws.services.lambda.runtime.LambdaLogger;
 import com.amazonaws.services.lambda.runtime.RequestStreamHandler;
 import com.google.gson.Gson;
 
+import jabbah.db.SchedulesDAO;
 import jabbah.db.TimeSlotDAO;
 import jabbah.model.TimeSlot;
 
@@ -24,9 +25,12 @@ public class CancelMeetingPar implements RequestStreamHandler {
 	
 	public LambdaLogger logger = null;
 	
-	boolean cancelTimeSlot(String participantCode, String sT, int dur, String day, String id) throws Exception{
+	boolean cancelTimeSlot(String initialCode, String sT, int dur, String day, String parCode) throws Exception{
 		if(logger != null) { logger.log("in createTimeSlot");}
 		TimeSlotDAO dao = new TimeSlotDAO();
+		SchedulesDAO daoS = new SchedulesDAO();
+		
+		String id = daoS.getOrgAccessCode(initialCode);
 		
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         java.util.Date idDay = null;
@@ -36,12 +40,12 @@ public class CancelMeetingPar implements RequestStreamHandler {
 		// check if participant is the right participant
 		TimeSlot slot = dao.getTimeSlot(sT, idDayParsed, id);
 		
-		if(slot.getParticipant().equals(participantCode))
+		if(slot.getParticipant().equals(parCode))
 			slot.cancel();
 		else
 			return false;
         
-        return dao.updateParticipant(slot);
+        return dao.updateParticipant(slot) && dao.updateName(slot);
 	}
 	
 	@Override
@@ -95,7 +99,7 @@ public class CancelMeetingPar implements RequestStreamHandler {
 			CancelMeetingParResponse resp;
 			
 			try {
-				if(cancelTimeSlot(req.accessCode, req.startTime, 0, req.day, req.scheduleID)) {
+				if(cancelTimeSlot(req.initialAccessCode, req.startTime, 0, req.day, req.participantCode)) {
 					resp = new CancelMeetingParResponse("Successfully cancelled meeting at: " + req.startTime);
 				}
 				else {
