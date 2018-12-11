@@ -176,7 +176,7 @@ function cancelFunc(days, startTime){
           }
           let arg = yearTest + "-" + monthTest + "-" + dayTest;
 
-          //
+          let initAcc = prompt("Please enter your unique access code for this meeting", "");
 
           let data = {};
           data["day"] = arg;
@@ -624,14 +624,16 @@ function closeFunc(days, startTime) {
         let output = "<p> User: Participant </p>"
         output += "<label for = 'secretID'>Enter your secret code here to access a previously created schedule:</label>";
         output += "<br><textarea id='secretID' rows='2' cols='20'></textarea>";
+        output += "<br><label for = 'viewDateText'>Enter date for viewing a week in the schedule here:</label>";
+        output += "<br><textarea id='viewDateText' rows='2' cols='20' placeholder='yyyy-mm-dd'></textarea>";
+        output += "<br><br>";
+        output += "<button type='button' onclick='pullSchedule()'>View Week</button>";
         output += "<br><label for = 'viewYearText'>Enter year here:</label>";
         output += "<br><textarea id='viewYearText' rows='2' cols='20' placeholder='yyyy'></textarea>";
         output += "<br><label for = 'viewMonthText'>Enter month here:</label>";
         output += "<br><textarea id='viewMonthText' rows='2' cols='20' placeholder='mm'></textarea>";
         output += "<br><label for = 'viewDayText'>Enter day of month here:</label>";
         output += "<br><textarea id='viewDayText' rows='2' cols='20' placeholder='dd'></textarea>";
-        output += "<br><br>";
-        output += "<button type='button' onclick='pullSchedule()'>View Week</button>";
 
         output += "<br><br>";
         output += "<label for='viewWeekdayText'>Enter the weekday here</label>";
@@ -678,7 +680,7 @@ function closeFunc(days, startTime) {
         let output = "<p> User: Organizer </p>";
 
         output += "<br><label for = 'viewDateText'>Enter date of the week to view here:</label>";
-        output += "<br><textarea id='viewDateText' rows='2' cols='20' placeholder='yyyy'></textarea>";
+        output += "<br><textarea id='viewDateText' rows='2' cols='20' placeholder='yyyy-mm-dd'></textarea>";
         output += "<br><label for = 'viewMonthText'>Enter month here:</label>";
         output += "<br><textarea id='viewMonthText' rows='2' cols='20' placeholder='mm'></textarea>";
         output += "<br><label for = 'viewDayText'>Enter day of month here:</label>";
