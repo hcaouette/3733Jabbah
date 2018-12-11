@@ -563,24 +563,27 @@ function processRespP(result){
         for (let j = 0; j < columns; j++) {
           currSlot = jDataTwo.week[i + j];
             if (currSlot["isOpen"] == 0) {
-                //if slot is closed, make it able to be opened by clicking on it
+                //if slot is closed, show nothing to participant
                 //myTable += "<td><button type='button' onclick="openFunc(\'' + currSlot["idDays"] + "," + currSlot["startTime"] + '\')">Open</button></td>";
-                let myLine = "<td><button id='calButton' type='button' onclick='openFunc(";
+                let myLine = "<td><p>CLOSED</p></td>";
+            } else if (currSlot["name"] == null) {
+                //if slot is open, make it able to be booked by clicking on it
+                //myTable += "<td><button type='button' onclick="openFunc(\'' + currSlot["idDays"] + "," + currSlot["startTime"] + '\')">Open</button></td>";
+                let myLine = "<td><button id='calButton' type='button' onclick='bookFunc(";
                 myLine += "\""+currSlot.idDays.toString()+"\"";
                 myLine += ",";
                 myLine += "\""+currSlot.startTime.toString()+"\"";
                 myLine += ")'";
-                myLine += ">Open</button></td>";
-                myTable+=myLine;
+                myLine += ">Book</button></td>";
             } else {
                 //if slot is open, make it able to be closed by clicking on it
                 //myTable += "<td><button type='button' onclick='closeFunc('\' + currSlot["idDays"] + "," + currSlot["startTime"])'>Close</button></td>";
-                let myLine = "<td><button id='calButton' type='button' onclick='closeFunc(";
+                let myLine = "<td><button id='calButton' type='button' onclick='cancelFunc(";
                 myLine += "\""+currSlot.idDays.toString()+"\"";
                 myLine += ",";
                 myLine += "\""+currSlot.startTime.toString()+"\"";
                 myLine += ")'";
-                myLine += ">Close</button></td>";
+                myLine += ">Cancel</button></td>";
                 myTable+=myLine;
             }
           
