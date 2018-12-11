@@ -4,6 +4,9 @@ var delete_url = "https://8pzpcdfj7l.execute-api.us-east-2.amazonaws.com/First/c
 var display_url = "https://8pzpcdfj7l.execute-api.us-east-2.amazonaws.com/First/showweek";//show schedule by week, pullSchedule()
 var open_url = "https://8pzpcdfj7l.execute-api.us-east-2.amazonaws.com/First/opentimeslot";
 var close_url = "https://8pzpcdfj7l.execute-api.us-east-2.amazonaws.com/First/closetimeslot";
+var book_url = "https://8pzpcdfj7l.execute-api.us-east-2.amazonaws.com/First/createMeeting";
+var cancel_url = "https://8pzpcdfj7l.execute-api.us-east-2.amazonaws.com/First/cancelmeetingparticipant";
+var displayP_url = "https://8pzpcdfj7l.execute-api.us-east-2.amazonaws.com/First/showweekparticipant";
 function processResponse(arg1, arg2, arg3, arg4, arg5, arg6) {
 
 }
@@ -64,11 +67,145 @@ function firstLoad(){
     document.getElementById("panelPrint").innerHTML = output;
 }
 
-function bookFunc(day, time){
-  console.log(day);
-  console.log(time);
-    window.confirm("Please confirm you want to book at "+day+", "+time);
+function bookFunc(days, startTime){
+  //console.log(day);
+  //console.log(time);
+    let form = document.addForm;
+    let monthTest = days.substring(0, 3);
+    let dayTest = days.substring(4, 6);
+    let yearTest = "";
+    if (dayTest.includes(",")) {
+        dayTest = "0" + days.substring(4, 5);
+        yearTest = days.substring(7, 11);
+    } else {
+        yearTest = days.substring(8, 12);
+    }
+    if (monthTest == "Jan") {
+        monthTest = "01";
+        } else if (monthTest == "Feb") {
+            monthTest = "02";
+        } else if (monthTest == "Mar") {
+            monthTest = "03";
+        } else if (monthTest == "Apr") {
+            monthTest = "04";
+        } else if (monthTest == "May") {
+            monthTest = "05";
+        } else if (monthTest == "Jun") {
+            monthTest = "06";
+        } else if (monthTest == "Jul") {
+            monthTest = "07";
+        } else if (monthTest == "Aug") {
+            monthTest = "08";
+        } else if (monthTest == "Sep") {
+            monthTest = "09";
+        } else if (monthTest == "Oct") {
+            monthTest = "10";
+        } else if (monthTest == "Nov") {
+            monthTest = "11";
+        } else if (monthTest == "Dec") {
+            monthTest = "12";
+        }
+        let arg = yearTest + "-" + monthTest + "-" + dayTest;
+        let arg2 = makePartId();
+        let data = {};
+        data["day"] = arg;
+        data["startTime"] = startTime;
+        data["initialAccessCode"] = document.getElementById("secretID").value;
+        data["name"] = document.getElementById("name").value;
+        data["newParticipantCode"] = arg2;
+
+        let js = JSON.stringify(data);
+        console.log("JS:" + js);
+        let xhr = new XMLHttpRequest();
+        xhr.open("POST", book_url, true);
+
+        // send the collected data as JSON
+        xhr.send(js);
+
+        // This will process results and update HTML as appropriate.
+        xhr.onloadend = function() {
+            console.log(xhr);
+            console.log(xhr.request);
+            if (xhr.readyState == XMLHttpRequest.DONE) {
+                console.log("XHR:" + xhr.responseText);
+                alert("Your unique id is: " + )
+                pullSchedule()
+                //processResp(xhr.responseText.body);
+            } else {
+                //processResp("N/A");
+            }
+        };
+    //window.confirm("Please confirm you want to book at "+day+", "+time);
 }
+
+function cancelFunc(days, startTime){
+      let form = document.addForm;
+      let monthTest = days.substring(0, 3);
+      let dayTest = days.substring(4, 6);
+      let yearTest = "";
+      if (dayTest.includes(",")) {
+          dayTest = "0" + days.substring(4, 5);
+          yearTest = days.substring(7, 11);
+      } else {
+          yearTest = days.substring(8, 12);
+      }
+      if (monthTest == "Jan") {
+          monthTest = "01";
+          } else if (monthTest == "Feb") {
+              monthTest = "02";
+          } else if (monthTest == "Mar") {
+              monthTest = "03";
+          } else if (monthTest == "Apr") {
+              monthTest = "04";
+          } else if (monthTest == "May") {
+              monthTest = "05";
+          } else if (monthTest == "Jun") {
+              monthTest = "06";
+          } else if (monthTest == "Jul") {
+              monthTest = "07";
+          } else if (monthTest == "Aug") {
+              monthTest = "08";
+          } else if (monthTest == "Sep") {
+              monthTest = "09";
+          } else if (monthTest == "Oct") {
+              monthTest = "10";
+          } else if (monthTest == "Nov") {
+              monthTest = "11";
+          } else if (monthTest == "Dec") {
+              monthTest = "12";
+          }
+          let arg = yearTest + "-" + monthTest + "-" + dayTest;
+
+          //
+          
+          let data = {};
+          data["day"] = arg;
+          data["startTime"] = startTime;
+          data["participantCode"] = initAcc;
+          data["intialAccessCode"] = document.getElementById("secretID").value;
+
+          let js = JSON.stringify(data);
+          console.log("JS:" + js);
+          let xhr = new XMLHttpRequest();
+          xhr.open("POST", cancel_url, true);
+
+          // send the collected data as JSON
+          xhr.send(js);
+
+          // This will process results and update HTML as appropriate.
+          xhr.onloadend = function() {
+              console.log(xhr);
+              console.log(xhr.request);
+              if (xhr.readyState == XMLHttpRequest.DONE) {
+                  console.log("XHR:" + xhr.responseText);
+                  pullSchedule()
+                  //processResp(xhr.responseText.body);
+              } else {
+                  //processResp("N/A");
+              }
+          };
+      //window.confirm("Please confirm you want to book at "+day+", "+time);
+  }
 
 function makeOrgId() {
     let text = "";
@@ -96,7 +233,7 @@ function createSchedule(){
 
     //Schedule Creation:
     let orgAccessCode = makeOrgId();
-    document.getElementById("currentInfo").innerHTML += " Org Access Code: " + orgAccessCode;
+    document.getElementById("currentInfo").innerHTML = " Org Access Code: " + orgAccessCode;
     let partAccessCode = makePartId();
     document.getElementById("currentInfo").innerHTML += " Participant Access Code: " + partAccessCode;
     //name creation is handled on the backend so it can be checked against the server
@@ -456,7 +593,7 @@ function closeFunc(days, startTime) {
 
     function participant() {
         //take the entered name to store in the HTML
-        document.getElementById("currentInfo").innerHTML = "Name: "
+        document.getElementById("currentName").innerHTML = "Name: "
                 + document.getElementById("userText").value;
 
         //show participant panel
@@ -486,7 +623,7 @@ function closeFunc(days, startTime) {
 
     function systemAdmin() {
         //take the entered login info to store in the HTML
-        document.getElementById("currentInfo").innerHTML = "Admin: "
+        document.getElementById("currentName").innerHTML = "Admin: "
                 + document.getElementById("loginText").value;
 
         //show the systemAdmin panel
@@ -510,7 +647,7 @@ function closeFunc(days, startTime) {
 
     function organizer() {
         //take the entered name to store in the HTML
-        document.getElementById("currentInfo").innerHTML = "Name: "
+        document.getElementById("currentName").innerHTML = "Name: "
                 + document.getElementById("newOrganizer").value;
 
         //show the panel for organizers
@@ -566,6 +703,7 @@ function closeFunc(days, startTime) {
 <body onload="firstLoad()">
   <div class="layout">
   <div class="Header">Welcome to the Jabbah-cal</div>
+    <div id="currentName"></div>
     <div id="currentInfo"></div>
   </div>
     <div class="Panel">
