@@ -326,6 +326,45 @@ function processDelete(orgAccessCode) {
   };
 }
 
+function pullScheduleP(){
+    //a new schedule would not be created for pulling up the week in a schedule,
+    //instead it should get the days in a schedule based on what access code and info they enter
+    //Schedule Creation:
+    //name creation is handled on the backend so it can be checked against the server
+    let secretID = document.getElementById("secretID").value;
+    console.log(secretID);
+    let viewDate = document.getElementById("viewDateText").value;
+    console.log(viewDate);
+    /*JSON stuff*/
+    let form = document.addForm;
+    let arg2 = viewDate;
+    let arg5 = secretID;
+
+    let data = {};
+    data["date"] = arg2;
+    data["scheduleID"] = arg5;
+
+    let js = JSON.stringify(data);
+    console.log("JS:" + js);
+    let xhr = new XMLHttpRequest();
+    xhr.open("POST", displayP_url, true);
+
+  // send the collected data as JSON
+  xhr.send(js);
+
+    // This will process results and update HTML as appropriate.
+    xhr.onloadend = function () {
+      console.log(xhr);
+      console.log(xhr.request);
+      if (xhr.readyState == XMLHttpRequest.DONE) {
+        console.log ("XHR:" + xhr.responseText);
+        processRespP(xhr.responseText);
+        //processResp(xhr.responseText.body);
+      } else {
+          processRespP("N/A");
+      }
+    };
+}
 function pullSchedule(){
       //a new schedule would not be created for pulling up the week in a schedule,
       //instead it should get the days in a schedule based on what access code and info they enter
@@ -627,7 +666,7 @@ function closeFunc(days, startTime) {
         output += "<br><label for = 'viewDateText'>Enter date for viewing a week in the schedule here:</label>";
         output += "<br><textarea id='viewDateText' rows='2' cols='20' placeholder='yyyy-mm-dd'></textarea>";
         output += "<br><br>";
-        output += "<button type='button' onclick='pullSchedule()'>View Week</button>";
+        output += "<button type='button' onclick='pullScheduleP()'>View Week</button>";
         output += "<br><label for = 'viewYearText'>Enter year here:</label>";
         output += "<br><textarea id='viewYearText' rows='2' cols='20' placeholder='yyyy'></textarea>";
         output += "<br><label for = 'viewMonthText'>Enter month here:</label>";
