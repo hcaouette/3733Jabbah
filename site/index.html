@@ -480,14 +480,11 @@ function processResp(result) {
               } else {
                   //if slot is open, make it able to be closed by clicking on it
                   //myTable += "<td><button type='button' onclick='closeFunc('\' + currSlot["idDays"] + "," + currSlot["startTime"])'>Close</button></td>";
-<<<<<<< HEAD
-=======
                   if (currSlot["name"] != null) {
                   myTable += "<p>";
                   myTable += currSlot.name.toString();
                   myTable += "</p>";
                   }
->>>>>>> 12d629daedb35fd043f4c44711e7847660495e7e
                   myTable += "<td><button id='calButton' type='button' onclick='closeFunc(";
                   myTable += "\""+currSlot.idDays.toString()+"\"";
                   myTable += ",";
@@ -589,15 +586,11 @@ function processRespP(result){
                 myTable += ">Book</button></td>";
             } else {
                 //if slot is open, make it able to be closed by clicking on it
-                //myTable += "<td><button type='button' onclick='closeFunc('\' + currSlot["idDays"] + "," + currSlot["startTime"])'>Close</button></td>";
-<<<<<<< HEAD
-=======
                 if (currSlot["name"] != null) {
                   myTable += "<p>";
                   myTable += currSlot.name.toString();
                   myTable += "</p>";
                 }
->>>>>>> 12d629daedb35fd043f4c44711e7847660495e7e
                 myTable += "<td><button id='calButton' type='button' onclick='cancelFunc(";
                 myTable += "\""+currSlot.idDays.toString()+"\"";
                 myTable += ",";
