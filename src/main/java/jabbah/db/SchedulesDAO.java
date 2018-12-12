@@ -297,39 +297,39 @@ public class SchedulesDAO {
     }
 
     public boolean deleteOldSchedules(String day, String currentTime) throws Exception {
-        try { 
-        	
+        try {
+
         	// converts Strings to numbers
         	int numDay = Integer.parseInt(day);
         	long curTime = Long.parseLong(currentTime);
 
         	// grabs all existing schedules
         	List<Schedule> allSchedules = getAllSchedules();
-        	
+
         	long difference = 0;
         	int hours = 0;
         	int daysOld = 0;
-        	
+
         	int counter = 0;
         	int numAffected = 0;
-        	
+
         	for(Schedule s: allSchedules) {
         		//loop through all schedules to find difference in time
-        		difference = curTime - s.getTimeCreated(); 
+        		difference = curTime - s.getTimeCreated();
         		//convert difference in time in terms of days
         		hours = (int) difference / 3600000;
         		daysOld = hours / 24;
-        		
+
         		//if the schedule is older than the given day, delete
         		if(daysOld > numDay) {
         			counter++; // count number of schedule that are more than numDay old
-        			
+
         			if(deleteSchedule(s))
         				numAffected++; // count number of successfully deleted schedules
         		}
         	}
-        	
-        	//counter and numAffected should match or else that means that not all schedules 
+
+        	//counter and numAffected should match or else that means that not all schedules
         	//that needed to be deleted are deleted
             return (numAffected == counter);
 
@@ -348,7 +348,7 @@ public class SchedulesDAO {
             startCal.setTime(schedule.getStartDate());
             Calendar endCal = Calendar.getInstance();
             endCal.setTime(schedule.getEndDate());
-            int workDays = 1;
+            int workDays = 0;
             while (startCal.getTimeInMillis() <= endCal.getTimeInMillis()) {
                 if (startCal.get(Calendar.DAY_OF_WEEK) != Calendar.SATURDAY && startCal.get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY) {
                     ++workDays;
