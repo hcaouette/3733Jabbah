@@ -346,69 +346,67 @@ function openTimeSlot(){
   let openTime = document.getElementById("time").value;
 
   //makes sure both fields aren't filled
-  if((openDay != null) && (openTime != null)){
+  if((openDay != "") && (openTime != "")){
     alert("you can only enter one of these fields");
-    console.log("failed to mass open slots")
+    console.log("failed to mass open slots");
+    console.log(openDay);
+    console.log(openTime);
     return;
   }
 
-  //opening-by-time case
-  let form = document.addForm;
-  let arg2 = openTime;
-  let arg5 = secretID;
+  if(openTime != ""){
+    //opening-by-time case
+    let openTimeData = {};
+    openTimeData["startTime"] = openTime;
+    openTimeData["scheduleID"] = secretID;
 
-  let data = {};
-  data["startTime"] = arg2;
-  data["scheduleID"] = arg5;
+    let openTimeJS = JSON.stringify(openTimeData);
+    console.log("JS:" + openTimeJS);
+    let openTimeXHR = new XMLHttpRequest();
+    openTimeXHR.open("POST", openOnTime_url, true);
+    // send the collected data as JSON
+    openTimeXHR.send(openTimeJS);
 
-  let js = JSON.stringify(data);
-  console.log("JS:" + js);
-  let xhr = new XMLHttpRequest();
-  xhr.open("POST", openOnTime_url, true);
-  // send the collected data as JSON
-  xhr.send(js);
+    // This will process results and update HTML as appropriate.
+    openTimeXHR.onloadend = function () {
+      console.log(openTimeXHR);
+      console.log(openTimeXHR.request);
+      if (openTimeXHR.readyState == XMLHttpRequest.DONE) {
+        console.log ("XHR:" + openTimeXHR.responseText);
+        processResp(openTimeXHR.responseText);
+      } else {
+        processResp("N/A");
+      }
+    };
+    console.log("opened all at"+openTime);
+  }
 
-  // This will process results and update HTML as appropriate.
-  xhr.onloadend = function () {
-    console.log(xhr);
-    console.log(xhr.request);
-    if (xhr.readyState == XMLHttpRequest.DONE) {
-      console.log ("XHR:" + xhr.responseText);
-      processResp(xhr.responseText);
-    } else {
-      processResp("N/A");
-    }
-  };
-  console.log("opened all at"+openTime);
+  if(openDay != ""){
+    //opening-by-date case
+    let openDateData = {};
+    openDateData["day"] = openDay;
+    openDateData["scheduleID"] = secretID;
 
-  //opening-by-date case
-  let form = document.addForm;
-  let arg2 = openDay;
-  let arg5 = secretID;
+    let openDateJS = JSON.stringify(openDateData);
+    console.log("JS:" + openDateJS);
+    let openDateXHR = new XMLHttpRequest();
+    openDateXHR.open("POST", openOnDay_url, true);
+    // send the collected data as JSON
+    openDateXHR.send(openDateJS);
 
-  let data = {};
-  data["day"] = arg2;
-  data["scheduleID"] = arg5;
-
-  let js = JSON.stringify(data);
-  console.log("JS:" + js);
-  let xhr = new XMLHttpRequest();
-  xhr.open("POST", openOnDay_url, true);
-  // send the collected data as JSON
-  xhr.send(js);
-
-  // This will process results and update HTML as appropriate.
-  xhr.onloadend = function () {
-    console.log(xhr);
-    console.log(xhr.request);
-    if (xhr.readyState == XMLHttpRequest.DONE) {
-      console.log ("XHR:" + xhr.responseText);
-      processResp(xhr.responseText);
-    } else {
-      processResp("N/A");
-    }
-  };
-  console.log("opened all at"+openDay);
+    // This will process results and update HTML as appropriate.
+    openDateXHR.onloadend = function () {
+      console.log(openDateXHR);
+      console.log(openDateXHR.request);
+      if (openDateXHR.readyState == XMLHttpRequest.DONE) {
+        console.log ("XHR:" + openDateXHR.responseText);
+        processResp(openDateXHR.responseText);
+      } else {
+        processResp("N/A");
+      }
+    };
+    console.log("opened all at"+openDay);
+  }
 }
 function closeTimeSlot(){
   let secretID = document.getElementById("secretID").value;
@@ -416,69 +414,67 @@ function closeTimeSlot(){
   let closeTime = document.getElementById("time").value;
 
   //makes sure both fields aren't filled
-  if((closeDay != null) && (closeTime != null)){
+  if((closeDay != "") && (closeTime != "")){
     alert("you can only enter one of these fields");
-    console.log("failed to mass open slots")
+    console.log("failed to mass open slots");
+    console.log(closeDay);
+    console.log(closeTime);
     return;
+
+
+  if(closeTime != ""){
+    //closing-by-time case
+    let closeTimeData = {};
+    closeTimeData["startTime"] = closeTime;
+    closeTimeData["scheduleID"] = secretID;
+
+    let closeTimeJS = JSON.stringify(closeTimeData);
+    console.log("JS:" + closeTimeJS);
+    let closeTimeXHR = new XMLHttpRequest();
+    closeTimeXHR.open("POST", closeOnTime_url, true);
+    // send the collected data as JSON
+    closeTimeXHR.send(closeTimeJS);
+
+    // This will process results and update HTML as appropriate.
+    closeTimeXHR.onloadend = function () {
+      console.log(closeTimeXHR);
+      console.log(closeTimeXHR.request);
+      if (closeTimeXHR.readyState == XMLHttpRequest.DONE) {
+        console.log ("XHR:" + closeTimeXHR.responseText);
+        processResp(closeTimeXHR.responseText);
+      } else {
+        processResp("N/A");
+      }
+    };
+    console.log("opened all at"+closeTime);
   }
 
-  //closing-by-time case
-  let form = document.addForm;
-  let arg2 = closeTime;
-  let arg5 = secretID;
+  if(closeDate != ""){
+    //closing-by-date case
+    let closeDateData = {};
+    closeDateData["day"] = closeDay;
+    closeDateData["scheduleID"] = secretID;
 
-  let data = {};
-  data["startTime"] = arg2;
-  data["scheduleID"] = arg5;
+    let closeDateJS = JSON.stringify(closeDateData);
+    console.log("JS:" + closeDateJS);
+    let closeDateXHR = new XMLHttpRequest();
+    closeDateXHR.open("POST", closeOnDay_url, true);
+    // send the collected data as JSON
+    closeDateXHR.send(closeDateJS);
 
-  let js = JSON.stringify(data);
-  console.log("JS:" + js);
-  let xhr = new XMLHttpRequest();
-  xhr.open("POST", closeOnTime_url, true);
-  // send the collected data as JSON
-  xhr.send(js);
-
-  // This will process results and update HTML as appropriate.
-  xhr.onloadend = function () {
-    console.log(xhr);
-    console.log(xhr.request);
-    if (xhr.readyState == XMLHttpRequest.DONE) {
-      console.log ("XHR:" + xhr.responseText);
-      processResp(xhr.responseText);
-    } else {
-      processResp("N/A");
-    }
-  };
-  console.log("opened all at"+closeTime);
-
-  //closing-by-date case
-  let form = document.addForm;
-  let arg2 = closeDay;
-  let arg5 = secretID;
-
-  let data = {};
-  data["day"] = arg2;
-  data["scheduleID"] = arg5;
-
-  let js = JSON.stringify(data);
-  console.log("JS:" + js);
-  let xhr = new XMLHttpRequest();
-  xhr.open("POST", closeOnDay_url, true);
-  // send the collected data as JSON
-  xhr.send(js);
-
-  // This will process results and update HTML as appropriate.
-  xhr.onloadend = function () {
-    console.log(xhr);
-    console.log(xhr.request);
-    if (xhr.readyState == XMLHttpRequest.DONE) {
-      console.log ("XHR:" + xhr.responseText);
-      processResp(xhr.responseText);
-    } else {
-      processResp("N/A");
-    }
-  };
-  console.log("opened all at"+closeDay);
+    // This will process results and update HTML as appropriate.
+    closeDateXHR.onloadend = function () {
+      console.log(closeDateXHR);
+      console.log(closeDateXHR.request);
+      if (closeDateXHR.readyState == XMLHttpRequest.DONE) {
+        console.log ("XHR:" + closeDateXHR.responseText);
+        processResp(closeDateXHR.responseText);
+      } else {
+        processResp("N/A");
+      }
+    };
+    console.log("opened all at"+closeDay);
+  }
 }
 
 //creation and deletion
