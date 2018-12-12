@@ -52,7 +52,7 @@ public class CancelMeetingParTest {
         //creates a meeting
 		CreateMeeting hand = new CreateMeeting();
 
-		CreateMeetingRequest cmr = new CreateMeetingRequest(rndSTwo, "3:10", "2001-08-19", "jeff", "12345");
+		CreateMeetingRequest cmr = new CreateMeetingRequest(rndSTwo, "03:10", "2001-08-19", "jeff", "12345");
 
 		String otsRequest = new Gson().toJson(cmr);
 		jsonRequest = new Gson().toJson(new PostRequest(otsRequest));
@@ -69,7 +69,7 @@ public class CancelMeetingParTest {
         //cancel the created meeting
 		CancelMeetingPar canMetHandler = new CancelMeetingPar();
 
-		CancelMeetingParRequest canMetReq = new CancelMeetingParRequest(rndSTwo, "3:10", "2001-08-19", "12345");
+		CancelMeetingParRequest canMetReq = new CancelMeetingParRequest(rndSTwo, "03:10", "2001-08-19", "12345");
 
 		otsRequest = new Gson().toJson(canMetReq);
 		jsonRequest = new Gson().toJson(new PostRequest(otsRequest));
@@ -83,6 +83,6 @@ public class CancelMeetingParTest {
         CancelMeetingParResponse cmresps = new Gson().fromJson(post.body, CancelMeetingParResponse.class);
         System.out.println(cmresps);
 
-        Assert.assertEquals("Successfully cancelled meeting at: 3:10", cmresps.response);
+        Assert.assertEquals("Successfully cancelled meeting at: 03:10", cmresps.response);
 	}
 }
