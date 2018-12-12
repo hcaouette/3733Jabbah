@@ -297,18 +297,41 @@ public class SchedulesDAO {
     }
 
     public boolean deleteOldSchedules(String day, String currentTime) throws Exception {
-        try { //currently incomplete
-            PreparedStatement ps = conn.prepareStatement("DELETE FROM Schedules WHERE timeCreated=?;");
-            ps.setString(1, currentTime);
-            int numAffected = ps.executeUpdate();
-            ps.close();
+        try { 
+        	
+        	// converts Strings to numbers
+        	int numDay = Integer.parseInt(day);
+        	long curTime = Long.parseLong(currentTime);
 
-            DaysInScheduleDAO d = new DaysInScheduleDAO();
-            TimeSlotDAO t = new TimeSlotDAO();
-           // d.deleteOldDay(new DaysInSchedule(null, schedule.getOrgAccessCode()));
-           // t.deleteTimeSlot(new TimeSlot(null, 0, null, schedule.getOrgAccessCode()));
-
-            return (numAffected == 1);
+        	// grabs all existing schedules
+        	List<Schedule> allSchedules = getAllSchedules();
+        	
+        	long difference = 0;
+        	int hours = 0;
+        	int daysOld = 0;
+        	
+        	int counter = 0;
+        	int numAffected = 0;
+        	
+        	for(Schedule s: allSchedules) {
+        		//loop through all schedules to find difference in time
+        		difference = curTime - s.getTimeCreated(); 
+        		//convert difference in time in terms of days
+        		hours = (int) difference / 3600000;
+        		daysOld = hours / 24;
+        		
+        		//if the schedule is older than the given day, delete
+        		if(daysOld > numDay) {
+        			counter++; // count number of schedule that are more than numDay old
+        			
+        			if(deleteSchedule(s))
+        				numAffected++; // count number of successfully deleted schedules
+        		}
+        	}
+        	
+        	//counter and numAffected should match or else that means that not all schedules 
+        	//that needed to be deleted are deleted
+            return (numAffected == counter);
 
         } catch (Exception e) {
             throw new Exception("Failed to delete schedule: " + e.getMessage());
