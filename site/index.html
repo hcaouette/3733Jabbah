@@ -727,15 +727,18 @@ function processResp(result) {
           //columns = 1;
       }
 
-      let i = 0;
-      let k = 0;
-      while (i < (numIntervals*columns)) {
+      //let i = 0;
+      //let k = 0;
+      //while (i < (numIntervals*columns)) {
+      //for(let i = 0; i< columns; i++) {
+      for(let i = 0; i< numIntervals; i++) {
           let currSlot = jDataTwo.week[i];
-          let currSlotForTime = jDataTwo.week[k];
+          let currSlotForTime = jDataTwo.week[i];
           let currTime = currSlotForTime["startTime"];
           myTable += "<tr><td>"+currTime+"</td>";
+          //for (let j = 0; j < numIntervals; j++) {
           for (let j = 0; j < columns; j++) {
-            currSlot = jDataTwo.week[i + j];
+            currSlot = jDataTwo.week[i + (j*numIntervals)];
               if (currSlot["isOpen"] == 0) {
                   //if slot is closed, make it able to be opened by clicking on it
                   //myTable += "<td><button type='button' onclick="openFunc(\'' + currSlot["idDays"] + "," + currSlot["startTime"] + '\')">Open</button></td>";
@@ -766,10 +769,9 @@ function processResp(result) {
                   }
                   myTable += "</td>";
               }
-
           }
-          i += columns;
-          k++;
+          //i += columns;
+          //k++;
           myTable += "</tr>";
       }
       myTable += "</table>";
