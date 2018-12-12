@@ -367,6 +367,7 @@ function openTimeSlot(){
     // send the collected data as JSON
     openTimeXHR.send(openTimeJS);
 
+    /**
     // This will process results and update HTML as appropriate.
     openTimeXHR.onloadend = function () {
       console.log(openTimeXHR);
@@ -377,7 +378,7 @@ function openTimeSlot(){
       } else {
         processResp("N/A");
       }
-    };
+    };*/
     console.log("opened all at"+openTime);
   }
 
@@ -394,6 +395,7 @@ function openTimeSlot(){
     // send the collected data as JSON
     openDateXHR.send(openDateJS);
 
+    /**
     // This will process results and update HTML as appropriate.
     openDateXHR.onloadend = function () {
       console.log(openDateXHR);
@@ -404,7 +406,7 @@ function openTimeSlot(){
       } else {
         processResp("N/A");
       }
-    };
+    };*/
     console.log("opened all at"+openDay);
   }
 }
@@ -420,6 +422,7 @@ function closeTimeSlot(){
     console.log(closeDay);
     console.log(closeTime);
     return;
+  }
 
 
   if(closeTime != ""){
@@ -435,6 +438,7 @@ function closeTimeSlot(){
     // send the collected data as JSON
     closeTimeXHR.send(closeTimeJS);
 
+    /**
     // This will process results and update HTML as appropriate.
     closeTimeXHR.onloadend = function () {
       console.log(closeTimeXHR);
@@ -445,11 +449,11 @@ function closeTimeSlot(){
       } else {
         processResp("N/A");
       }
-    };
-    console.log("opened all at"+closeTime);
+    };*/
+    console.log("closed all at"+closeTime);
   }
 
-  if(closeDate != ""){
+  if(closeDay != ""){
     //closing-by-date case
     let closeDateData = {};
     closeDateData["day"] = closeDay;
@@ -462,7 +466,7 @@ function closeTimeSlot(){
     // send the collected data as JSON
     closeDateXHR.send(closeDateJS);
 
-    // This will process results and update HTML as appropriate.
+    /*// This will process results and update HTML as appropriate.
     closeDateXHR.onloadend = function () {
       console.log(closeDateXHR);
       console.log(closeDateXHR.request);
@@ -472,8 +476,8 @@ function closeTimeSlot(){
       } else {
         processResp("N/A");
       }
-    };
-    console.log("opened all at"+closeDay);
+    };*/
+    console.log("closed all at"+closeDay);
   }
 }
 
@@ -725,8 +729,6 @@ function processResp(result) {
 
       let i = 0;
       let k = 0;
-      let userType = document.getElementById("secretID").value.substring(10,11);
-      console.log(userType);
       while (i < (numIntervals*columns)) {
           let currSlot = jDataTwo.week[i];
           let currSlotForTime = jDataTwo.week[k];
@@ -828,8 +830,6 @@ function processRespP(result){
 
     let i = 0;
     let k = 0;
-    let userType = document.getElementById("secretID").value.substring(10,11);
-    console.log(userType);
     while (i < (numIntervals*columns)) {
         let currSlot = jDataTwo.week[i];
         let currSlotForTime = jDataTwo.week[k];
@@ -973,7 +973,6 @@ function organizer() {
     output += "<textarea id='scheduleName' rows='2' cols='20' placeholder='My Schedule'></textarea><br>";
     output += "";
     output += "<br><button type='button' onclick='createSchedule()'>Create Schedule</button>";
-
 
     document.getElementById("panelPrint").innerHTML = output;
 }
