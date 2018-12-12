@@ -63,7 +63,7 @@ public class ExtendScheduleTest {
         ExtendScheduleResponse respa = new Gson().fromJson(post.body, ExtendScheduleResponse.class);
         System.out.println(respa);
 
-        Assert.assertEquals("Successfully defined Schedule:x" + rnd, respa.response);
+        Assert.assertEquals("Succesfully extended schedule to date: " + "1888-08-01", respa.response);
     }
 
 }
