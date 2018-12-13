@@ -756,7 +756,15 @@ function processResp(result) {
                   myTable += currSlot.name.toString();
                   myTable += "</p>";
                   }
+                  //option to close slot
                   myTable += "<td><button id='calButton' type='button' onclick='closeFunc(";
+                  myTable += "\""+currSlot.idDays.toString()+"\"";
+                  myTable += ",";
+                  myTable += "\""+currSlot.startTime.toString()+"\"";
+                  myTable += ")'";
+                  myTable += ">Close</button>";
+                  //along with option to just cancel the meeting
+                  myTable += "<button id='calButton' type='button' onclick='cancelFunc(";
                   myTable += "\""+currSlot.idDays.toString()+"\"";
                   myTable += ",";
                   myTable += "\""+currSlot.startTime.toString()+"\"";
@@ -806,33 +814,34 @@ function processRespP(result){
     myTable += "<td>WED</td>";
     myTable += "<td>THU</td>";
     myTable += "<td>FRI</td></tr>";
-    columns = 5;
+    // columns = 5;
     } else if (start == "Tuesday") {
         myTable += "<td>TUE</td>";
         myTable += "<td>WED</td>";
         myTable += "<td>THU</td>";
         myTable += "<td>FRI</td></tr>";
-        columns = 4;
+        // columns = 4;
         }
     else if (start == "Wednesday") {
         myTable += "<td>WED</td>";
         myTable += "<td>THU</td>";
         myTable += "<td>FRI</td></tr>";
-        columns = 3;
+        // columns = 3;
         }
     else if (start == "Thursday") {
         myTable += "<td>THU</td>";
         myTable += "<td>FRI</td></tr>";
-        columns = 2;
+        // columns = 2;
         }
     else {
         myTable += "<td>FRI</td></tr>";
-        columns = 1;
+        // columns = 1;
     }
 
-    let i = 0;
-    let k = 0;
-    while (i < (numIntervals*columns)) {
+    // let i = 0;
+    // let k = 0;
+    // while (i < (numIntervals*columns)) {
+    for(let i=0;i<numIntervals;i++){
         let currSlot = jDataTwo.week[i];
         let currSlotForTime = jDataTwo.week[k];
         let currTime = currSlotForTime["startTime"];
@@ -873,8 +882,8 @@ function processRespP(result){
                 myTable += "</td>"
             }
         }
-        i += columns;
-        k++;
+        // i += columns;
+        // k++;
         myTable += "</tr>";
     }
     myTable += "</table>";
