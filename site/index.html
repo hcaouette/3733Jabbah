@@ -1021,7 +1021,34 @@ function searchOpenTimeslots(){
 
 //SysAdmin methods
 function deleteOld() {
-    
+    if (confirm("Are you sure you want to delete schedules more than the entered number of days old?")) {
+        let day = document.getElementById("numDays").value;
+        let currentTime = Math.floor(Date.now()); //get milliseconds since 1970;
+        /*JSON stuff*/
+        let form = document.addForm;
+
+        let data = {};
+        data["day"] = day;
+        data["currentTime"] = currentTime;
+
+        let js = JSON.stringify(data);
+        console.log("JS:" + js);
+        let xhr = new XMLHttpRequest();
+        xhr.open("POST", adminDelete_url, true);
+
+        // send the collected data as JSON
+        xhr.send(js);
+
+        // This will process results and update HTML as appropriate.
+        xhr.onloadend = function () {
+          console.log(xhr);
+          console.log(xhr.request);
+          if (xhr.readyState == XMLHttpRequest.DONE) {
+              console.log ("XHR:" + xhr.responseText);
+          } else {
+        }
+      }
+    }
 }
 
 function reportActivity() {
@@ -1134,7 +1161,7 @@ function systemAdmin() {
     output += "<br><textarea id='numDays' rows='2' cols='20'></textarea>";
     output += "<br><br>";
     //output += "<button type = 'button' onclick = 'listSchedules()'>View</button>";
-    output += "<button type = 'button' onclick = 'deleteAllSchedules()'>Delete</button>";
+    output += "<button type = 'button' onclick = 'deleteOld()'>Delete</button>";
 
     document.getElementById("panelPrint").innerHTML = output;
 }
