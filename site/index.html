@@ -890,6 +890,35 @@ function processRespP(result){
     /**console.log(myTable);*/
     document.getElementById("tablePrint").innerHTML = myTable;
 }
+
+//search timeslots
+function searchOpenTimeslots(){
+  let secretID = document.getElementsByID("secretID");
+  let monthDay = document.getElementById("viewDayText");
+  let month = document.getElementById("viewMonthText");
+  let year = document.getElementById("viewYearText");
+  let weekday = document.getElementById("viewWeekdayText");
+  let startingTime = document.getElementById("viewStartTimeText");
+
+  let searchOpenData = [];
+  searchOpenData["accessCode"] = secretID;
+  searchOpenData["monthDay"] = monthDay;
+  searchOpenData["startingTime"] = startingTime;
+  searchOpenData["weekday"] = weekday;
+  searchOpenData["year"] = year;
+  searchOpenData["month"] = month;
+
+
+  let searchOpenJS = JSON.stringify(searchOpenData);
+  console.log("JS:" + searchOpenJS);
+  let searchOpenXHR = new XMLHttpRequest();
+  searchOpenXHR.open("POST", closeOnTime_url, true);
+  // send the collected data as JSON
+  searchOpenXHR.send(searchOpenJS);
+
+}
+function processOpenTimeslots(){}
+
 //user renders
 function participant() {
     //take the entered name to store in the HTML
