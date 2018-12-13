@@ -13,51 +13,12 @@ let openOnTime_url = "https://8pzpcdfj7l.execute-api.us-east-2.amazonaws.com/Fir
 let closeOnDay_url = "https://8pzpcdfj7l.execute-api.us-east-2.amazonaws.com/First/closetimeslotsonday";
 let closeOnTime_url = "https://8pzpcdfj7l.execute-api.us-east-2.amazonaws.com/First/closetimeslotsattime";
 let showOpen_url = "https://8pzpcdfj7l.execute-api.us-east-2.amazonaws.com/First/showopentimeslots";
+let reportActivity_url = "https://8pzpcdfj7l.execute-api.us-east-2.amazonaws.com/First/reportactivity";
+let adminDelete_url = "https://8pzpcdfj7l.execute-api.us-east-2.amazonaws.com/First/deleteoldschedules";
 function processResponse(arg1, arg2, arg3, arg4, arg5, arg6) {
 
 }
-//startup functions
-/* We probably won't use these, but in case we do:
-function processGetUserResponse(result, arg2) {
-    // Can grab any DIV or SPAN HTML element and can then manipulate its
-    // contents dynamically via javascript
-    console.log("result:" + result);
-    var js = JSON.parse(result);
-
-    var userCode = js["accessCode"];
-    var orgCode = js["orgAccessCode"];
-    var currentName = js["name"];
-    var status      = js["httpCode"];
-
-    if (status == 200) {
-      // Update computation result
-      document.addForm.result.value = computation
-    } else {
-      var msg = js["errorMessage"];
-      document.addForm.result.value = "error:" + msg
-    }
-  }
-
-function processGetScheduleResponse(result, arg2) {
-    // Can grab any DIV or SPAN HTML element and can then manipulate its
-    // contents dynamically via javascript
-    console.log("result:" + result);
-    var js = JSON.parse(result);
-
-    var userCode = js["accessCode"];
-    var orgCode = js["orgAccessCode"];
-    var currentName = js["name"];
-    var status      = js["httpCode"];
-
-    if (status == 200) {
-      // Update computation result
-      document.addForm.result.value = computation
-    } else {
-      var msg = js["errorMessage"];
-      document.addForm.result.value = "error:" + msg
-    }
-  }
-*/
+//startup function
 function firstLoad(){
     let output = "<label for='loginText'>Enter your access code here, if you're a system admin</label>";
     output+="<br><textarea id='loginText' rows='2' cols='20'></textarea>";
@@ -1059,6 +1020,68 @@ function searchOpenTimeslots(){
 }
 
 //SysAdmin methods
+function deleteOld() {
+    
+}
+
+function reportActivity() {
+    let hour = document.getElementById("numHours").value;
+    let currentTime = Math.floor(Date.now()); //get milliseconds since 1970;
+    /*JSON stuff*/
+    let form = document.addForm;
+
+    let data = {};
+    data["hour"] = hour;
+    data["currentTime"] = currentTime;
+
+    let js = JSON.stringify(data);
+    console.log("JS:" + js);
+    let xhr = new XMLHttpRequest();
+    xhr.open("POST", reportActivity_url, true);
+
+  // send the collected data as JSON
+  xhr.send(js);
+
+    // This will process results and update HTML as appropriate.
+    xhr.onloadend = function () {
+      console.log(xhr);
+      console.log(xhr.request);
+      if (xhr.readyState == XMLHttpRequest.DONE) {
+        console.log ("XHR:" + xhr.responseText);
+        showActivity(xhr.responseText);
+      } else {
+          
+      }
+}
+}
+
+function showActivity(result) {
+    //document.getElementById("tablePrint").innerHTML = result;
+    let jData = JSON.parse(result);
+    let jDataTwo = JSON.parse(jData["body"]);
+    let listlength = jDataTwo.list.length;
+    let myTable = "<table><tr><td style='font-size:16px;'>END</td>";
+    for (i = 0; i < listlength; i++) {
+        let currSchedule = jDataTwo.list[i];
+        let dateCreated = new Date(currSchedule.timeCreated);
+        myTable += "<p> Name: "
+        myTable += "\""+currSchedule.name.toString()+"\"";
+        myTable += ", Start Date: ";
+        myTable += "\""+currSchedule.startDate.toString()+"\"";
+        myTable += ", End Date: ";
+        myTable += "\""+currSchedule.endDate.toString()+"\"";
+        myTable += ", Organizer Access Code: ";
+        myTable += "\""+currSchedule.orgAccessCode.toString()+"\"";
+        myTable += ", Participant Access Code: ";
+        myTable += "\""+currSchedule.initialParticipantAccessCode.toString()+"\"";
+        myTable += ", Date Created: ";
+        myTable += "\""+dateCreated.toString()+"\"";
+        myTable += "</p></td>";
+    }
+    myTable += "</tr>";
+    myTable += "</table>";
+    document.getElementById("tablePrint").innerHTML = myTable;
+}
 
 //user renders
 function participant() {
@@ -1104,13 +1127,13 @@ function systemAdmin() {
     output += "<label for = 'numHours'>Enter the number of hours here:</label>";
     output += "<br><textarea id='numHours' rows='2' cols='20'></textarea>";
     output += "<br><br>";
-    output += "<button type = 'button' onclick = 'listSchedules()'>View</button>";
+    output += "<button type = 'button' onclick = 'reportActivity()'>View</button>";
 
-    output += "<p>View/Delete Schedules that are more than X days old. </p>";
+    output += "<p>Delete Schedules that are more than X days old. </p>";
     output += "<label for = 'numDays'>Enter the number of days here:</label>";
     output += "<br><textarea id='numDays' rows='2' cols='20'></textarea>";
     output += "<br><br>";
-    output += "<button type = 'button' onclick = 'listSchedules()'>View</button>";
+    //output += "<button type = 'button' onclick = 'listSchedules()'>View</button>";
     output += "<button type = 'button' onclick = 'deleteAllSchedules()'>Delete</button>";
 
     document.getElementById("panelPrint").innerHTML = output;
