@@ -821,13 +821,6 @@ function processResp(result) {
                   myTable += "\""+currSlot.startTime.toString()+"\"";
                   myTable += ")'";
                   myTable += ">Close</button>";
-                  //along with option to just cancel the meeting
-                  myTable += "<button id='calButton' type='button' onclick='cancelFuncO(";
-                  myTable += "\""+currSlot.idDays.toString()+"\"";
-                  myTable += ",";
-                  myTable += "\""+currSlot.startTime.toString()+"\"";
-                  myTable += ")'";
-                  myTable += ">Cancel</button>";
                   if(currSlot.name != undefined){
                     //if timeslot is open and booked
                     //print name
@@ -840,7 +833,7 @@ function processResp(result) {
                     myTable += ",";
                     myTable += "\""+currSlot.startTime.toString()+"\"";
                     myTable += ")'";
-                    myTable += ">Close</button>";
+                    myTable += ">Cancel</button>";
                   }
                   myTable += "</td>";
               }
