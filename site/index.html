@@ -916,8 +916,11 @@ function searchOpenTimeslots(){
   // send the collected data as JSON
   searchOpenXHR.send(searchOpenJS);
 
+  processOpenTimeslots(searchOpenXHR.responseText);
 }
-function processOpenTimeslots(){}
+function processOpenTimeslots(result){}
+
+//SysAdmin methods
 
 //user renders
 function participant() {
