@@ -400,10 +400,8 @@ function cancelFuncO(days, startTime){
           console.log(xhr.request);
           if (xhr.readyState == XMLHttpRequest.DONE) {
               console.log("XHR:" + xhr.responseText);
-              pullScheduleP();
-              //processResp(xhr.responseText.body);
+              pullSchedule();
           } else {
-              //processResp("N/A");
           }
       };
   //window.confirm("Please confirm you want to book at "+day+", "+time);
