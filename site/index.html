@@ -15,12 +15,13 @@ let closeOnTime_url = "https://8pzpcdfj7l.execute-api.us-east-2.amazonaws.com/Fi
 let showOpen_url = "https://8pzpcdfj7l.execute-api.us-east-2.amazonaws.com/First/showopentimeslots";
 let reportActivity_url = "https://8pzpcdfj7l.execute-api.us-east-2.amazonaws.com/First/reportactivity";
 let adminDelete_url = "https://8pzpcdfj7l.execute-api.us-east-2.amazonaws.com/First/deleteoldschedules";
+let extend_url = "https://8pzpcdfj7l.execute-api.us-east-2.amazonaws.com/First/extendschedule";
 function processResponse(arg1, arg2, arg3, arg4, arg5, arg6) {
 
 }
 //startup function
 function firstLoad(){
-    let output = "<label for='loginText'>Enter your access code here, if you're a system admin</label>";
+    let output = "<label for='loginText'>Enter your name here, if you're a system admin</label>";
     output+="<br><textarea id='loginText' rows='2' cols='20'></textarea>";
     output+="<button type='button' onclick='systemAdmin()'>System Admin</button>";
     output+="<br><br>";
@@ -365,7 +366,6 @@ function cancelFuncO(days, startTime){
           } else {
           }
       };
-  //window.confirm("Please confirm you want to book at "+day+", "+time);
 }
 function openTimeSlot(){
   let secretID = document.getElementById("secretID").value;
@@ -1019,6 +1019,36 @@ function searchOpenTimeslots(){
 //   document.getElementById("tablePrint").innerHTML = myTable;
 }
 
+function extendSchedule() {
+    let date = document.getElementById("viewDateText").value;
+    let scheduleID = document.getElementById("secretID").value; //get milliseconds since 1970;
+    /*JSON stuff*/
+    let form = document.addForm;
+
+    let data = {};
+    data["date"] = date;
+    data["scheduleID"] = scheduleID;
+
+    let js = JSON.stringify(data);
+    console.log("JS:" + js);
+    let xhr = new XMLHttpRequest();
+    xhr.open("POST", extend_url, true);
+
+  // send the collected data as JSON
+  xhr.send(js);
+
+    // This will process results and update HTML as appropriate.
+    xhr.onloadend = function () {
+      console.log(xhr);
+      console.log(xhr.request);
+      if (xhr.readyState == XMLHttpRequest.DONE) {
+        console.log ("XHR:" + xhr.responseText);
+      } else {
+          
+      }
+}
+}
+
 //SysAdmin methods
 function deleteOld() {
     if (confirm("Are you sure you want to delete schedules more than the entered number of days old?")) {
@@ -1079,7 +1109,7 @@ function reportActivity() {
       } else {
           
       }
-}
+    }
 }
 
 function showActivity(result) {
