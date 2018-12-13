@@ -38,7 +38,7 @@ public class CancelMeetingOrganizer implements RequestStreamHandler {
         TimeSlot slot = new TimeSlot (startingTime, duration, idDayParsed, id);
         slot.cancel();
         
-        return dao.updateParticipant(slot);
+        return dao.updateParticipant(slot) && dao.updateName(slot); //needs to update participant id and name
 	}
 	
 	@Override
