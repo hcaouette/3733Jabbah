@@ -35,7 +35,7 @@ public class CancelMeetingParTest {
         int rndTwo = (int) (Math.random() * 10000000);
         String rndS = Integer.toString(rnd);
         String rndSTwo = Integer.toString(rndTwo);
-        CreateScheduleRequest ar = new CreateScheduleRequest("w" + rndS, "03:00", "03:50", 10, "2001-08-15", "2001-08-20", "hmmm", 1544744104, rndSTwo);
+        CreateScheduleRequest ar = new CreateScheduleRequest("w" + rndS, "03:00", "03:50", 10, "2001-08-15", "2001-08-20", "hmmm", 1544744104, rndSTwo); //
 
         String ccRequest = new Gson().toJson(ar);
         String jsonRequest = new Gson().toJson(new PostRequest(ccRequest));
