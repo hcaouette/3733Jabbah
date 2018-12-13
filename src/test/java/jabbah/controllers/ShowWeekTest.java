@@ -31,7 +31,7 @@ public class ShowWeekTest {
         int rndTwo = (int) (Math.random() * 10000000);
         String rndS = Integer.toString(rnd);
         String rndSTwo = Integer.toString(rndTwo);
-        CreateScheduleRequest ac = new CreateScheduleRequest(rndS, "12:12", "12:27", 15, "2019-02-06", "2019-02-08", "zimm", 1, rndSTwo);
+        CreateScheduleRequest ac = new CreateScheduleRequest(rndS, "12:12", "12:27", 15, "2019-02-06", "2019-02-08", "zimm", 1544744104, rndSTwo); //
         ShowWeekScheduleRequest ar = new ShowWeekScheduleRequest("2019-02-07",rndS);
         String ccRequest = new Gson().toJson(ac);
         String jsonRequest = new Gson().toJson(new PostRequest(ccRequest));

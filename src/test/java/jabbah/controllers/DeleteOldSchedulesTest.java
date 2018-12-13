@@ -36,7 +36,7 @@ public class DeleteOldSchedulesTest {
         int rndTwo2 = (int) (Math.random() * 10000000);
         
         //Schedule created Friday, November 30, 2018
-        CreateScheduleRequest ar = new CreateScheduleRequest("w" + rnd, "12:00", "14:00", 30, "2003-01-01", "2003-01-03", "BOO", 1543554000, "w" + rndTwo);
+        CreateScheduleRequest ar = new CreateScheduleRequest("w" + rnd, "12:00", "14:00", 30, "2003-01-01", "2003-01-03", "BOO", 1543554000, "w" + rndTwo); //
         String ccRequest = new Gson().toJson(ar);
         String jsonRequest = new Gson().toJson(new PostRequest(ccRequest));
         InputStream input = new ByteArrayInputStream(jsonRequest.getBytes());

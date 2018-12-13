@@ -31,7 +31,7 @@ public class CreateScheduleTest {
         int rndTwo = (int) (Math.random() * 10000000);
         String rndS = Integer.toString(rnd);
         String rndSTwo = Integer.toString(rndTwo);
-        CreateScheduleRequest ar = new CreateScheduleRequest(rndS, "12:12", "12:27", 15, "1888-08-08", "1888-09-09", "zimm", 1, rndSTwo);
+        CreateScheduleRequest ar = new CreateScheduleRequest(rndS, "12:12", "12:27", 15, "1888-08-08", "1888-09-09", "zimm", 1544744104, rndSTwo); //
 
         String ccRequest = new Gson().toJson(ar);
         String jsonRequest = new Gson().toJson(new PostRequest(ccRequest));
