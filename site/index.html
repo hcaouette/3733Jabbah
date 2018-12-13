@@ -6,11 +6,13 @@ let open_url = "https://8pzpcdfj7l.execute-api.us-east-2.amazonaws.com/First/ope
 let close_url = "https://8pzpcdfj7l.execute-api.us-east-2.amazonaws.com/First/closetimeslot";
 let book_url = "https://8pzpcdfj7l.execute-api.us-east-2.amazonaws.com/First/createmeeting";
 let cancel_url = "https://8pzpcdfj7l.execute-api.us-east-2.amazonaws.com/First/cancelmeetingparticipant";
+let cancelO_url = "https://8pzpcdfj7l.execute-api.us-east-2.amazonaws.com/First/cancelmeetingorg";
 let displayP_url = "https://8pzpcdfj7l.execute-api.us-east-2.amazonaws.com/First/showweekparticipant";
 let openOnDay_url = "https://8pzpcdfj7l.execute-api.us-east-2.amazonaws.com/First/opentimeslotsonday";
 let openOnTime_url = "https://8pzpcdfj7l.execute-api.us-east-2.amazonaws.com/First/opentimeslotsattime";
 let closeOnDay_url = "https://8pzpcdfj7l.execute-api.us-east-2.amazonaws.com/First/closetimeslotsonday";
 let closeOnTime_url = "https://8pzpcdfj7l.execute-api.us-east-2.amazonaws.com/First/closetimeslotsattime";
+let showOpen_url = "https://8pzpcdfj7l.execute-api.us-east-2.amazonaws.com/First/showopentimeslots";
 function processResponse(arg1, arg2, arg3, arg4, arg5, arg6) {
 
 }
@@ -340,6 +342,72 @@ function cancelFunc(days, startTime){
           };
       //window.confirm("Please confirm you want to book at "+day+", "+time);
   }
+function cancelFuncO(days, startTime){
+  let form = document.addForm;
+  let monthTest = days.substring(0, 3);
+  let dayTest = days.substring(4, 6);
+  let yearTest = "";
+  if (dayTest.includes(",")) {
+      dayTest = "0" + days.substring(4, 5);
+      yearTest = days.substring(7, 11);
+  } else {
+      yearTest = days.substring(8, 12);
+  }
+  if (monthTest == "Jan") {
+      monthTest = "01";
+      } else if (monthTest == "Feb") {
+          monthTest = "02";
+      } else if (monthTest == "Mar") {
+          monthTest = "03";
+      } else if (monthTest == "Apr") {
+          monthTest = "04";
+      } else if (monthTest == "May") {
+          monthTest = "05";
+      } else if (monthTest == "Jun") {
+          monthTest = "06";
+      } else if (monthTest == "Jul") {
+          monthTest = "07";
+      } else if (monthTest == "Aug") {
+          monthTest = "08";
+      } else if (monthTest == "Sep") {
+          monthTest = "09";
+      } else if (monthTest == "Oct") {
+          monthTest = "10";
+      } else if (monthTest == "Nov") {
+          monthTest = "11";
+      } else if (monthTest == "Dec") {
+          monthTest = "12";
+      }
+      let arg = yearTest + "-" + monthTest + "-" + dayTest;
+
+
+      let data = {};
+      data["day"] = arg;
+      data["startTime"] = startTime;
+      data["initialAccessCode"] = document.getElementById("secretID").value;
+
+      let js = JSON.stringify(data);
+      console.log("JS:" + js);
+      let xhr = new XMLHttpRequest();
+      xhr.open("POST", cancelO_url, true);
+
+      // send the collected data as JSON
+      xhr.send(js);
+
+      // This will process results and update HTML as appropriate.
+      xhr.onloadend = function() {
+          console.log(xhr);
+          console.log(xhr.request);
+          if (xhr.readyState == XMLHttpRequest.DONE) {
+              console.log("XHR:" + xhr.responseText);
+              pullScheduleP();
+              //processResp(xhr.responseText.body);
+          } else {
+              //processResp("N/A");
+          }
+      };
+  //window.confirm("Please confirm you want to book at "+day+", "+time);
+}
 function openTimeSlot(){
   let secretID = document.getElementById("secretID").value;
   let openDay = document.getElementById("numDays").value;
@@ -741,7 +809,6 @@ function processResp(result) {
             currSlot = jDataTwo.week[i + (j*numIntervals)];
               if (currSlot["isOpen"] == 0) {
                   //if slot is closed, make it able to be opened by clicking on it
-                  //myTable += "<td><button type='button' onclick="openFunc(\'' + currSlot["idDays"] + "," + currSlot["startTime"] + '\')">Open</button></td>";
                   myTable += "<td><button id='calButton' type='button' onclick='openFunc(";
                   myTable += "\""+currSlot.idDays.toString()+"\"";
                   myTable += ",";
@@ -750,31 +817,29 @@ function processResp(result) {
                   myTable += ">Open</button></td>";
               } else {
                   //if slot is open, make it able to be closed by clicking on it
-                  //myTable += "<td><button type='button' onclick='closeFunc('\' + currSlot["idDays"] + "," + currSlot["startTime"])'>Close</button></td>";
-                  //option to close slot
                   myTable += "<td><button id='calButton' type='button' onclick='closeFunc(";
                   myTable += "\""+currSlot.idDays.toString()+"\"";
                   myTable += ",";
                   myTable += "\""+currSlot.startTime.toString()+"\"";
                   myTable += ")'";
                   myTable += ">Close</button>";
-                  //along with option to just cancel the meeting
-                  myTable += "<button id='calButton' type='button' onclick='cancelFunc(";
-                  myTable += "\""+currSlot.idDays.toString()+"\"";
-                  myTable += ",";
-                  myTable += "\""+currSlot.startTime.toString()+"\"";
-                  myTable += ")'";
-                  myTable += ">Close</button>";
                   if(currSlot.name != undefined){
-                  myTable += "<p>";
-                  myTable += currSlot.name.toString();
-                  myTable += "</p>";
+                    //if timeslot is open and booked
+                    //print name
+                    myTable += "<p>";
+                    myTable += currSlot.name.toString();
+                    myTable += "</p>";
+                    //add cancel meeting button
+                    myTable += "<button id='calButton' type='button' onclick='cancelFuncO(";
+                    myTable += "\""+currSlot.idDays.toString()+"\"";
+                    myTable += ",";
+                    myTable += "\""+currSlot.startTime.toString()+"\"";
+                    myTable += ")'";
+                    myTable += ">Close</button>";
                   }
                   myTable += "</td>";
               }
           }
-          //i += columns;
-          //k++;
           myTable += "</tr>";
       }
       myTable += "</table>";
@@ -902,7 +967,7 @@ function searchOpenTimeslots(){
   let searchOpenJS = JSON.stringify(searchOpenData);
   console.log("JS:" + searchOpenJS);
   let searchOpenXHR = new XMLHttpRequest();
-  searchOpenXHR.open("POST", closeOnTime_url, true);
+  searchOpenXHR.open("POST", showOpen_url, true);
   // send the collected data as JSON
   searchOpenXHR.send(searchOpenJS);
 
