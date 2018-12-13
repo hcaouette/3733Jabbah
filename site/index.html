@@ -751,11 +751,6 @@ function processResp(result) {
               } else {
                   //if slot is open, make it able to be closed by clicking on it
                   //myTable += "<td><button type='button' onclick='closeFunc('\' + currSlot["idDays"] + "," + currSlot["startTime"])'>Close</button></td>";
-                  if (currSlot["name"] != null) {
-                  myTable += "<p>";
-                  myTable += currSlot.name.toString();
-                  myTable += "</p>";
-                  }
                   //option to close slot
                   myTable += "<td><button id='calButton' type='button' onclick='closeFunc(";
                   myTable += "\""+currSlot.idDays.toString()+"\"";
@@ -807,7 +802,7 @@ function processRespP(result){
     let numIntervals = jDataTwo.interval; //the number of timeslots per day
     let myTable = "<table><tr><td style='font-size:16px;'>TIME</td>";
     //add the correct number of columns
-    let columns = 0;
+    let columns = (jDataTwo.week.length / numIntervals);
     if (start == "Monday") {
     myTable += "<td>MON</td>";
     myTable += "<td>TUE</td>";
@@ -843,11 +838,11 @@ function processRespP(result){
     // while (i < (numIntervals*columns)) {
     for(let i=0;i<numIntervals;i++){
         let currSlot = jDataTwo.week[i];
-        let currSlotForTime = jDataTwo.week[k];
+        let currSlotForTime = jDataTwo.week[i];
         let currTime = currSlotForTime["startTime"];
         myTable += "<tr><td>"+currTime+"</td>";
         for (let j = 0; j < columns; j++) {
-          currSlot = jDataTwo.week[i + j];
+          currSlot = jDataTwo.week[i + (j*numIntervals)];
             if (currSlot["isOpen"] == 0) {
                 //if slot is closed, show nothing to participant
                 //myTable += "<td><button type='button' onclick="openFunc(\'' + currSlot["idDays"] + "," + currSlot["startTime"] + '\')">Open</button></td>";
@@ -863,11 +858,6 @@ function processRespP(result){
                 myTable += ">Book</button></td>";
             } else {
                 //if slot is open, make it able to be closed by clicking on it
-                if (currSlot["name"] != null) {
-                  myTable += "<p>";
-                  myTable += currSlot.name.toString();
-                  myTable += "</p>";
-                }
                 myTable += "<td><button id='calButton' type='button' onclick='cancelFunc(";
                 myTable += "\""+currSlot.idDays.toString()+"\"";
                 myTable += ",";
