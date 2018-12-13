@@ -946,14 +946,14 @@ function processRespP(result){
 
 //search timeslots
 function searchOpenTimeslots(){
-  let secretID = document.getElementsByID("secretID");
-  let monthDay = document.getElementById("viewDayText");
-  let month = document.getElementById("viewMonthText");
-  let year = document.getElementById("viewYearText");
-  let weekday = document.getElementById("viewWeekdayText");
-  let startingTime = document.getElementById("viewStartTimeText");
+  let secretID = document.getElementById("secretID").value;
+  let monthDay = document.getElementById("viewDayText").value;
+  let month = document.getElementById("viewMonthText").value;
+  let year = document.getElementById("viewYearText").value;
+  let weekday = document.getElementById("viewWeekdayText").value;
+  let startingTime = document.getElementById("viewStartTimeText").value;
 
-  let searchOpenData = [];
+  let searchOpenData = {};
   searchOpenData["accessCode"] = secretID;
   searchOpenData["monthDay"] = monthDay;
   searchOpenData["startingTime"] = startingTime;
@@ -969,9 +969,94 @@ function searchOpenTimeslots(){
   // send the collected data as JSON
   searchOpenXHR.send(searchOpenJS);
 
-  processOpenTimeslots(searchOpenXHR.responseText);
+
+  searchOpenXHR.onloadend = function () {
+    console.log(searchOpenXHR);
+    console.log(searchOpenXHR.request);
+    if (searchOpenXHR.readyState == XMLHttpRequest.DONE) {
+      console.log ("XHR:" + searchOpenXHR.responseText);
+      processOpenTimeslots(searchOpenXHR.responseText);
+    } else {
+        processOpenTimeslots("N/A");
+    }
+  };
 }
-function processOpenTimeslots(result){}
+ function processOpenTimeslots(result){
+   document.getElementById("tablePrint").innerHTML = result;
+//   let jData = JSON.parse(result);
+//   console.log(jData);
+//   //loading calender(visually) to html
+//   //let start = jData["startingDay"];
+//   let indexes = Object.keys(jData);
+//   console.log(indexes);
+//   console.log(jData["body"]);
+//   let jDataTwo = JSON.parse(jData["body"]);
+//   console.log(jDataTwo.week[0]);
+//   //console.log(JSON.parse(indexes[1]));
+//   let start = jDataTwo.startingDay;
+//   console.log(start);
+//   //console.log(jData.body.["startingDay"]);
+//   let startDayJson = jDataTwo.week[0];
+//   console.log(startDayJson);
+//   let startTime = startDayJson.startTime;
+//   console.log(startTime);
+//   let numIntervals = jDataTwo.interval; //the number of timeslots per day
+//   let myTable = "<table><tr><td style='font-size:16px;'>TIME</td>";
+//   //add the correct number of columns
+//   let columns = (jDataTwo.week.length / numIntervals);
+//   if (start == "Monday") {
+//   myTable += "<td>MON</td>";
+//   myTable += "<td>TUE</td>";
+//   myTable += "<td>WED</td>";
+//   myTable += "<td>THU</td>";
+//   myTable += "<td>FRI</td></tr>";
+//   // columns = 5;
+//   } else if (start == "Tuesday") {
+//       myTable += "<td>TUE</td>";
+//       myTable += "<td>WED</td>";
+//       myTable += "<td>THU</td>";
+//       myTable += "<td>FRI</td></tr>";
+//       // columns = 4;
+//       }
+//   else if (start == "Wednesday") {
+//       myTable += "<td>WED</td>";
+//       myTable += "<td>THU</td>";
+//       myTable += "<td>FRI</td></tr>";
+//       // columns = 3;
+//       }
+//   else if (start == "Thursday") {
+//       myTable += "<td>THU</td>";
+//       myTable += "<td>FRI</td></tr>";
+//       // columns = 2;
+//       }
+//   else {
+//       myTable += "<td>FRI</td></tr>";
+//       // columns = 1;
+//   }
+//
+//   // let i = 0;
+//   // let k = 0;
+//   // while (i < (numIntervals*columns)) {
+//   for(let i=0;i<numIntervals;i++){
+//       let currSlot = jDataTwo.week[i];
+//       let currSlotForTime = jDataTwo.week[i];
+//       let currTime = currSlotForTime["startTime"];
+//       myTable += "<tr><td>"+currTime+"</td>";
+//       for (let j = 0; j < columns; j++) {
+//         currSlot = jDataTwo.week[i + (j*numIntervals)];
+//               myTable += "<td><button id='calButton' type='button' onclick='bookFunc(";
+//               myTable += "\""+currSlot.idDays.toString()+"\"";
+//               myTable += ",";
+//               myTable += "\""+currSlot.startTime.toString()+"\"";
+//               myTable += ")'";
+//               myTable += ">Book</button></td>";
+//       }
+//       myTable += "</tr>";
+//   }
+//   myTable += "</table>";
+//   /**console.log(myTable);*/
+//   document.getElementById("tablePrint").innerHTML = myTable;
+}
 
 //SysAdmin methods
 
@@ -1059,14 +1144,14 @@ function organizer() {
     output += "<br><br>";
     output += "<p>Enter a starting and ending date:</p>";
     output += "<textarea id='createDate' rows='2' cols='20' placeholder='yyyy-mm-dd'></textarea>";
-    output += "<textarea id='endDate' rows='2' cols='20' placeholder='yyyy-mm-dd'></textarea><br>";
+    output += "<textarea id='endDate' rows='2' cols='20' placeholder='yyyy-mm-dd'></textarea>";
     output += "<br><p>Enter a starting and ending time of day:</p>";
     output += "<textarea id='startTime' rows='2' cols='20' placeholder='hh:mm'></textarea>";
     output += "<textarea id='endTime' rows='2' cols='20' placeholder='hh:mm'></textarea>";
     output += "<br><p>Enter a time interval in minutes for meetings:</p>";
-    output += "<textarea id='meetingInterval' rows='2' cols='20' placeholder='30'></textarea><br>";
+    output += "<textarea id='meetingInterval' rows='2' cols='20' placeholder='30'></textarea>";
     output += "<br><p>Enter a name for your schedule: (20 characters or less)</p>";
-    output += "<textarea id='scheduleName' rows='2' cols='20' placeholder='My Schedule'></textarea><br>";
+    output += "<textarea id='scheduleName' rows='2' cols='20' placeholder='My Schedule'></textarea>";
     output += "";
     output += "<br><button type='button' onclick='createSchedule()'>Create Schedule</button>";
 
