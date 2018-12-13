@@ -380,11 +380,11 @@ function cancelFuncO(days, startTime){
       }
       let arg = yearTest + "-" + monthTest + "-" + dayTest;
 
-
       let data = {};
-      data["day"] = arg;
+      data["idDay"] = arg;
+      data["duration"] = 0;
       data["startTime"] = startTime;
-      data["initialAccessCode"] = document.getElementById("secretID").value;
+      data["scheduleID"] = document.getElementById("secretID").value;
 
       let js = JSON.stringify(data);
       console.log("JS:" + js);
