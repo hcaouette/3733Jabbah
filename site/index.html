@@ -236,6 +236,73 @@ function bookFunc(days, startTime){
         };
     //window.confirm("Please confirm you want to book at "+day+", "+time);
 }
+function bookFunc2(days, startTime){
+  //console.log(day);
+  //console.log(time);
+    let form = document.addForm;
+    let monthTest = days.substring(0, 3);
+    let dayTest = days.substring(4, 6);
+    let yearTest = "";
+    if (dayTest.includes(",")) {
+        dayTest = "0" + days.substring(4, 5);
+        yearTest = days.substring(7, 11);
+    } else {
+        yearTest = days.substring(8, 12);
+    }
+    if (monthTest == "Jan") {
+        monthTest = "01";
+        } else if (monthTest == "Feb") {
+            monthTest = "02";
+        } else if (monthTest == "Mar") {
+            monthTest = "03";
+        } else if (monthTest == "Apr") {
+            monthTest = "04";
+        } else if (monthTest == "May") {
+            monthTest = "05";
+        } else if (monthTest == "Jun") {
+            monthTest = "06";
+        } else if (monthTest == "Jul") {
+            monthTest = "07";
+        } else if (monthTest == "Aug") {
+            monthTest = "08";
+        } else if (monthTest == "Sep") {
+            monthTest = "09";
+        } else if (monthTest == "Oct") {
+            monthTest = "10";
+        } else if (monthTest == "Nov") {
+            monthTest = "11";
+        } else if (monthTest == "Dec") {
+            monthTest = "12";
+        }
+        let arg = yearTest + "-" + monthTest + "-" + dayTest;
+        let arg2 = makePartId();
+        let data = {};
+        data["day"] = arg;
+        data["startTime"] = startTime;
+        data["initialAccessCode"] = document.getElementById("secretID").value;
+        data["name"] = document.getElementById("currentName").innerHTML.substring(6);
+        data["newParticipantCode"] = arg2;
+        console.log(data["name"]);
+
+        let js = JSON.stringify(data);
+        console.log("JS:" + js);
+        let xhr = new XMLHttpRequest();
+        xhr.open("POST", book_url, true);
+
+        // send the collected data as JSON
+        xhr.send(js);
+
+        // This will process results and update HTML as appropriate.
+        xhr.onloadend = function() {
+            console.log(xhr);
+            console.log(xhr.request);
+            if (xhr.readyState == XMLHttpRequest.DONE) {
+                console.log("XHR:" + xhr.responseText);
+                alert("Your unique id is: " + arg2);
+            } else {
+            }
+        };
+}
 function cancelFunc(days, startTime){
       let form = document.addForm;
       let monthTest = days.substring(0, 3);
@@ -977,12 +1044,11 @@ function searchOpenTimeslots(){
       console.log ("XHR:" + searchOpenXHR.responseText);
       processOpenTimeslots(searchOpenXHR.responseText);
     } else {
-        processOpenTimeslots("N/A");
+      processOpenTimeslots("N/A");
     }
   };
 }
  function processOpenTimeslots(result){
-   document.getElementById("tablePrint").innerHTML = result;
   let jData = JSON.parse(result);
   console.log(jData);
   //loading calender(visually) to html
@@ -991,67 +1057,32 @@ function searchOpenTimeslots(){
   console.log(indexes);
   console.log(jData["body"]);
   let jDataTwo = JSON.parse(jData["body"]);
-  console.log(jDataTwo.week[0]);
+  console.log(jDataTwo.list[0]);
   //console.log(JSON.parse(indexes[1]));
   let start = jDataTwo.startingDay;
   console.log(start);
   //console.log(jData.body.["startingDay"]);
-  let startDayJson = jDataTwo.week[0];
+  let startDayJson = jDataTwo.list[0];
   console.log(startDayJson);
   let startTime = startDayJson.startTime;
   console.log(startTime);
-  let numIntervals = jDataTwo.interval; //the number of timeslots per day
-  let myTable = "<table><tr><td style='font-size:16px;'>TIME</td>";
-  //add the correct number of columns
-  let columns = (jDataTwo.week.length / numIntervals);
-  if (start == "Monday") {
-  myTable += "<td>MON</td>";
-  myTable += "<td>TUE</td>";
-  myTable += "<td>WED</td>";
-  myTable += "<td>THU</td>";
-  myTable += "<td>FRI</td></tr>";
-  // columns = 5;
-  } else if (start == "Tuesday") {
-      myTable += "<td>TUE</td>";
-      myTable += "<td>WED</td>";
-      myTable += "<td>THU</td>";
-      myTable += "<td>FRI</td></tr>";
-      // columns = 4;
-      }
-  else if (start == "Wednesday") {
-      myTable += "<td>WED</td>";
-      myTable += "<td>THU</td>";
-      myTable += "<td>FRI</td></tr>";
-      // columns = 3;
-      }
-  else if (start == "Thursday") {
-      myTable += "<td>THU</td>";
-      myTable += "<td>FRI</td></tr>";
-      // columns = 2;
-      }
-  else {
-      myTable += "<td>FRI</td></tr>";
-      // columns = 1;
-  }
+  let myTable = "<table><tr><td style='font-size:10px;'>TIMESLOT</td>";
 
-  for(let i=0;i<numIntervals;i++){
-      let currSlot = jDataTwo.week[i];
-      let currSlotForTime = jDataTwo.week[i];
+  for(let i=0;i<jDataTwo.list.length;i++){
+      let currSlot = jDataTwo.list[i];
+      let currSlotForTime = jDataTwo.list[i];
       let currTime = currSlotForTime["startTime"];
-      myTable += "<tr><td>"+currTime+"</td>";
-      for (let j = 0; j < columns; j++) {
-        currSlot = jDataTwo.week[i + (j*numIntervals)];
-              myTable += "<td><button id='calButton' type='button' onclick='bookFunc(";
-              myTable += "\""+currSlot.idDays.toString()+"\"";
-              myTable += ",";
-              myTable += "\""+currSlot.startTime.toString()+"\"";
-              myTable += ")'";
-              myTable += ">Book</button></td>";
-      }
-      myTable += "</tr>";
+        myTable += "<tr><td><p>"+currTime.toString()+"</p>";
+        myTable += "<p>"+currSlot.idDays.toString()+"</p>";
+        myTable += "<button id='calButton' type='button' onclick='bookFunc2(";
+        myTable += "\""+currSlot.idDays.toString()+"\"";
+        myTable += ",";
+        myTable += "\""+currSlot.startTime.toString()+"\"";
+        myTable += ")'";
+        myTable += ">Book</button></td>";
+        myTable += "</tr>";
   }
   myTable += "</table>";
-  /**console.log(myTable);*/
   document.getElementById("tablePrint").innerHTML = myTable;
 }
 
