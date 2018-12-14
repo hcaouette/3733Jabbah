@@ -944,79 +944,76 @@ function searchOpenTimeslots(){
 }
  function processOpenTimeslots(result){
    document.getElementById("tablePrint").innerHTML = result;
-//   let jData = JSON.parse(result);
-//   console.log(jData);
-//   //loading calender(visually) to html
-//   //let start = jData["startingDay"];
-//   let indexes = Object.keys(jData);
-//   console.log(indexes);
-//   console.log(jData["body"]);
-//   let jDataTwo = JSON.parse(jData["body"]);
-//   console.log(jDataTwo.week[0]);
-//   //console.log(JSON.parse(indexes[1]));
-//   let start = jDataTwo.startingDay;
-//   console.log(start);
-//   //console.log(jData.body.["startingDay"]);
-//   let startDayJson = jDataTwo.week[0];
-//   console.log(startDayJson);
-//   let startTime = startDayJson.startTime;
-//   console.log(startTime);
-//   let numIntervals = jDataTwo.interval; //the number of timeslots per day
-//   let myTable = "<table><tr><td style='font-size:16px;'>TIME</td>";
-//   //add the correct number of columns
-//   let columns = (jDataTwo.week.length / numIntervals);
-//   if (start == "Monday") {
-//   myTable += "<td>MON</td>";
-//   myTable += "<td>TUE</td>";
-//   myTable += "<td>WED</td>";
-//   myTable += "<td>THU</td>";
-//   myTable += "<td>FRI</td></tr>";
-//   // columns = 5;
-//   } else if (start == "Tuesday") {
-//       myTable += "<td>TUE</td>";
-//       myTable += "<td>WED</td>";
-//       myTable += "<td>THU</td>";
-//       myTable += "<td>FRI</td></tr>";
-//       // columns = 4;
-//       }
-//   else if (start == "Wednesday") {
-//       myTable += "<td>WED</td>";
-//       myTable += "<td>THU</td>";
-//       myTable += "<td>FRI</td></tr>";
-//       // columns = 3;
-//       }
-//   else if (start == "Thursday") {
-//       myTable += "<td>THU</td>";
-//       myTable += "<td>FRI</td></tr>";
-//       // columns = 2;
-//       }
-//   else {
-//       myTable += "<td>FRI</td></tr>";
-//       // columns = 1;
-//   }
-//
-//   // let i = 0;
-//   // let k = 0;
-//   // while (i < (numIntervals*columns)) {
-//   for(let i=0;i<numIntervals;i++){
-//       let currSlot = jDataTwo.week[i];
-//       let currSlotForTime = jDataTwo.week[i];
-//       let currTime = currSlotForTime["startTime"];
-//       myTable += "<tr><td>"+currTime+"</td>";
-//       for (let j = 0; j < columns; j++) {
-//         currSlot = jDataTwo.week[i + (j*numIntervals)];
-//               myTable += "<td><button id='calButton' type='button' onclick='bookFunc(";
-//               myTable += "\""+currSlot.idDays.toString()+"\"";
-//               myTable += ",";
-//               myTable += "\""+currSlot.startTime.toString()+"\"";
-//               myTable += ")'";
-//               myTable += ">Book</button></td>";
-//       }
-//       myTable += "</tr>";
-//   }
-//   myTable += "</table>";
-//   /**console.log(myTable);*/
-//   document.getElementById("tablePrint").innerHTML = myTable;
+  let jData = JSON.parse(result);
+  console.log(jData);
+  //loading calender(visually) to html
+  //let start = jData["startingDay"];
+  let indexes = Object.keys(jData);
+  console.log(indexes);
+  console.log(jData["body"]);
+  let jDataTwo = JSON.parse(jData["body"]);
+  console.log(jDataTwo.week[0]);
+  //console.log(JSON.parse(indexes[1]));
+  let start = jDataTwo.startingDay;
+  console.log(start);
+  //console.log(jData.body.["startingDay"]);
+  let startDayJson = jDataTwo.week[0];
+  console.log(startDayJson);
+  let startTime = startDayJson.startTime;
+  console.log(startTime);
+  let numIntervals = jDataTwo.interval; //the number of timeslots per day
+  let myTable = "<table><tr><td style='font-size:16px;'>TIME</td>";
+  //add the correct number of columns
+  let columns = (jDataTwo.week.length / numIntervals);
+  if (start == "Monday") {
+  myTable += "<td>MON</td>";
+  myTable += "<td>TUE</td>";
+  myTable += "<td>WED</td>";
+  myTable += "<td>THU</td>";
+  myTable += "<td>FRI</td></tr>";
+  // columns = 5;
+  } else if (start == "Tuesday") {
+      myTable += "<td>TUE</td>";
+      myTable += "<td>WED</td>";
+      myTable += "<td>THU</td>";
+      myTable += "<td>FRI</td></tr>";
+      // columns = 4;
+      }
+  else if (start == "Wednesday") {
+      myTable += "<td>WED</td>";
+      myTable += "<td>THU</td>";
+      myTable += "<td>FRI</td></tr>";
+      // columns = 3;
+      }
+  else if (start == "Thursday") {
+      myTable += "<td>THU</td>";
+      myTable += "<td>FRI</td></tr>";
+      // columns = 2;
+      }
+  else {
+      myTable += "<td>FRI</td></tr>";
+      // columns = 1;
+  }
+
+  for(let i=0;i<numIntervals;i++){
+      let currSlot = jDataTwo.week[i];
+      let currSlotForTime = jDataTwo.week[i];
+      let currTime = currSlotForTime["startTime"];
+      myTable += "<tr><td>"+currTime+"</td>";
+      for (let j = 0; j < columns; j++) {
+        currSlot = jDataTwo.week[i + (j*numIntervals)];
+              myTable += "<td><button id='calButton' type='button' onclick='bookFunc(";
+              myTable += "\""+currSlot.idDays.toString()+"\"";
+              myTable += ",";
+              myTable += "\""+currSlot.startTime.toString()+"\"";
+              myTable += ")'";
+              myTable += ">Book</button></td>";
+      }
+      myTable += "</tr>";
+  }
+  myTable += "</table>";
+  /**console.log(myTable);*/
+  document.getElementById("tablePrint").innerHTML = myTable;
 }
 
 function extendSchedule() {
@@ -1044,7 +1041,7 @@ function extendSchedule() {
       if (xhr.readyState == XMLHttpRequest.DONE) {
         console.log ("XHR:" + xhr.responseText);
       } else {
-          
+
       }
 }
 }
@@ -1107,7 +1104,7 @@ function reportActivity() {
         console.log ("XHR:" + xhr.responseText);
         showActivity(xhr.responseText);
       } else {
-          
+
       }
     }
 }
