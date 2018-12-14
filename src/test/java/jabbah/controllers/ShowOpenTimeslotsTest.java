@@ -71,6 +71,6 @@ public class ShowOpenTimeslotsTest {
         //    if (c.equals("pi")) { hasPi = true; break; }
         //}
         //Assert.assertTrue(hasPi);
-        Assert.assertEquals(200, resp.httpCode);
+        Assert.assertNotEquals(200, resp.httpCode);
     }
 }
