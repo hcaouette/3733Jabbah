@@ -17,6 +17,7 @@ import com.amazonaws.services.lambda.runtime.LambdaLogger;
 import com.amazonaws.services.lambda.runtime.RequestStreamHandler;
 import com.google.gson.Gson;
 
+import jabbah.db.SchedulesDAO;
 import jabbah.db.TimeSlotDAO;
 import jabbah.model.TimeSlot;
 
@@ -38,7 +39,9 @@ public class ShowOpenTimeslots implements RequestStreamHandler {
     List<TimeSlot> getTimeSlots(String accessCode, String month, String monthDay, String startingTime, String weekday, String year) throws Exception {
         if (logger != null) { logger.log("in getTimeSlots"); }
         TimeSlotDAO dao = new TimeSlotDAO();
-        return dao.getSpecificTimeSlot(accessCode, month, monthDay, startingTime, weekday, year);
+        SchedulesDAO daoS = new SchedulesDAO();
+        String orgCode = daoS.getOrgAccessCode(accessCode);
+        return dao.getSpecificTimeSlot(orgCode, month, monthDay, startingTime, weekday, year);
     }
 
     @Override
