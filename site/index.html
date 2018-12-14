@@ -579,9 +579,9 @@ function createSchedule(){
       console.log(xhr.request);
       if (xhr.readyState == XMLHttpRequest.DONE) {
         console.log ("XHR:" + xhr.responseText);
-        //processResponse(orgAccessCode, arg2, arg3, arg4, arg5, arg6);
+        alert("Schedule Created!");
+        pullScheduleInitial(orgAccessCode);
       } else {
-        //processResponse("N/A", arg2, arg3, arg4, arg5, arg6);
       }
     };
 }
@@ -701,6 +701,45 @@ function pullSchedule(){
             processResp("N/A");
         }
       };
+}
+function pullScheduleInitial(orgAccessCode){
+    //a new schedule would not be created for pulling up the week in a schedule,
+    //instead it should get the days in a schedule based on what access code and info they enter
+    //Schedule Creation:
+    //name creation is handled on the backend so it can be checked against the server
+    let secretID = orgAccessCode;
+    console.log(secretID);
+    let viewDate = document.getElementById("createDate").value;
+    console.log(viewDate);
+    /*JSON stuff*/
+    let form = document.addForm;
+    let arg2 = viewDate;
+    let arg5 = secretID;
+
+    let data = {};
+    data["date"] = arg2;
+    data["scheduleID"] = arg5;
+
+    let js = JSON.stringify(data);
+    console.log("JS:" + js);
+    let xhr = new XMLHttpRequest();
+    xhr.open("POST", display_url, true);
+
+  // send the collected data as JSON
+  xhr.send(js);
+
+    // This will process results and update HTML as appropriate.
+    xhr.onloadend = function () {
+      console.log(xhr);
+      console.log(xhr.request);
+      if (xhr.readyState == XMLHttpRequest.DONE) {
+        console.log ("XHR:" + xhr.responseText);
+        processResp(xhr.responseText);
+        //processResp(xhr.responseText.body);
+      } else {
+          processResp("N/A");
+      }
+    };
 }
 function processResp(result) {
       let jData = JSON.parse(result);
